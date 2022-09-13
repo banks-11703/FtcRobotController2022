@@ -37,32 +37,20 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvPipeline;
 import org.openftc.easyopencv.OpenCvWebcam;
 
-/*
- * This sample demonstrates a basic (but battle-tested and essentially
- * 100% accurate) method of detecting the skystone when lined up with
- * the sample regions over the first 3 stones.
- */
 @TeleOp
 public class CameraTesting extends LinearOpMode
 {
     OpenCvWebcam webcam;
-    SkystoneDeterminationPipeline pipeline;
+    SleeveOrientationPipeline pipeline;
 
     @Override
     public void runOpMode()
     {
         WebcamName webcamName = hardwareMap.get(WebcamName.class, "Webcam 1");
-
-        /**
-         * NOTE: Many comments have been omitted from this sample for the
-         * sake of conciseness. If you're just starting out with EasyOpenCv,
-         * you should take a look at {@link InternalCamera1Example} or its
-         * webcam counterpart, {@link WebcamExample} first.
-         */
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         webcam = OpenCvCameraFactory.getInstance().createWebcam(webcamName, cameraMonitorViewId);
 
-        pipeline = new SkystoneDeterminationPipeline();
+        pipeline = new SleeveOrientationPipeline();
         webcam.setPipeline(pipeline);
 
         // We set the viewport policy to optimized view so the preview doesn't appear 90 deg
@@ -99,10 +87,10 @@ public class CameraTesting extends LinearOpMode
         }
     }
 
-    public static class SkystoneDeterminationPipeline extends OpenCvPipeline
+    public static class SleeveOrientationPipeline extends OpenCvPipeline
     {
         /*
-         * An enum to define the skystone position
+         * An enum to define the Sleeve Orientation
          */
         public enum sleeveDirection
         {
