@@ -15,6 +15,9 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 
 @Autonomous
 public class Auto extends CameraTesting {
+    public enum Team{Blue,Red};
+    public enum Side{Left,Right};
+    public enum AutoMode{Cycle,Park,Nothing}
 
     @Override
     public void runOpMode() {
@@ -53,6 +56,7 @@ public class Auto extends CameraTesting {
                  */
             }
         });
+       
         waitForStart();
 
         if (isStopRequested()) return;
