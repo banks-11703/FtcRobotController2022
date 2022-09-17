@@ -15,9 +15,27 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 
 @Autonomous
 public class Auto extends CameraTesting {
-    public enum Team{Blue,Red};
-    public enum Side{Left,Right};
-    public enum AutoMode{Cycle,Park,Nothing}
+    boolean button_b_is_pressed = gamepad1.b;
+    boolean button_b_was_pressed;
+    boolean button_a_is_pressed = gamepad1.a;
+    boolean button_a_was_pressed;
+    boolean button_x_is_pressed = gamepad1.x;
+    boolean button_x_was_pressed;
+    int team = 0;// 0 = red 1 = blue
+    int side = 0;// 0 = left 1 = right
+    int mode = 0;//0 = nothing
+
+    public int Team() {
+        return team % 2;
+    }
+
+    public int Side() {
+        return side % 2;
+    }
+
+    public int Mode() {
+        return mode % 3;
+    }
 
     @Override
     public void runOpMode() {
@@ -56,15 +74,207 @@ public class Auto extends CameraTesting {
                  */
             }
         });
-       
-        waitForStart();
+        while (!opModeIsActive()) {
+            if (button_b_is_pressed && !button_b_was_pressed) {
+                team++;
+                button_b_was_pressed = true;
+            } else if (!button_b_is_pressed && button_b_was_pressed) {
+                button_b_was_pressed = false;
+            }
+            if (button_a_is_pressed && !button_a_was_pressed) {
+                side++;
+                button_a_was_pressed = true;
+            } else if (!button_a_is_pressed && button_a_was_pressed) {
+                button_a_was_pressed = false;
+            }
+            if (button_x_is_pressed && !button_x_was_pressed) {
+                mode++;
+                button_x_was_pressed = true;
+            } else if (!button_x_is_pressed && button_x_was_pressed) {
+                button_x_was_pressed = false;
+            }
+            switch (Team()){
+                case (0):
+                    telemetry.addData("Team", "Red");
+                    telemetry.update();
+                    switch (Side()){
+                        case(0):
+                            telemetry.addData("Side", "Left");
+                            telemetry.update();
+                            switch(Mode()){
+                                case(0):
+                                    telemetry.addData("Mode", "Nothing");
+                                    telemetry.update();
+                                    break;
+                                case(1):
+                                    telemetry.addData("Mode", "Cycle");
+                                    telemetry.update();
+                                    break;
+                                case(2):
+                                    telemetry.addData("Mode", "Park Only");
+                                    telemetry.update();
+                                    break;
+                            }
+                            break;
+                        case(1):
+                            telemetry.addData("Side", "Right");
+                            telemetry.update();
+                            switch(Mode()){
+                                case(0):
+                                    telemetry.addData("Mode", "Nothing");
+                                    telemetry.update();
+                                    break;
+                                case(1):
+                                    telemetry.addData("Mode", "Cycle");
+                                    telemetry.update();
+                                    break;
+                                case(2):
+                                    telemetry.addData("Mode", "Park Only");
+                                    telemetry.update();
+                                    break;
+                            }
+                            break;
+                    }
+                    break;
+                case (1):
+                    telemetry.addData("Team", "Blue");
+                    telemetry.update();
+                    switch (Side()){
+                        case(0):
+                            telemetry.addData("Side", "Left");
+                            telemetry.update();
+                            switch(Mode()){
+                                case(0):
+                                    telemetry.addData("Mode", "Nothing");
+                                    telemetry.update();
+                                    break;
+                                case(1):
+                                    telemetry.addData("Mode", "Cycle");
+                                    telemetry.update();
+                                    break;
+                                case(2):
+                                    telemetry.addData("Mode", "Park Only");
+                                    telemetry.update();
+                                    break;
+                            }
+                            break;
+                        case(1):
+                            telemetry.addData("Side", "Right");
+                            telemetry.update();
+                            switch(Mode()){
+                                case(0):
+                                    telemetry.addData("Mode", "Nothing");
+                                    telemetry.update();
+                                    break;
+                                case(1):
+                                    telemetry.addData("Mode", "Cycle");
+                                    telemetry.update();
+                                    break;
+                                case(2):
+                                    telemetry.addData("Mode", "Park Only");
+                                    telemetry.update();
+                                    break;
+                            }
+                            break;
+                    }
+                    break;
+            }
+            waitForStart();
 
-        if (isStopRequested()) return;
-        telemetry.addData("Analysis", pipeline.getAnalysis());
-        sleep(100);
-        telemetry.update();
-        // Transfer the current pose to PoseStorage so we can use it in TeleOp
-        PoseStorage.currentPose = drive.getPoseEstimate();
+            if (isStopRequested()) return;
+
+            telemetry.addData("Analysis", pipeline.getAnalysis());
+            sleep(100);
+            telemetry.update();
+            switch (Team()){
+                case (0):
+                    telemetry.addData("Team", "Red");
+                    telemetry.update();
+                    switch (Side()){
+                        case(0):
+                            telemetry.addData("Side", "Left");
+                            telemetry.update();
+                            switch(Mode()){
+                                case(0):
+                                    telemetry.addData("Mode", "Nothing");
+                                    telemetry.update();
+                                    break;
+                                case(1):
+                                    telemetry.addData("Mode", "Cycle");
+                                    telemetry.update();
+                                    break;
+                                case(2):
+                                    telemetry.addData("Mode", "Park Only");
+                                    telemetry.update();
+                                    break;
+                            }
+                            break;
+                        case(1):
+                            telemetry.addData("Side", "Right");
+                            telemetry.update();
+                            switch(Mode()){
+                                case(0):
+                                    telemetry.addData("Mode", "Nothing");
+                                    telemetry.update();
+                                    break;
+                                case(1):
+                                    telemetry.addData("Mode", "Cycle");
+                                    telemetry.update();
+                                    break;
+                                case(2):
+                                    telemetry.addData("Mode", "Park Only");
+                                    telemetry.update();
+                                    break;
+                            }
+                            break;
+                    }
+                    break;
+                case (1):
+                    telemetry.addData("Team", "Blue");
+                    telemetry.update();
+                    switch (Side()){
+                        case(0):
+                            telemetry.addData("Side", "Left");
+                            telemetry.update();
+                            switch(Mode()){
+                                case(0):
+                                    telemetry.addData("Mode", "Nothing");
+                                    telemetry.update();
+                                    break;
+                                case(1):
+                                    telemetry.addData("Mode", "Cycle");
+                                    telemetry.update();
+                                    break;
+                                case(2):
+                                    telemetry.addData("Mode", "Park Only");
+                                    telemetry.update();
+                                    break;
+                            }
+                            break;
+                        case(1):
+                            telemetry.addData("Side", "Right");
+                            telemetry.update();
+                            switch(Mode()){
+                                case(0):
+                                    telemetry.addData("Mode", "Nothing");
+                                    telemetry.update();
+                                    break;
+                                case(1):
+                                    telemetry.addData("Mode", "Cycle");
+                                    telemetry.update();
+                                    break;
+                                case(2):
+                                    telemetry.addData("Mode", "Park Only");
+                                    telemetry.update();
+                                    break;
+                            }
+                            break;
+                    }
+                    break;
+            }
+
+            // Transfer the current pose to PoseStorage so we can use it in TeleOp
+            PoseStorage.currentPose = drive.getPoseEstimate();
+        }
     }
 }
-

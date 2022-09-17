@@ -58,7 +58,7 @@ public class SampleMecanumDriveCancelable extends MecanumDrive {
     public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0, 0, 0);
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(0, 0, 0);
 
-    public static double LATERAL_MULTIPLIER = 1.11675;
+    public static double LATERAL_MULTIPLIER = 1;
 
     public static double VX_WEIGHT = 1;
     public static double VY_WEIGHT = 1;
@@ -142,8 +142,7 @@ public class SampleMecanumDriveCancelable extends MecanumDrive {
         if (RUN_USING_ENCODER && MOTOR_VELO_PID != null) {
             setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, MOTOR_VELO_PID);
         }
-        leftRear.setDirection(DcMotor.Direction.REVERSE);
-        leftFront.setDirection(DcMotor.Direction.REVERSE);
+
         // TODO: reverse any motors using DcMotor.setDirection()
 
         // TODO: if desired, use setLocalizer() to change the localization method
