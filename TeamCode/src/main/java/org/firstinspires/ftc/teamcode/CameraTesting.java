@@ -92,12 +92,7 @@ public class CameraTesting extends LinearOpMode
         /*
          * An enum to define the Sleeve Orientation
          */
-        public enum sleeveDirection
-        {
-            LEFT,
-            CENTER,
-            RIGHT
-        }
+        public int sleeveDirection;
 
         /*
          * Some color constants
@@ -159,7 +154,7 @@ public class CameraTesting extends LinearOpMode
         int avg1, avg2, avg3;
 
         // Volatile since accessed by OpMode thread w/o synchronization
-        private volatile sleeveDirection position = sleeveDirection.LEFT;
+        private volatile int position = 0;
 
         /*
          * This function takes the RGB frame, converts to YCrCb,
@@ -287,7 +282,7 @@ public class CameraTesting extends LinearOpMode
              */
             if(max == avg1) // Was it from region 1?
             {
-                position = sleeveDirection.LEFT; // Record our analysis
+                position = 0; // Record our analysis
 
                 /*
                  * Draw a solid rectangle on top of the chosen region.
@@ -302,7 +297,7 @@ public class CameraTesting extends LinearOpMode
             }
             else if(max == avg2) // Was it from region 2?
             {
-                position = sleeveDirection.CENTER; // Record our analysis
+                position = 1; // Record our analysis
 
                 Imgproc.rectangle(
                         input, // Buffer to draw on
@@ -313,7 +308,7 @@ public class CameraTesting extends LinearOpMode
             }
             else if(max == avg3) // Was it from region 3?
             {
-                position = sleeveDirection.RIGHT; // Record our analysis
+                position = 2; // Record our analysis
 
                 Imgproc.rectangle(
                         input, // Buffer to draw on
@@ -334,7 +329,7 @@ public class CameraTesting extends LinearOpMode
         /*
          * Call this from the OpMode thread to obtain the latest analysis
          */
-        public sleeveDirection getAnalysis()
+        public int getAnalysis()
         {
             return position;
         }
