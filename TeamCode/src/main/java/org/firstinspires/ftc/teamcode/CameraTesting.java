@@ -63,7 +63,7 @@ public class CameraTesting extends LinearOpMode
             @Override
             public void onOpened()
             {
-                webcam.startStreaming(320,240, OpenCvCameraRotation.UPRIGHT);
+                webcam.startStreaming(640,480, OpenCvCameraRotation.UPRIGHT);
             }
 
             @Override
@@ -108,11 +108,11 @@ public class CameraTesting extends LinearOpMode
         /*
          * The core values which define the location and size of the sample regions
          */
-        static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(109,98);
-        static final Point REGION2_TOPLEFT_ANCHOR_POINT = new Point(159,98);
-        static final Point REGION3_TOPLEFT_ANCHOR_POINT = new Point(210,98);
+        static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(159,75);
+        static final Point REGION2_TOPLEFT_ANCHOR_POINT = new Point(159,125);
+        static final Point REGION3_TOPLEFT_ANCHOR_POINT = new Point(159,175);
         static final int REGION_WIDTH = 50;
-        static final int REGION_HEIGHT = 100;
+        static final int REGION_HEIGHT = 50;
 
         /*
          * Points which actually define the sample region rectangles, derived from above values
