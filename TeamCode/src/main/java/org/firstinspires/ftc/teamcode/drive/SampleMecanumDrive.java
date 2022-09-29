@@ -127,6 +127,7 @@ public class SampleMecanumDrive extends MecanumDrive {
         rightRear = hardwareMap.get(DcMotorEx.class, "br");
         rightFront = hardwareMap.get(DcMotorEx.class, "fr");
         lift = hardwareMap.get(DcMotor.class,"l");
+        turntable = hardwareMap.get(DcMotor.class,"tt");
         claw = hardwareMap.get(Servo.class,"c");
         arm = hardwareMap.get(Servo.class,"a");
         turnlimiter = hardwareMap.get(DigitalChannel.class, "tl");
