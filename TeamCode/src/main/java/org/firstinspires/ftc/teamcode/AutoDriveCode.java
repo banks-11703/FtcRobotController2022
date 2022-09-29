@@ -39,6 +39,10 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDriveCancelable;
  */
 @TeleOp(group = "advanced")
 public class AutoDriveCode extends LinearOpMode {
+    boolean isRed = true;
+    int sign = 1;
+    int aButtonStatus = 0;
+
     // Define 2 states, drive control or automatic control
     enum Mode {
         DRIVER_CONTROL,
@@ -64,6 +68,7 @@ public class AutoDriveCode extends LinearOpMode {
         // Ensure that the contents are copied over from https://github.com/NoahBres/road-runner-quickstart/blob/advanced-examples/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/drive/advanced/SampleMecanumDriveCancelable.java
         // and https://github.com/NoahBres/road-runner-quickstart/blob/advanced-examples/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/drive/advanced/TrajectorySequenceRunnerCancelable.java
         SampleMecanumDriveCancelable drive = new SampleMecanumDriveCancelable(hardwareMap);
+        drive.setPoseEstimate(PoseStorage.currentPose);
 
         // We want to turn off velocity control for teleop
         // Velocity control per wheel is not necessary outside of motion profiled auto
@@ -73,7 +78,40 @@ public class AutoDriveCode extends LinearOpMode {
         // See AutoTransferPose.java for further details
         drive.setPoseEstimate(PoseStorage.currentPose);
 
-        waitForStart();
+        double currentGridX = drive.getPoseEstimate().getX() + (12 - (drive.getPoseEstimate().getX() % 24));
+        double currentGridY = drive.getPoseEstimate().getY() + (12 - (drive.getPoseEstimate().getY() % 24));
+        double currentGridHeading;
+        if (drive.getPoseEstimate().getHeading() % 90 <= 45) {
+            currentGridHeading = drive.getPoseEstimate().getHeading() - (drive.getPoseEstimate().getHeading() % 90);
+        } else {
+            currentGridHeading = drive.getPoseEstimate().getHeading() + (90 - (drive.getPoseEstimate().getHeading() % 90));
+        }
+
+
+        while(!isStarted()){
+            if(gamepad1.a && aButtonStatus == 0){
+                aButtonStatus = 1;
+                isRed = false;
+                sign = -1;
+            }
+            if(!gamepad1.a && aButtonStatus == 1){
+                aButtonStatus = 2;
+            }
+            if(gamepad1.a && aButtonStatus == 2){
+                aButtonStatus = 3;
+                isRed = true;
+                sign = 1;
+            }
+            if(!gamepad1.a && aButtonStatus == 3){
+                aButtonStatus = 0;
+            }
+            if(isRed){
+                telemetry.addData("Red","true");
+            }
+            if(!isRed){
+                telemetry.addData("Red","false");
+            }
+        }
 
         if (isStopRequested()) return;
 
@@ -132,6 +170,38 @@ public class AutoDriveCode extends LinearOpMode {
                         // targetAngle (by default, 45 degrees)
 
                         drive.turnAsync(Angle.normDelta(targetAngle - poseEstimate.getHeading()));
+
+                        currentMode = Mode.AUTOMATIC_CONTROL;
+                    } else if(gamepad1.dpad_up){
+                        Pose2d gridMove = new Pose2d(currentGridX,currentGridY+(sign*24),Math.toRadians(currentGridHeading));
+                        Trajectory gridUp = drive.trajectoryBuilder(poseEstimate)
+                                .lineToLinearHeading(gridMove)
+                                .build();
+                        drive.followTrajectoryAsync(gridUp);
+
+                        currentMode = Mode.AUTOMATIC_CONTROL;
+                    } else if(gamepad1.dpad_right){
+                        Pose2d gridMove = new Pose2d(currentGridX+(sign*24),currentGridY,Math.toRadians(currentGridHeading));
+                        Trajectory gridRight = drive.trajectoryBuilder(poseEstimate)
+                                .lineToLinearHeading(gridMove)
+                                .build();
+                        drive.followTrajectoryAsync(gridRight);
+
+                        currentMode = Mode.AUTOMATIC_CONTROL;
+                    } else if(gamepad1.dpad_down){
+                        Pose2d gridMove = new Pose2d(currentGridX,currentGridY-(sign*24),Math.toRadians(currentGridHeading));
+                        Trajectory gridDown = drive.trajectoryBuilder(poseEstimate)
+                                .lineToLinearHeading(gridMove)
+                                .build();
+                        drive.followTrajectoryAsync(gridDown);
+
+                        currentMode = Mode.AUTOMATIC_CONTROL;
+                    } else if(gamepad1.dpad_left){
+                        Pose2d gridMove = new Pose2d(currentGridX-(sign*24),currentGridY,Math.toRadians(currentGridHeading));
+                        Trajectory gridLeft = drive.trajectoryBuilder(poseEstimate)
+                                .lineToLinearHeading(gridMove)
+                                .build();
+                        drive.followTrajectoryAsync(gridLeft);
 
                         currentMode = Mode.AUTOMATIC_CONTROL;
                     }
