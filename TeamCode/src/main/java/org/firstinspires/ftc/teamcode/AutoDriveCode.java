@@ -78,14 +78,7 @@ public class AutoDriveCode extends LinearOpMode {
         // See AutoTransferPose.java for further details
         drive.setPoseEstimate(PoseStorage.currentPose);
 
-        double currentGridX = drive.getPoseEstimate().getX() + (12 - (drive.getPoseEstimate().getX() % 24));
-        double currentGridY = drive.getPoseEstimate().getY() + (12 - (drive.getPoseEstimate().getY() % 24));
-        double currentGridHeading;
-        if (drive.getPoseEstimate().getHeading() % 90 <= 45) {
-            currentGridHeading = drive.getPoseEstimate().getHeading() - (drive.getPoseEstimate().getHeading() % 90);
-        } else {
-            currentGridHeading = drive.getPoseEstimate().getHeading() + (90 - (drive.getPoseEstimate().getHeading() % 90));
-        }
+
 
 
         while(!isStarted()){
@@ -111,6 +104,7 @@ public class AutoDriveCode extends LinearOpMode {
             if(!isRed){
                 telemetry.addData("Red","false");
             }
+            telemetry.update();
         }
 
         if (isStopRequested()) return;
@@ -128,6 +122,15 @@ public class AutoDriveCode extends LinearOpMode {
             telemetry.addData("y", poseEstimate.getY());
             telemetry.addData("heading", poseEstimate.getHeading());
             telemetry.update();
+
+            double currentGridX = drive.getPoseEstimate().getX() + (12 - (drive.getPoseEstimate().getX() % 24));
+            double currentGridY = drive.getPoseEstimate().getY() + (12 - (drive.getPoseEstimate().getY() % 24));
+            double currentGridHeading;
+            if (drive.getPoseEstimate().getHeading() % 90 <= 45) {
+                currentGridHeading = drive.getPoseEstimate().getHeading() - (drive.getPoseEstimate().getHeading() % 90);
+            } else {
+                currentGridHeading = drive.getPoseEstimate().getHeading() + (90 - (drive.getPoseEstimate().getHeading() % 90));
+            }
 
             // We follow different logic based on whether we are in manual driver control or switch
             // control to the automatic mode
