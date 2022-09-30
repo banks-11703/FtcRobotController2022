@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 
-@TeleOp(group = "advanced")
+@TeleOp
 public class DriveCode extends LinearOpMode {
     boolean autoHome;
     boolean turntoforward = false;
@@ -20,7 +20,7 @@ public class DriveCode extends LinearOpMode {
     boolean lastwasleft = false;
     boolean turningtoleft = false;
     boolean turningtoright = false;
-
+    public static double ServoTesting = 0;
     @Override
     public void runOpMode() throws InterruptedException {
         // Initialize SampleMecanumDrive
@@ -48,17 +48,17 @@ public class DriveCode extends LinearOpMode {
             );
             // && drive.lift.getCurrentPosition() >= -5600
             //&& drive.lift.getCurrentPosition() <= -100
-        if (gamepad1.a && drive.lift.getCurrentPosition() > -5600){
+        if (gamepad1.a){
             drive.lift.setPower(-1);
-        }else if(gamepad1.b && drive.lift.getCurrentPosition() < -100 ){
+        }else if(gamepad1.b){
                 drive.lift.setPower(1);
         }else{
             drive.lift.setPower(0);
         }
         if (gamepad1.y){
-            drive.claw.setPosition(45);
+            drive.claw.setPosition(1);
         }else if (gamepad1.x){
-            drive.claw.setPosition(90);
+            drive.claw.setPosition(0);
         }
         if (gamepad1.dpad_down && ((yPos - drive.arm.getPosition()) <= 0.02)) {
                 drive.arm.setPosition(yPos - 0.003);
