@@ -92,12 +92,7 @@ public class CameraTesting extends LinearOpMode
         /*
          * An enum to define the Sleeve Orientation
          */
-        public enum sleeveDirection
-        {
-            LEFT,
-            CENTER,
-            RIGHT
-        }
+        private volatile int position = 0;
 
         /*
          * Some color constants
