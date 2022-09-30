@@ -329,7 +329,7 @@ public class CameraTesting extends LinearOpMode
         /*
          * Call this from the OpMode thread to obtain the latest analysis
          */
-        public sleeveDirection getAnalysis()
+        public int getAnalysis()
         {
             return position;
         }
