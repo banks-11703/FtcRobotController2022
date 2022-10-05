@@ -56,9 +56,9 @@ public class DriveCode extends LinearOpMode {
             drive.lift.setPower(0);
         }
         if (gamepad1.y){
-            drive.claw.setPosition(1);
+            drive.claw.setPosition(7);//0.225
         }else if (gamepad1.x){
-            drive.claw.setPosition(0);
+            drive.claw.setPosition(0);//0.150
         }
         if (gamepad1.dpad_down && ((yPos - drive.arm.getPosition()) <= 0.02)) {
                 drive.arm.setPosition(yPos - 0.003);
@@ -117,7 +117,7 @@ public class DriveCode extends LinearOpMode {
                 lastwasleft = false;
                 lastwasforward = true;
             } else{
-                drive.turntable.setPower(gamepad2.left_trigger - gamepad2.right_trigger);
+                drive.turntable.setPower((gamepad1.left_trigger - gamepad1.right_trigger)/5);
             }
             // Update everything. Odometry. Etc.
             drive.update();

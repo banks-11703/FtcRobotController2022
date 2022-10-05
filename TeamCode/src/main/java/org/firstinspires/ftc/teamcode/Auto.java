@@ -12,12 +12,9 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 
 @Autonomous
 public class Auto extends CameraTesting {
-    boolean button_b_is_pressed = gamepad1.b;
-    boolean button_b_was_pressed;
-    boolean button_a_is_pressed = gamepad1.a;
-    boolean button_a_was_pressed;
-    boolean button_x_is_pressed = gamepad1.x;
-    boolean button_x_was_pressed;
+    boolean button_b_was_pressed = false;
+    boolean button_a_was_pressed = false;
+    boolean button_x_was_pressed = false;
     int team = 0;// 0 = red 1 = blue    which team we are on
     int side = 0;// 0 = left 1 = right  are we left or right
     int mode = 0;//0 = nothing          are we just parking or otherwise?
@@ -73,25 +70,25 @@ public class Auto extends CameraTesting {
             }
         });
         while (!opModeIsActive()) {
-            while(!isStarted()){
 
 
-                if (button_b_is_pressed && !button_b_was_pressed) {
+
+                if (gamepad1.b && !button_b_was_pressed) {
                     team++;
                     button_b_was_pressed = true;
-                } else if (!button_b_is_pressed && button_b_was_pressed) {
+                } else if (!gamepad1.b && button_b_was_pressed) {
                     button_b_was_pressed = false;
                 }
-                if (button_a_is_pressed && !button_a_was_pressed) {
+                if (gamepad1.a && !button_a_was_pressed) {
                     side++;
                     button_a_was_pressed = true;
-                } else if (!button_a_is_pressed && button_a_was_pressed) {
+                } else if (!gamepad1.a && button_a_was_pressed) {
                     button_a_was_pressed = false;
                 }
-                if (button_x_is_pressed && !button_x_was_pressed) {
+                if (gamepad1.x && !button_x_was_pressed) {
                     mode++;
                     button_x_was_pressed = true;
-                } else if (!button_x_is_pressed && button_x_was_pressed) {
+                } else if (!gamepad1.x && button_x_was_pressed) {
                     button_x_was_pressed = false;
                 }
                 switch (Team()){
@@ -184,11 +181,12 @@ public class Auto extends CameraTesting {
 
                 autoParkPosition = pipeline.getAnalysis();
 
-            }
 
-            webcam.stopStreaming();
+
+
             if (isStopRequested()) return;
-
+            autoParkPosition = pipeline.getAnalysis();
+            webcam.stopStreaming();
             telemetry.addData("Analysis", pipeline.getAnalysis());
             sleep(100);
             telemetry.update();
@@ -279,41 +277,66 @@ public class Auto extends CameraTesting {
                     }
                     break;
             }*/
-            Trajectory myTrajectory;
-            switch(autoParkPosition){
-                case 1:
-                    myTrajectory = drive.trajectoryBuilder(new Pose2d())
-                            .strafeRight(24)
-                            .forward(50.6)
-                            .strafeLeft(24)
-                            .build();
-                    waitForStart();
-                    if(isStopRequested()) return;
-                    drive.followTrajectory(myTrajectory);
-                    break;
-                case 2:
-                    myTrajectory = drive.trajectoryBuilder(new Pose2d())
-                            .strafeLeft(24)
-                            .forward(26.6)
-                            .build();
-                    waitForStart();
-                    if(isStopRequested()) return;
-                    drive.followTrajectory(myTrajectory);
-                    break;
-                default:
-                    myTrajectory = drive.trajectoryBuilder(new Pose2d())
-                            .strafeRight(24)
-                            .forward(26.6)
-                            .build();
-                    waitForStart();
-                    if(isStopRequested()) return;
-                    drive.followTrajectory(myTrajectory);
-                    break;
 
-            }
 
             // Transfer the current pose to PoseStorage so we can use it in TeleOp
             PoseStorage.currentPose = drive.getPoseEstimate();
+        }
+        Trajectory myTrajectory = drive.trajectoryBuilder(new Pose2d()).build();
+        Trajectory myTrajectory2 = drive.trajectoryBuilder(new Pose2d()).build();
+        Trajectory myTrajectory3 = drive.trajectoryBuilder(new Pose2d()).build();
+        int numOfTrajs = 1;
+        switch(autoParkPosition){
+            case 1:
+                numOfTrajs = 3;
+                myTrajectory = drive.trajectoryBuilder(new Pose2d())
+                        .strafeRight(24)
+                        .build();
+                myTrajectory2 = drive.trajectoryBuilder(new Pose2d())
+                        .forward(50.6)
+                        .build();
+                myTrajectory3 = drive.trajectoryBuilder(new Pose2d())
+                        .strafeLeft(24)
+                        .build();
+                waitForStart();
+                if(isStopRequested()) return;
+                drive.followTrajectory(myTrajectory);
+                break;
+            case 2:
+                numOfTrajs = 2;
+                myTrajectory = drive.trajectoryBuilder(new Pose2d())
+                        .strafeLeft(24)
+                        .build();
+                myTrajectory2 = drive.trajectoryBuilder(new Pose2d())
+                        .forward(26.6)
+                        .build();
+                waitForStart();
+                if(isStopRequested()) return;
+                drive.followTrajectory(myTrajectory);
+                break;
+            default:
+                numOfTrajs = 2;
+                myTrajectory = drive.trajectoryBuilder(new Pose2d())
+                        .strafeRight(24)
+                        .build();
+                myTrajectory2 = drive.trajectoryBuilder(new Pose2d())
+                        .forward(26.6)
+                        .build();
+                waitForStart();
+                if(isStopRequested()) return;
+                if(numOfTrajs == 1) {
+                    drive.followTrajectory(myTrajectory);
+                } else if(numOfTrajs == 2){
+                    drive.followTrajectory(myTrajectory);
+                    drive.followTrajectory(myTrajectory2);
+                }else if(numOfTrajs == 3){
+                    drive.followTrajectory(myTrajectory);
+                    drive.followTrajectory(myTrajectory2);
+                    drive.followTrajectory(myTrajectory3);
+                }
+
+                break;
+
         }
     }
 
