@@ -23,7 +23,6 @@ public class AutoTemp extends CameraTesting {
     int mode = 0;//0 = nothing          are we just parking or otherwise?
     int autoParkPosition = 0;
 
-
     public int Team() {
         return team % 2;
     }
@@ -35,8 +34,6 @@ public class AutoTemp extends CameraTesting {
     public int Mode() {
         return mode % 3;
     }
-
-
 
     @Override
     public void runOpMode() {
@@ -285,7 +282,7 @@ public class AutoTemp extends CameraTesting {
             Trajectory myTrajectory;
             switch(autoParkPosition){
                 case 1:
-                    myTrajectory = drive.trajectoryBuilder(new Pose2d())
+                    myTrajectory = drive.trajectoryBuilder(new Pose2d(calculateStartingX(), calculateStartingY(), calculateStartingRotation()))
                             .strafeRight(24)
                             .forward(50.6)
                             .strafeLeft(24)
@@ -295,7 +292,7 @@ public class AutoTemp extends CameraTesting {
                     drive.followTrajectory(myTrajectory);
                     break;
                 case 2:
-                    myTrajectory = drive.trajectoryBuilder(new Pose2d())
+                    myTrajectory = drive.trajectoryBuilder(new Pose2d(calculateStartingX(), calculateStartingY(), calculateStartingRotation()))
                             .strafeLeft(24)
                             .forward(26.6)
                             .build();
@@ -304,7 +301,7 @@ public class AutoTemp extends CameraTesting {
                     drive.followTrajectory(myTrajectory);
                     break;
                 default:
-                    myTrajectory = drive.trajectoryBuilder(new Pose2d())
+                    myTrajectory = drive.trajectoryBuilder(new Pose2d(calculateStartingX(), calculateStartingY(), calculateStartingRotation()))
                             .strafeRight(24)
                             .forward(26.6)
                             .build();

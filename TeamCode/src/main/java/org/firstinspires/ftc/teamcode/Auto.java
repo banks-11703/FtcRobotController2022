@@ -282,7 +282,7 @@ public class Auto extends CameraTesting {
             Trajectory myTrajectory;
             switch(autoParkPosition){
                 case 1:
-                    myTrajectory = drive.trajectoryBuilder(new Pose2d())
+                    myTrajectory = drive.trajectoryBuilder(new Pose2d(calculateStartingX(), calculateStartingY(), calculateStartingRotation()))
                             .strafeRight(24)
                             .forward(50.6)
                             .strafeLeft(24)
@@ -292,7 +292,7 @@ public class Auto extends CameraTesting {
                     drive.followTrajectory(myTrajectory);
                     break;
                 case 2:
-                    myTrajectory = drive.trajectoryBuilder(new Pose2d())
+                    myTrajectory = drive.trajectoryBuilder(new Pose2d(calculateStartingX(), calculateStartingY(), calculateStartingRotation()))
                             .strafeLeft(24)
                             .forward(26.6)
                             .build();
@@ -301,7 +301,7 @@ public class Auto extends CameraTesting {
                     drive.followTrajectory(myTrajectory);
                     break;
                 default:
-                    myTrajectory = drive.trajectoryBuilder(new Pose2d())
+                    myTrajectory = drive.trajectoryBuilder(new Pose2d(calculateStartingX(), calculateStartingY(), calculateStartingRotation()))
                             .strafeRight(24)
                             .forward(26.6)
                             .build();
