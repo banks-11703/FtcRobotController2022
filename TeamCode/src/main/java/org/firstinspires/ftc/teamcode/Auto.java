@@ -19,7 +19,7 @@ public class Auto extends CameraTesting {
     int side = 0;// 0 = left 1 = right  are we left or right
     int mode = 0;//0 = nothing          are we just parking or otherwise?
     int autoParkPosition = 0;
-
+    int numOfTrajs = 1;
     public int Team() {
         return team % 2;
     }
@@ -185,11 +185,13 @@ public class Auto extends CameraTesting {
 
 
             if (isStopRequested()) return;
+            drive.setPoseEstimate(StartingPos());
             autoParkPosition = pipeline.getAnalysis();
             webcam.stopStreaming();
             telemetry.addData("Analysis", pipeline.getAnalysis());
             sleep(100);
             telemetry.update();
+
             /*
             switch (Team()){
                 case (0):
@@ -280,12 +282,11 @@ public class Auto extends CameraTesting {
 
 
             // Transfer the current pose to PoseStorage so we can use it in TeleOp
-            PoseStorage.currentPose = drive.getPoseEstimate();
         }
         Trajectory myTrajectory = drive.trajectoryBuilder(new Pose2d()).build();
         Trajectory myTrajectory2 = drive.trajectoryBuilder(new Pose2d()).build();
         Trajectory myTrajectory3 = drive.trajectoryBuilder(new Pose2d()).build();
-        int numOfTrajs = 1;
+
         switch(autoParkPosition){
             case 1:
                 numOfTrajs = 3;
@@ -299,8 +300,23 @@ public class Auto extends CameraTesting {
                         .strafeLeft(24)
                         .build();
                 waitForStart();
-                if(isStopRequested()) return;
-                drive.followTrajectory(myTrajectory);
+                if(numOfTrajs == 1) {
+                    drive.followTrajectory(myTrajectory);
+                    PoseStorage.currentPose = drive.getPoseEstimate();
+                } else if(numOfTrajs == 2){
+                    drive.followTrajectory(myTrajectory);
+                    PoseStorage.currentPose = drive.getPoseEstimate();
+                    drive.followTrajectory(myTrajectory2);
+                    PoseStorage.currentPose = drive.getPoseEstimate();
+                }else if(numOfTrajs == 3){
+                    drive.followTrajectory(myTrajectory);
+                    PoseStorage.currentPose = drive.getPoseEstimate();
+                    drive.followTrajectory(myTrajectory2);
+                    PoseStorage.currentPose = drive.getPoseEstimate();
+                    drive.followTrajectory(myTrajectory3);
+                    PoseStorage.currentPose = drive.getPoseEstimate();
+                }
+                if(isStopRequested())return;
                 break;
             case 2:
                 numOfTrajs = 2;
@@ -311,8 +327,30 @@ public class Auto extends CameraTesting {
                         .forward(26.6)
                         .build();
                 waitForStart();
+                if(numOfTrajs == 1) {
+                    drive.followTrajectory(myTrajectory);
+                    PoseStorage.currentPose = drive.getPoseEstimate();
+
+                } else if(numOfTrajs == 2){
+                    drive.followTrajectory(myTrajectory);
+                    PoseStorage.currentPose = drive.getPoseEstimate();
+
+                    drive.followTrajectory(myTrajectory2);
+                    PoseStorage.currentPose = drive.getPoseEstimate();
+
+                }else if(numOfTrajs == 3){
+                    drive.followTrajectory(myTrajectory);
+                    PoseStorage.currentPose = drive.getPoseEstimate();
+
+                    drive.followTrajectory(myTrajectory2);
+                    PoseStorage.currentPose = drive.getPoseEstimate();
+
+                    drive.followTrajectory(myTrajectory3);
+                    PoseStorage.currentPose = drive.getPoseEstimate();
+
+                }
                 if(isStopRequested()) return;
-                drive.followTrajectory(myTrajectory);
+
                 break;
             default:
                 numOfTrajs = 2;
@@ -326,51 +364,48 @@ public class Auto extends CameraTesting {
                 if(isStopRequested()) return;
                 if(numOfTrajs == 1) {
                     drive.followTrajectory(myTrajectory);
+                    PoseStorage.currentPose = drive.getPoseEstimate();
                 } else if(numOfTrajs == 2){
                     drive.followTrajectory(myTrajectory);
+                    PoseStorage.currentPose = drive.getPoseEstimate();
                     drive.followTrajectory(myTrajectory2);
+                    PoseStorage.currentPose = drive.getPoseEstimate();
                 }else if(numOfTrajs == 3){
                     drive.followTrajectory(myTrajectory);
+                    PoseStorage.currentPose = drive.getPoseEstimate();
                     drive.followTrajectory(myTrajectory2);
+                    PoseStorage.currentPose = drive.getPoseEstimate();
                     drive.followTrajectory(myTrajectory3);
+                    PoseStorage.currentPose = drive.getPoseEstimate();
                 }
-
                 break;
 
         }
     }
 
-    public double calculateStartingX(){
-        if(team == 0){
-            if(side == 1){
-                return 36;
-            }else{
-                return -36;
+    public Pose2d StartingPos() {
+        double x, y, a;
+        if (team == 0) {
+            y = -62.6;
+            a = 90;
+            if (side == 1) {
+                x = 36;
+            } else {
+                x = -36;
+
             }
-        }else{
-            if(side == 1){
-                return -36;
-            }else{
-                return 36;
+        } else {
+            y = 62.6;
+            a = -90;
+            if (side == 1) {
+                x = 36;
+
+            } else {
+                x = -36;
             }
         }
 
-
-    }
-    public double calculateStartingY(){
-        if(team == 0){
-            return -62.6;
-        }else{
-            return 62.6;
-        }
-    }
-    public double calculateStartingRotation(){
-        if(team == 0){
-            return Math.toRadians(90);
-        }else{
-            return Math.toRadians(-90);
-        }
-
+        return new Pose2d(x, y, a);
     }
 
 }
