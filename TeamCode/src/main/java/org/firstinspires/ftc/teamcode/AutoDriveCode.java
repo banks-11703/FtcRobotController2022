@@ -39,9 +39,6 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDriveCancelable;
  */
 @TeleOp
 public class AutoDriveCode extends LinearOpMode {
-    boolean isRed = true;
-    int sign = 1;
-    int aButtonStatus = 0;
 
     // Define 2 states, drive control or automatic control
     enum Mode {
@@ -68,7 +65,10 @@ public class AutoDriveCode extends LinearOpMode {
         // Ensure that the contents are copied over from https://github.com/NoahBres/road-runner-quickstart/blob/advanced-examples/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/drive/advanced/SampleMecanumDriveCancelable.java
         // and https://github.com/NoahBres/road-runner-quickstart/blob/advanced-examples/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/drive/advanced/TrajectorySequenceRunnerCancelable.java
         SampleMecanumDriveCancelable drive = new SampleMecanumDriveCancelable(hardwareMap);
-        drive.setPoseEstimate(PoseStorage.currentPose);
+        int sign = 1;
+        int isRed = 0;
+        int aButtonStatus = 0;
+        Pose2d startPos = new Pose2d(12,12,Math.toRadians(90));
 
         // We want to turn off velocity control for teleop
         // Velocity control per wheel is not necessary outside of motion profiled auto
@@ -82,27 +82,45 @@ public class AutoDriveCode extends LinearOpMode {
         while(!isStarted()){
             if(gamepad1.a && aButtonStatus == 0){
                 aButtonStatus = 1;
-                isRed = false;
-                sign = -1;
+                isRed = 1;
+                sign = 1;
             }
             if(!gamepad1.a && aButtonStatus == 1){
                 aButtonStatus = 2;
             }
             if(gamepad1.a && aButtonStatus == 2){
                 aButtonStatus = 3;
-                isRed = true;
-                sign = 1;
+                isRed = 2;
+                sign = -1;
             }
             if(!gamepad1.a && aButtonStatus == 3){
+                aButtonStatus = 4;
+            }
+            if(gamepad1.a && aButtonStatus == 4){
+                aButtonStatus = 5;
+                isRed = 0;
+            }
+            if(!gamepad1.a && aButtonStatus == 5){
                 aButtonStatus = 0;
             }
-            if(isRed){
-                telemetry.addData("Red","true");
+            if(isRed == 0){
+                telemetry.addData("State","Match Play");
             }
-            if(!isRed){
-                telemetry.addData("Red","false");
+            if(isRed == 1){
+                telemetry.addData("State","Testing Red");
+            }
+            if(isRed == 2){
+                telemetry.addData("State","Testing Blue");
             }
             telemetry.update();
+        }
+        if(PoseStorage.team == 1 && isRed == 0) {
+            sign = -1;
+        }
+        if (isRed == 0) {
+            drive.setPoseEstimate(PoseStorage.currentPose);
+        } else {
+            drive.setPoseEstimate(startPos);
         }
 
         if (isStopRequested()) return;

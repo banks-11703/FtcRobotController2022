@@ -72,7 +72,6 @@ public class Auto extends CameraTesting {
         while (!opModeIsActive()) {
 
 
-
                 if (gamepad1.b && !button_b_was_pressed) {
                     team++;
                     button_b_was_pressed = true;
@@ -380,7 +379,9 @@ public class Auto extends CameraTesting {
                 }
                 break;
 
+
         }
+        PoseStorage.team = team % 2;
     }
 
     public Pose2d movement1 = new Pose2d(12,60,Math.toRadians(90));
