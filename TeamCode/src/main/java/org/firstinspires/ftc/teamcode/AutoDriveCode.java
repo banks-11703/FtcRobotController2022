@@ -167,40 +167,48 @@ public class AutoDriveCode extends LinearOpMode {
 
                         currentMode = Mode.AUTOMATIC_CONTROL;
                     } else if (gamepad1.y) {
-                        Pose2d gridMove = new Pose2d(currentGridX,currentGridY,Math.toRadians(currentGridHeading));
+                        Pose2d gridAlign = new Pose2d(currentGridX,currentGridY,Math.toRadians(currentGridHeading));
                         Trajectory gridUp = drive.trajectoryBuilder(poseEstimate)
-                                .lineToLinearHeading(gridMove)
+                                .lineToLinearHeading(gridAlign)
                                 .build();
                         drive.followTrajectoryAsync(gridUp);
 
                         currentMode = Mode.AUTOMATIC_CONTROL;
                     } else if(gamepad1.dpad_up){
+                        Pose2d gridAlign = new Pose2d(currentGridX,currentGridY,Math.toRadians(currentGridHeading));
                         Pose2d gridMove = new Pose2d(currentGridX,currentGridY+(sign*24),Math.toRadians(currentGridHeading));
                         Trajectory gridUp = drive.trajectoryBuilder(poseEstimate)
+                                .lineToLinearHeading(gridAlign)
                                 .lineToLinearHeading(gridMove)
                                 .build();
                         drive.followTrajectoryAsync(gridUp);
 
                         currentMode = Mode.AUTOMATIC_CONTROL;
                     } else if(gamepad1.dpad_right){
+                        Pose2d gridAlign = new Pose2d(currentGridX,currentGridY,Math.toRadians(currentGridHeading));
                         Pose2d gridMove = new Pose2d(currentGridX+(sign*24),currentGridY,Math.toRadians(currentGridHeading));
                         Trajectory gridRight = drive.trajectoryBuilder(poseEstimate)
+                                .lineToLinearHeading(gridAlign)
                                 .lineToLinearHeading(gridMove)
                                 .build();
                         drive.followTrajectoryAsync(gridRight);
 
                         currentMode = Mode.AUTOMATIC_CONTROL;
                     } else if(gamepad1.dpad_down){
+                        Pose2d gridAlign = new Pose2d(currentGridX,currentGridY,Math.toRadians(currentGridHeading));
                         Pose2d gridMove = new Pose2d(currentGridX,currentGridY-(sign*24),Math.toRadians(currentGridHeading));
                         Trajectory gridDown = drive.trajectoryBuilder(poseEstimate)
+                                .lineToLinearHeading(gridAlign)
                                 .lineToLinearHeading(gridMove)
                                 .build();
                         drive.followTrajectoryAsync(gridDown);
 
                         currentMode = Mode.AUTOMATIC_CONTROL;
                     } else if(gamepad1.dpad_left){
+                        Pose2d gridAlign = new Pose2d(currentGridX,currentGridY,Math.toRadians(currentGridHeading));
                         Pose2d gridMove = new Pose2d(currentGridX-(sign*24),currentGridY,Math.toRadians(currentGridHeading));
                         Trajectory gridLeft = drive.trajectoryBuilder(poseEstimate)
+                                .lineToLinearHeading(gridAlign)
                                 .lineToLinearHeading(gridMove)
                                 .build();
                         drive.followTrajectoryAsync(gridLeft);

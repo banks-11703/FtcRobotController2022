@@ -383,10 +383,18 @@ public class Auto extends CameraTesting {
         }
     }
 
+    public Pose2d movement1 = new Pose2d(12,60,Math.toRadians(90));
+    public Pose2d movement2 = new Pose2d(12,12,Math.toRadians(180));
+    public Pose2d movement3 = new Pose2d(24,12,Math.toRadians(180));    //Score
+    public Pose2d movement4 = new Pose2d(62,12,Math.toRadians(180));    //Intake cone stack
+    public Pose2d Park1 = new Pose2d(60,12,Math.toRadians(90));
+    public Pose2d Park2 = new Pose2d(36,12,Math.toRadians(90));
+    public Pose2d Park3 = new Pose2d(12,12,Math.toRadians(90));
+
     public Pose2d StartingPos() {
         double x, y, a;
         if (team == 0) {
-            y = -62.6;
+            y = -63.75;
             a = 90;
             if (side == 1) {
                 x = 36;
@@ -395,7 +403,7 @@ public class Auto extends CameraTesting {
 
             }
         } else {
-            y = 62.6;
+            y = 63.75;
             a = -90;
             if (side == 1) {
                 x = 36;
@@ -405,7 +413,7 @@ public class Auto extends CameraTesting {
             }
         }
 
-        return new Pose2d(x, y, a);
+        return new Pose2d(x, y, Math.toRadians(a));
     }
 
 }
