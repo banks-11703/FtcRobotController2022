@@ -281,7 +281,64 @@ public class Auto extends CameraTesting {
 
 
             // Transfer the current pose to PoseStorage so we can use it in TeleOp
+            Pose2d movement1 = new Pose2d(12,60,Math.toRadians(90));
+            Pose2d movement2 = new Pose2d(12,12,Math.toRadians(180));
+            Pose2d scorePos = new Pose2d(24,12,Math.toRadians(180));    //Score Position
+            Pose2d intakeStackPos = new Pose2d(62,12,Math.toRadians(180));    //Intake cone stack Position
+            Pose2d park1 = new Pose2d(60,12,Math.toRadians(90));
+            Pose2d park2 = new Pose2d(36,12,Math.toRadians(90));
+            Pose2d park3 = new Pose2d(12,12,Math.toRadians(90));
+            Trajectory Movement1 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                    .lineToLinearHeading(movement1)
+                    .build();
+            Trajectory Movement2 = drive.trajectoryBuilder(Movement1.end())
+                    .lineToLinearHeading(movement2)
+                    .build();
+            Trajectory ScorePos1 = drive.trajectoryBuilder(Movement2.end())
+                    .lineToLinearHeading(scorePos)
+                    .build();
+            Trajectory IntakeStackPos1 = drive.trajectoryBuilder(ScorePos1.end())
+                    .lineToLinearHeading(intakeStackPos)
+                    .build();
+            Trajectory ScorePos2 = drive.trajectoryBuilder(IntakeStackPos1.end())
+                    .lineToLinearHeading(scorePos)
+                    .build();
+            Trajectory IntakeStackPos2 = drive.trajectoryBuilder(ScorePos2.end())
+                    .lineToLinearHeading(intakeStackPos)
+                    .build();
+            Trajectory ScorePos3 = drive.trajectoryBuilder(IntakeStackPos2.end())
+                    .lineToLinearHeading(scorePos)
+                    .build();
+            Trajectory IntakeStackPos3 = drive.trajectoryBuilder(ScorePos3.end())
+                    .lineToLinearHeading(intakeStackPos)
+                    .build();
+            Trajectory ScorePos4 = drive.trajectoryBuilder(IntakeStackPos3.end())
+                    .lineToLinearHeading(scorePos)
+                    .build();
+            Trajectory IntakeStackPos4 = drive.trajectoryBuilder(ScorePos4.end())
+                    .lineToLinearHeading(intakeStackPos)
+                    .build();
+            Trajectory ScorePos5 = drive.trajectoryBuilder(IntakeStackPos4.end())
+                    .lineToLinearHeading(scorePos)
+                    .build();
+            Trajectory IntakeStackPos5 = drive.trajectoryBuilder(ScorePos5.end())
+                    .lineToLinearHeading(intakeStackPos)
+                    .build();
+            Trajectory ScorePos6 = drive.trajectoryBuilder(IntakeStackPos5.end())
+                    .lineToLinearHeading(scorePos)
+                    .build();
+            Trajectory Park1 = drive.trajectoryBuilder(ScorePos6.end())
+                    .lineToLinearHeading(park1)
+                    .build();
+            Trajectory Park2 = drive.trajectoryBuilder(ScorePos6.end())
+                    .lineToLinearHeading(park2)
+                    .build();
+            Trajectory Park3 = drive.trajectoryBuilder(ScorePos6.end())
+                    .lineToLinearHeading(park3)
+                    .build();
         }
+
+
         Trajectory myTrajectory = drive.trajectoryBuilder(new Pose2d()).build();
         Trajectory myTrajectory2 = drive.trajectoryBuilder(new Pose2d()).build();
         Trajectory myTrajectory3 = drive.trajectoryBuilder(new Pose2d()).build();
@@ -289,7 +346,7 @@ public class Auto extends CameraTesting {
         switch(autoParkPosition){
             case 1:
                 numOfTrajs = 3;
-                myTrajectory = drive.trajectoryBuilder(new Pose2d())
+                myTrajectory = drive.trajectoryBuilder(drive.getPoseEstimate())
                         .strafeRight(24)
                         .build();
                 myTrajectory2 = drive.trajectoryBuilder(new Pose2d())
@@ -384,13 +441,7 @@ public class Auto extends CameraTesting {
         PoseStorage.team = team % 2;
     }
 
-    public Pose2d movement1 = new Pose2d(12,60,Math.toRadians(90));
-    public Pose2d movement2 = new Pose2d(12,12,Math.toRadians(180));
-    public Pose2d movement3 = new Pose2d(24,12,Math.toRadians(180));    //Score
-    public Pose2d movement4 = new Pose2d(62,12,Math.toRadians(180));    //Intake cone stack
-    public Pose2d Park1 = new Pose2d(60,12,Math.toRadians(90));
-    public Pose2d Park2 = new Pose2d(36,12,Math.toRadians(90));
-    public Pose2d Park3 = new Pose2d(12,12,Math.toRadians(90));
+
 
     public Pose2d StartingPos() {
         double x, y, a;
