@@ -117,7 +117,7 @@ public class DriveCode extends LinearOpMode {
                 lastwasleft = false;
                 lastwasforward = true;
             } else{
-                drive.turntable.setPower((gamepad1.left_trigger - gamepad1.right_trigger)/5);
+                drive.turntable.setPower((gamepad1.left_trigger - gamepad1.right_trigger));
             }
             // Update everything. Odometry. Etc.
             drive.update();
