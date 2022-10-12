@@ -17,9 +17,12 @@ public class Auto extends CameraTesting {
     boolean button_x_was_pressed = false;
     int team = 0;// 0 = red 1 = blue    which team we are on
     int side = 0;// 0 = left 1 = right  are we left or right
-    int mode = 0;//0 = nothing          are we just parking or otherwise?
+    int Mode = 0;//0 = nothing          are we just parking or otherwise?
     int autoParkPosition = 0;
     int numOfTrajs = 1;
+    int yMod = 1;
+    int xMod = 0;
+    int headingMod = 0;
     public int Team() {
         return team % 2;
     }
@@ -29,7 +32,7 @@ public class Auto extends CameraTesting {
     }
 
     public int Mode() {
-        return mode % 3;
+        return Mode % 3;
     }
 
     @Override
@@ -69,6 +72,40 @@ public class Auto extends CameraTesting {
                  */
             }
         });
+
+        Trajectory Movement1 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                .build();
+        Trajectory Movement2 = drive.trajectoryBuilder(Movement1.end())
+                .build();
+        Trajectory ScorePos1 = drive.trajectoryBuilder(Movement2.end())
+                .build();
+        Trajectory IntakeStackPos1 = drive.trajectoryBuilder(ScorePos1.end())
+                .build();
+        Trajectory ScorePos2 = drive.trajectoryBuilder(IntakeStackPos1.end())
+                .build();
+        Trajectory IntakeStackPos2 = drive.trajectoryBuilder(ScorePos2.end())
+                .build();
+        Trajectory ScorePos3 = drive.trajectoryBuilder(IntakeStackPos2.end())
+                .build();
+        Trajectory IntakeStackPos3 = drive.trajectoryBuilder(ScorePos3.end())
+                .build();
+        Trajectory ScorePos4 = drive.trajectoryBuilder(IntakeStackPos3.end())
+                .build();
+        Trajectory IntakeStackPos4 = drive.trajectoryBuilder(ScorePos4.end())
+                .build();
+        Trajectory ScorePos5 = drive.trajectoryBuilder(IntakeStackPos4.end())
+                .build();
+        Trajectory IntakeStackPos5 = drive.trajectoryBuilder(ScorePos5.end())
+                .build();
+        Trajectory ScorePos6 = drive.trajectoryBuilder(IntakeStackPos5.end())
+                .build();
+        Trajectory Park1 = drive.trajectoryBuilder(ScorePos6.end())
+                .build();
+        Trajectory Park2 = drive.trajectoryBuilder(ScorePos6.end())
+                .build();
+        Trajectory Park3 = drive.trajectoryBuilder(ScorePos6.end())
+                .build();
+
         while (!opModeIsActive()) {
 
 
@@ -85,7 +122,7 @@ public class Auto extends CameraTesting {
                     button_a_was_pressed = false;
                 }
                 if (gamepad1.x && !button_x_was_pressed) {
-                    mode++;
+                    Mode++;
                     button_x_was_pressed = true;
                 } else if (!gamepad1.x && button_x_was_pressed) {
                     button_x_was_pressed = false;
@@ -279,165 +316,142 @@ public class Auto extends CameraTesting {
                     break;
             }*/
 
+            if (team % 2 == 1) {
+                yMod = -1;
+            }else {
+                yMod = 1;
+            }
+            if (team % 2 == 0 && side % 2 == 0 || team % 2 == 1 && side % 2 == 1) {
+                xMod = 0;
+                headingMod = 0;
+            }else if (team % 2 == 0 && side % 2 == 1 || team % 2 == 1 && side % 2 == 0) {
+                xMod = 72;
+                headingMod = 180;
+            }
 
-            // Transfer the current pose to PoseStorage so we can use it in TeleOp
-            Pose2d movement1 = new Pose2d(12,60,Math.toRadians(90));
-            Pose2d movement2 = new Pose2d(12,12,Math.toRadians(180));
-            Pose2d scorePos = new Pose2d(24,12,Math.toRadians(180));    //Score Position
-            Pose2d intakeStackPos = new Pose2d(62,12,Math.toRadians(180));    //Intake cone stack Position
-            Pose2d park1 = new Pose2d(60,12,Math.toRadians(90));
-            Pose2d park2 = new Pose2d(36,12,Math.toRadians(90));
-            Pose2d park3 = new Pose2d(12,12,Math.toRadians(90));
-            Trajectory Movement1 = drive.trajectoryBuilder(drive.getPoseEstimate())
+            Pose2d movement1 = new Pose2d(12+xMod,60*yMod,Math.toRadians(90+headingMod));
+            Pose2d movement2 = new Pose2d(12+xMod,12*yMod,Math.toRadians(180+headingMod));
+            Pose2d scorePos = new Pose2d(24+xMod,12*yMod,Math.toRadians(180+headingMod));    //Score Position
+            Pose2d intakeStackPos = new Pose2d(62+xMod,12*yMod,Math.toRadians(180+headingMod));    //Intake cone stack Position
+            Pose2d park1 = new Pose2d(60+xMod,12*yMod,Math.toRadians(90+headingMod));
+            Pose2d park2 = new Pose2d(36+xMod,12*yMod,Math.toRadians(90+headingMod));
+            Pose2d park3 = new Pose2d(12+xMod,12*yMod,Math.toRadians(90+headingMod));
+            Movement1 = drive.trajectoryBuilder(drive.getPoseEstimate())
                     .lineToLinearHeading(movement1)
                     .build();
-            Trajectory Movement2 = drive.trajectoryBuilder(Movement1.end())
+            Movement2 = drive.trajectoryBuilder(Movement1.end())
                     .lineToLinearHeading(movement2)
                     .build();
-            Trajectory ScorePos1 = drive.trajectoryBuilder(Movement2.end())
+            ScorePos1 = drive.trajectoryBuilder(Movement2.end())
                     .lineToLinearHeading(scorePos)
                     .build();
-            Trajectory IntakeStackPos1 = drive.trajectoryBuilder(ScorePos1.end())
+            IntakeStackPos1 = drive.trajectoryBuilder(ScorePos1.end())
                     .lineToLinearHeading(intakeStackPos)
                     .build();
-            Trajectory ScorePos2 = drive.trajectoryBuilder(IntakeStackPos1.end())
+            ScorePos2 = drive.trajectoryBuilder(IntakeStackPos1.end())
                     .lineToLinearHeading(scorePos)
                     .build();
-            Trajectory IntakeStackPos2 = drive.trajectoryBuilder(ScorePos2.end())
+            IntakeStackPos2 = drive.trajectoryBuilder(ScorePos2.end())
                     .lineToLinearHeading(intakeStackPos)
                     .build();
-            Trajectory ScorePos3 = drive.trajectoryBuilder(IntakeStackPos2.end())
+            ScorePos3 = drive.trajectoryBuilder(IntakeStackPos2.end())
                     .lineToLinearHeading(scorePos)
                     .build();
-            Trajectory IntakeStackPos3 = drive.trajectoryBuilder(ScorePos3.end())
+            IntakeStackPos3 = drive.trajectoryBuilder(ScorePos3.end())
                     .lineToLinearHeading(intakeStackPos)
                     .build();
-            Trajectory ScorePos4 = drive.trajectoryBuilder(IntakeStackPos3.end())
+            ScorePos4 = drive.trajectoryBuilder(IntakeStackPos3.end())
                     .lineToLinearHeading(scorePos)
                     .build();
-            Trajectory IntakeStackPos4 = drive.trajectoryBuilder(ScorePos4.end())
+            IntakeStackPos4 = drive.trajectoryBuilder(ScorePos4.end())
                     .lineToLinearHeading(intakeStackPos)
                     .build();
-            Trajectory ScorePos5 = drive.trajectoryBuilder(IntakeStackPos4.end())
+            ScorePos5 = drive.trajectoryBuilder(IntakeStackPos4.end())
                     .lineToLinearHeading(scorePos)
                     .build();
-            Trajectory IntakeStackPos5 = drive.trajectoryBuilder(ScorePos5.end())
+            IntakeStackPos5 = drive.trajectoryBuilder(ScorePos5.end())
                     .lineToLinearHeading(intakeStackPos)
                     .build();
-            Trajectory ScorePos6 = drive.trajectoryBuilder(IntakeStackPos5.end())
+            ScorePos6 = drive.trajectoryBuilder(IntakeStackPos5.end())
                     .lineToLinearHeading(scorePos)
                     .build();
-            Trajectory Park1 = drive.trajectoryBuilder(ScorePos6.end())
+            Park1 = drive.trajectoryBuilder(ScorePos6.end())
                     .lineToLinearHeading(park1)
                     .build();
-            Trajectory Park2 = drive.trajectoryBuilder(ScorePos6.end())
+            Park2 = drive.trajectoryBuilder(ScorePos6.end())
                     .lineToLinearHeading(park2)
                     .build();
-            Trajectory Park3 = drive.trajectoryBuilder(ScorePos6.end())
+            Park3 = drive.trajectoryBuilder(ScorePos6.end())
                     .lineToLinearHeading(park3)
                     .build();
         }
 
+        if (Mode % 3 == 0) {//doing nothing
 
-        Trajectory myTrajectory = drive.trajectoryBuilder(new Pose2d()).build();
-        Trajectory myTrajectory2 = drive.trajectoryBuilder(new Pose2d()).build();
-        Trajectory myTrajectory3 = drive.trajectoryBuilder(new Pose2d()).build();
+        }else if (Mode % 3 == 1) {//cycling
+            drive.followTrajectory(Movement1);
+            drive.followTrajectory(Movement2);
+            drive.followTrajectory(ScorePos1);
+            //Score Cone
+            drive.followTrajectory(IntakeStackPos1);
+            //Intake Cone
+            drive.followTrajectory(ScorePos2);
+            //Score Cone
+            drive.followTrajectory(IntakeStackPos2);
+            //Intake Cone
+            drive.followTrajectory(ScorePos3);
+            //Score Cone
+            drive.followTrajectory(IntakeStackPos3);
+            //Intake Cone
+            drive.followTrajectory(ScorePos4);
+            //Score Cone
+            drive.followTrajectory(IntakeStackPos4);
+            //Intake Cone
+            drive.followTrajectory(ScorePos5);
+            //Score Cone
+            drive.followTrajectory(IntakeStackPos5);
+            //Intake Cone
+            drive.followTrajectory(ScorePos6);
+            //Score Cone
 
-        switch(autoParkPosition){
-            case 1:
-                numOfTrajs = 3;
-                myTrajectory = drive.trajectoryBuilder(drive.getPoseEstimate())
-                        .strafeRight(24)
-                        .build();
-                myTrajectory2 = drive.trajectoryBuilder(new Pose2d())
-                        .forward(50.6)
-                        .build();
-                myTrajectory3 = drive.trajectoryBuilder(new Pose2d())
-                        .strafeLeft(24)
-                        .build();
-                waitForStart();
-                if(numOfTrajs == 1) {
-                    drive.followTrajectory(myTrajectory);
-                    PoseStorage.currentPose = drive.getPoseEstimate();
-                } else if(numOfTrajs == 2){
-                    drive.followTrajectory(myTrajectory);
-                    PoseStorage.currentPose = drive.getPoseEstimate();
-                    drive.followTrajectory(myTrajectory2);
-                    PoseStorage.currentPose = drive.getPoseEstimate();
-                }else if(numOfTrajs == 3){
-                    drive.followTrajectory(myTrajectory);
-                    PoseStorage.currentPose = drive.getPoseEstimate();
-                    drive.followTrajectory(myTrajectory2);
-                    PoseStorage.currentPose = drive.getPoseEstimate();
-                    drive.followTrajectory(myTrajectory3);
-                    PoseStorage.currentPose = drive.getPoseEstimate();
-                }
-                if(isStopRequested())return;
-                break;
-            case 2:
-                numOfTrajs = 2;
-                myTrajectory = drive.trajectoryBuilder(new Pose2d())
-                        .strafeLeft(24)
-                        .build();
-                myTrajectory2 = drive.trajectoryBuilder(new Pose2d())
-                        .forward(26.6)
-                        .build();
-                waitForStart();
-                if(numOfTrajs == 1) {
-                    drive.followTrajectory(myTrajectory);
-                    PoseStorage.currentPose = drive.getPoseEstimate();
-
-                } else if(numOfTrajs == 2){
-                    drive.followTrajectory(myTrajectory);
-                    PoseStorage.currentPose = drive.getPoseEstimate();
-
-                    drive.followTrajectory(myTrajectory2);
-                    PoseStorage.currentPose = drive.getPoseEstimate();
-
-                }else if(numOfTrajs == 3){
-                    drive.followTrajectory(myTrajectory);
-                    PoseStorage.currentPose = drive.getPoseEstimate();
-
-                    drive.followTrajectory(myTrajectory2);
-                    PoseStorage.currentPose = drive.getPoseEstimate();
-
-                    drive.followTrajectory(myTrajectory3);
-                    PoseStorage.currentPose = drive.getPoseEstimate();
-
-                }
-                if(isStopRequested()) return;
-
-                break;
-            default:
-                numOfTrajs = 2;
-                myTrajectory = drive.trajectoryBuilder(new Pose2d())
-                        .strafeRight(24)
-                        .build();
-                myTrajectory2 = drive.trajectoryBuilder(new Pose2d())
-                        .forward(26.6)
-                        .build();
-                waitForStart();
-                if(isStopRequested()) return;
-                if(numOfTrajs == 1) {
-                    drive.followTrajectory(myTrajectory);
-                    PoseStorage.currentPose = drive.getPoseEstimate();
-                } else if(numOfTrajs == 2){
-                    drive.followTrajectory(myTrajectory);
-                    PoseStorage.currentPose = drive.getPoseEstimate();
-                    drive.followTrajectory(myTrajectory2);
-                    PoseStorage.currentPose = drive.getPoseEstimate();
-                }else if(numOfTrajs == 3){
-                    drive.followTrajectory(myTrajectory);
-                    PoseStorage.currentPose = drive.getPoseEstimate();
-                    drive.followTrajectory(myTrajectory2);
-                    PoseStorage.currentPose = drive.getPoseEstimate();
-                    drive.followTrajectory(myTrajectory3);
-                    PoseStorage.currentPose = drive.getPoseEstimate();
-                }
-                break;
+            switch(autoParkPosition){
+                case 1:
+                    drive.followTrajectory(Park2);
+                    if(isStopRequested())return;
+                    break;
+                case 2:
+                    drive.followTrajectory(Park1);
+                    if(isStopRequested()) return;
+                    break;
+                default:
+                    drive.followTrajectory(Park3);
+                    if(isStopRequested()) return;
+                    break;
 
 
+            }
+        }else if (Mode % 3 == 2) {//Just Parking
+            drive.followTrajectory(Movement1);
+            drive.followTrajectory(Movement2);
+
+            switch(autoParkPosition){
+                case 1:
+                    drive.followTrajectory(Park2);
+                    if(isStopRequested())return;
+                    break;
+                case 2:
+                    drive.followTrajectory(Park1);
+                    if(isStopRequested()) return;
+                    break;
+                default:
+                    drive.followTrajectory(Park3);
+                    if(isStopRequested()) return;
+                    break;
+
+
+            }
         }
+
         PoseStorage.team = team % 2;
     }
 
