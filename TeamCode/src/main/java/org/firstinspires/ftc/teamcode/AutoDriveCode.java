@@ -10,6 +10,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDriveCancelable;
 
+import java.util.List;
+
 /**
  * This opmode demonstrates how one can augment driver control by following Road Runner arbitrary
  * Road Runner trajectories at any time during teleop. This really isn't recommended at all. This is
@@ -142,31 +144,32 @@ public class AutoDriveCode extends LinearOpMode {
                             )
                     );
 
-                    if (gamepad1.a) {
-                        // If the A button is pressed on gamepad1, we generate a splineTo()
-                        // trajectory on the fly and follow it
-                        // We switch the state to AUTOMATIC_CONTROL
-
-                        Trajectory traj1 = drive.trajectoryBuilder(poseEstimate)
-                                .splineTo(targetAVector, targetAHeading)
-                                .build();
-
-                        drive.followTrajectoryAsync(traj1);
-
-                        currentMode = Mode.AUTOMATIC_CONTROL;
-                    } else if (gamepad1.b) {
-                        // If the B button is pressed on gamepad1, we generate a lineTo()
-                        // trajectory on the fly and follow it
-                        // We switch the state to AUTOMATIC_CONTROL
-
-                        Trajectory traj1 = drive.trajectoryBuilder(poseEstimate)
-                                .lineTo(targetBVector)
-                                .build();
-
-                        drive.followTrajectoryAsync(traj1);
-
-                        currentMode = Mode.AUTOMATIC_CONTROL;
-                    } else if (gamepad1.y) {
+//                    if (gamepad1.a) {
+//                        // If the A button is pressed on gamepad1, we generate a splineTo()
+//                        // trajectory on the fly and follow it
+//                        // We switch the state to AUTOMATIC_CONTROL
+//
+//                        Trajectory traj1 = drive.trajectoryBuilder(poseEstimate)
+//                                .splineTo(targetAVector, targetAHeading)
+//                                .build();
+//
+//                        drive.followTrajectoryAsync(traj1);
+//
+//                        currentMode = Mode.AUTOMATIC_CONTROL;
+//                    } else if (gamepad1.b) {
+//                        // If the B button is pressed on gamepad1, we generate a lineTo()
+//                        // trajectory on the fly and follow it
+//                        // We switch the state to AUTOMATIC_CONTROL
+//
+//                        Trajectory traj1 = drive.trajectoryBuilder(poseEstimate)
+//                                .lineTo(targetBVector)
+//                                .build();
+//
+//                        drive.followTrajectoryAsync(traj1);
+//
+//                        currentMode = Mode.AUTOMATIC_CONTROL;
+//                    }
+                   if (gamepad1.y) {
                         Pose2d gridMove = new Pose2d(currentGridX,currentGridY,Math.toRadians(currentGridHeading));
                         Trajectory gridUp = drive.trajectoryBuilder(poseEstimate)
                                 .lineToLinearHeading(gridMove)
