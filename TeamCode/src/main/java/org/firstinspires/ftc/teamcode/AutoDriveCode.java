@@ -50,7 +50,25 @@ public class AutoDriveCode extends LinearOpMode {
     }
 
     Mode currentMode = Mode.DRIVER_CONTROL;
-    
+
+    double yPos = 0;
+    boolean autoHome;
+    boolean turntoforward = false;
+    boolean turntoright = false;
+    boolean turntoleft = false;
+    boolean lastwasforward = false;
+    boolean lastwasright = false;
+    boolean lastwasleft = false;
+    boolean turningtoleft = false;
+    boolean turningtoright = false;
+    int sign = 1;
+    int isRed = 0;
+    int aButtonStatus = 0;
+    boolean dPadU = false;
+    boolean dPadD = false;
+    boolean dPadL = false;
+    boolean dPadR = false;
+    List<String> queue = new ArrayList<String>();
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -58,14 +76,7 @@ public class AutoDriveCode extends LinearOpMode {
         // Ensure that the contents are copied over from https://github.com/NoahBres/road-runner-quickstart/blob/advanced-examples/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/drive/advanced/SampleMecanumDriveCancelable.java
         // and https://github.com/NoahBres/road-runner-quickstart/blob/advanced-examples/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/drive/advanced/TrajectorySequenceRunnerCancelable.java
         SampleMecanumDriveCancelable drive = new SampleMecanumDriveCancelable(hardwareMap);
-        int sign = 1;
-        int isRed = 0;
-        int aButtonStatus = 0;
-        boolean dPadU = false;
-        boolean dPadD = false;
-        boolean dPadL = false;
-        boolean dPadR = false;
-        List<String> queue = new ArrayList<String>();
+
         Pose2d startPos = new Pose2d(12,12,Math.toRadians(90));
 
         // We want to turn off velocity control for teleop
@@ -157,33 +168,90 @@ public class AutoDriveCode extends LinearOpMode {
                                     -gamepad1.right_stick_x*0.5
                             )
                     );
+                    if (gamepad1.a){
+                        drive.lift.setPower(-1);
+                    }else if(gamepad1.b){
+                        drive.lift.setPower(1);
+                    }else{
+                        drive.lift.setPower(0);
+                    }
+                    if (gamepad1.y){
+                        drive.claw.setPosition(7);//0.225
+                    }else if (gamepad1.x){
+                        drive.claw.setPosition(0);//0.150
+                    }
+                    if (gamepad1.dpad_down && ((yPos - drive.arm.getPosition()) <= 0.02)) {
+                        drive.arm.setPosition(yPos - 0.003);
+                        yPos = drive.arm.getPosition();
+                    } else if (gamepad1.dpad_up && (drive.arm.getPosition() - yPos) <= 0.02) {
+                        drive.arm.setPosition(yPos + 0.003);
+                        yPos = drive.arm.getPosition();
+                    }
 
-//                    if (gamepad1.a) {
-//                        // If the A button is pressed on gamepad1, we generate a splineTo()
-//                        // trajectory on the fly and follow it
-//                        // We switch the state to AUTOMATIC_CONTROL
-//
-//                        Trajectory traj1 = drive.trajectoryBuilder(poseEstimate)
-//                                .splineTo(targetAVector, targetAHeading)
-//                                .build();
-//
-//                        drive.followTrajectoryAsync(traj1);
-//
-//                        currentMode = Mode.AUTOMATIC_CONTROL;
-//                    } else if (gamepad1.b) {
-//                        // If the B button is pressed on gamepad1, we generate a lineTo()
-//                        // trajectory on the fly and follow it
-//                        // We switch the state to AUTOMATIC_CONTROL
-//
-//                        Trajectory traj1 = drive.trajectoryBuilder(poseEstimate)
-//                                .lineTo(targetBVector)
-//                                .build();
-//
-//                        drive.followTrajectoryAsync(traj1);
-//
-//                        currentMode = Mode.AUTOMATIC_CONTROL;
-//                    } else
-                        if (gamepad1.y) {
+                    if(turntoforward){
+                        autoHome = true;
+                    }
+                    if (turntoleft){
+                        turningtoleft = true;
+                        if (!lastwasforward){
+                            autoHome = true;
+                        }
+                    }
+                    if (turntoright){
+                        turningtoright = true;
+                        if (!lastwasforward){
+                            autoHome = true;
+                        }
+                    }
+                    if (turningtoleft && lastwasforward){
+                        drive.turntable.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                        drive.turntable.setTargetPosition(-500);
+                        drive.turntable.setPower(0.1);
+                        drive.turntable.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                        drive.turntable.setPower(0);
+                        lastwasleft = true;
+                    }
+                    if (turningtoright && lastwasforward){
+                        drive.turntable.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                        drive.turntable.setTargetPosition(500);
+                        drive.turntable.setPower(0.1);
+                        drive.turntable.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                        drive.turntable.setPower(0);
+                        lastwasright = true;
+                    }
+                    gamepad2.dpad_up = turntoforward;
+                    gamepad2.dpad_left = turntoleft;
+                    gamepad2.dpad_right = turntoright;
+
+                    if (autoHome && drive.turnlimiter.getState() ){
+                        if (lastwasleft) {
+                            drive.turntable.setPower(0.1);
+                        }
+                        if (lastwasright){
+                            drive.turntable.setPower(-0.1);
+                        }
+                    } else if (autoHome && !drive.turnlimiter.getState()){
+                        drive.turntable.setPower(0);
+                        drive.turntable.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                        lastwasright = false;
+                        lastwasleft = false;
+                        lastwasforward = true;
+                    } else{
+                        drive.turntable.setPower((gamepad1.left_trigger - gamepad1.right_trigger));
+                    }
+                    // Update everything. Odometry. Etc.
+                    drive.update();
+
+                    // Read pose
+                    // Print pose to telemetry
+                    telemetry.addData("Turn Limiter", drive.turnlimiter.getState());
+                    telemetry.addData("Lift",drive.lift.getCurrentPosition());
+                    telemetry.addData("x", poseEstimate.getX());
+                    telemetry.addData("y", poseEstimate.getY());
+                    telemetry.addData("heading", poseEstimate.getHeading());
+                    telemetry.update();
+
+                    if (gamepad1.y) {
                         Pose2d gridAlign = new Pose2d(currentGridX,currentGridY,Math.toRadians(currentGridHeading));
                         Trajectory gridUp = drive.trajectoryBuilder(poseEstimate)
                                 .lineToLinearHeading(gridAlign)
@@ -195,6 +263,7 @@ public class AutoDriveCode extends LinearOpMode {
                         if (queue.get(0) == "u") {
                             queue.remove(0);
                         }
+                        dPadU = true;
                         Pose2d gridMove = new Pose2d(currentGridX,currentGridY+(sign*24),Math.toRadians(currentGridHeading));
                         Trajectory grid1 = drive.trajectoryBuilder(poseEstimate)
                                 .lineToLinearHeading(gridMove)
@@ -206,6 +275,7 @@ public class AutoDriveCode extends LinearOpMode {
                         if (queue.get(0) == "r") {
                             queue.remove(0);
                         }
+                        dPadR = true;
                         Pose2d gridMove = new Pose2d(currentGridX+(sign*24),currentGridY,Math.toRadians(currentGridHeading));
                         Trajectory gridRight = drive.trajectoryBuilder(poseEstimate)
                                 .lineToLinearHeading(gridMove)
@@ -217,6 +287,7 @@ public class AutoDriveCode extends LinearOpMode {
                         if (queue.get(0) == "d") {
                             queue.remove(0);
                         }
+                        dPadD = true;
                         Pose2d gridMove = new Pose2d(currentGridX,currentGridY-(sign*24),Math.toRadians(currentGridHeading));
                         Trajectory gridDown = drive.trajectoryBuilder(poseEstimate)
                                 .lineToLinearHeading(gridMove)
@@ -228,6 +299,7 @@ public class AutoDriveCode extends LinearOpMode {
                         if (queue.get(0) == "l") {
                             queue.remove(0);
                         }
+                            dPadL = true;
                         Pose2d gridMove = new Pose2d(currentGridX-(sign*24),currentGridY,Math.toRadians(currentGridHeading));
                         Trajectory gridLeft = drive.trajectoryBuilder(poseEstimate)
                                 .lineToLinearHeading(gridMove)
@@ -238,6 +310,90 @@ public class AutoDriveCode extends LinearOpMode {
                     }
                     break;
                 case AUTOMATIC_CONTROL:
+
+                    if (gamepad1.a){
+                        drive.lift.setPower(-1);
+                    }else if(gamepad1.b){
+                        drive.lift.setPower(1);
+                    }else{
+                        drive.lift.setPower(0);
+                    }
+                    if (gamepad1.y){
+                        drive.claw.setPosition(7);//0.225
+                    }else if (gamepad1.x){
+                        drive.claw.setPosition(0);//0.150
+                    }
+                    if (gamepad1.dpad_down && ((yPos - drive.arm.getPosition()) <= 0.02)) {
+                        drive.arm.setPosition(yPos - 0.003);
+                        yPos = drive.arm.getPosition();
+                    } else if (gamepad1.dpad_up && (drive.arm.getPosition() - yPos) <= 0.02) {
+                        drive.arm.setPosition(yPos + 0.003);
+                        yPos = drive.arm.getPosition();
+                    }
+
+                    if(turntoforward){
+                        autoHome = true;
+                    }
+                    if (turntoleft){
+                        turningtoleft = true;
+                        if (!lastwasforward){
+                            autoHome = true;
+                        }
+                    }
+                    if (turntoright){
+                        turningtoright = true;
+                        if (!lastwasforward){
+                            autoHome = true;
+                        }
+                    }
+                    if (turningtoleft && lastwasforward){
+                        drive.turntable.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                        drive.turntable.setTargetPosition(-500);
+                        drive.turntable.setPower(0.1);
+                        drive.turntable.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                        drive.turntable.setPower(0);
+                        lastwasleft = true;
+                    }
+                    if (turningtoright && lastwasforward){
+                        drive.turntable.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                        drive.turntable.setTargetPosition(500);
+                        drive.turntable.setPower(0.1);
+                        drive.turntable.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                        drive.turntable.setPower(0);
+                        lastwasright = true;
+                    }
+                    gamepad2.dpad_up = turntoforward;
+                    gamepad2.dpad_left = turntoleft;
+                    gamepad2.dpad_right = turntoright;
+
+                    if (autoHome && drive.turnlimiter.getState() ){
+                        if (lastwasleft) {
+                            drive.turntable.setPower(0.1);
+                        }
+                        if (lastwasright){
+                            drive.turntable.setPower(-0.1);
+                        }
+                    } else if (autoHome && !drive.turnlimiter.getState()){
+                        drive.turntable.setPower(0);
+                        drive.turntable.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                        lastwasright = false;
+                        lastwasleft = false;
+                        lastwasforward = true;
+                    } else{
+                        drive.turntable.setPower((gamepad1.left_trigger - gamepad1.right_trigger));
+                    }
+                    // Update everything. Odometry. Etc.
+                    drive.update();
+
+                    // Read pose
+                    // Print pose to telemetry
+                    telemetry.addData("Turn Limiter", drive.turnlimiter.getState());
+                    telemetry.addData("Lift",drive.lift.getCurrentPosition());
+                    telemetry.addData("x", poseEstimate.getX());
+                    telemetry.addData("y", poseEstimate.getY());
+                    telemetry.addData("heading", poseEstimate.getHeading());
+                    telemetry.update();
+
                     // If x is pressed, we break out of the automatic following
                     if (gamepad1.x) {
                         drive.breakFollowing();
@@ -247,10 +403,10 @@ public class AutoDriveCode extends LinearOpMode {
 
                     if (gamepad1.dpad_up && !dPadU) {
                         dPadU = true;
+                        queue.add("u");
                     }
                     if (!gamepad1.dpad_up && dPadU) {
                         dPadU = false;
-                        queue.add("u");
                     }
                     if (gamepad1.dpad_right && !dPadR) {
                         dPadR = true;

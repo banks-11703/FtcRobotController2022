@@ -22,8 +22,10 @@ import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
@@ -75,6 +77,12 @@ public class SampleMecanumDriveCancelable extends MecanumDrive {
     private DcMotorEx leftFront, leftRear, rightRear, rightFront;
     private List<DcMotorEx> motors;
 
+    public DcMotor lift;
+    public Servo claw;
+    public Servo arm;
+    public DigitalChannel turnlimiter;
+    public DcMotor turntable;
+
     private BNO055IMU imu;
     private VoltageSensor batteryVoltageSensor;
 
@@ -124,6 +132,13 @@ public class SampleMecanumDriveCancelable extends MecanumDrive {
         leftRear = hardwareMap.get(DcMotorEx.class, "bl");
         rightRear = hardwareMap.get(DcMotorEx.class, "br");
         rightFront = hardwareMap.get(DcMotorEx.class, "fr");
+
+        lift = hardwareMap.get(DcMotor.class,"l");
+        turntable = hardwareMap.get(DcMotor.class,"tt");
+        claw = hardwareMap.get(Servo.class,"c");
+        arm = hardwareMap.get(Servo.class,"a");
+        turnlimiter = hardwareMap.get(DigitalChannel.class, "tl");
+        motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
 
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
 
