@@ -10,6 +10,9 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDriveCancelable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * This opmode demonstrates how one can augment driver control by following Road Runner arbitrary
  * Road Runner trajectories at any time during teleop. This really isn't recommended at all. This is
@@ -58,6 +61,11 @@ public class AutoDriveCode extends LinearOpMode {
         int sign = 1;
         int isRed = 0;
         int aButtonStatus = 0;
+        boolean dPadU = false;
+        boolean dPadD = false;
+        boolean dPadL = false;
+        boolean dPadR = false;
+        List<String> queue = new ArrayList<String>();
         Pose2d startPos = new Pose2d(12,12,Math.toRadians(90));
 
         // We want to turn off velocity control for teleop
@@ -183,7 +191,10 @@ public class AutoDriveCode extends LinearOpMode {
                         drive.followTrajectoryAsync(gridUp);
 
                         currentMode = Mode.AUTOMATIC_CONTROL;
-                    } else if(gamepad1.dpad_up){
+                    } else if(gamepad1.dpad_up || queue.get(0) == "u"){
+                        if (queue.get(0) == "u") {
+                            queue.remove(0);
+                        }
                         Pose2d gridMove = new Pose2d(currentGridX,currentGridY+(sign*24),Math.toRadians(currentGridHeading));
                         Trajectory grid1 = drive.trajectoryBuilder(poseEstimate)
                                 .lineToLinearHeading(gridMove)
@@ -191,7 +202,10 @@ public class AutoDriveCode extends LinearOpMode {
                         drive.followTrajectoryAsync(grid1);
 
                         currentMode = Mode.AUTOMATIC_CONTROL;
-                    } else if(gamepad1.dpad_right){
+                    } else if(gamepad1.dpad_right || queue.get(0) == "r"){
+                        if (queue.get(0) == "r") {
+                            queue.remove(0);
+                        }
                         Pose2d gridMove = new Pose2d(currentGridX+(sign*24),currentGridY,Math.toRadians(currentGridHeading));
                         Trajectory gridRight = drive.trajectoryBuilder(poseEstimate)
                                 .lineToLinearHeading(gridMove)
@@ -199,7 +213,10 @@ public class AutoDriveCode extends LinearOpMode {
                         drive.followTrajectoryAsync(gridRight);
 
                         currentMode = Mode.AUTOMATIC_CONTROL;
-                    } else if(gamepad1.dpad_down){
+                    } else if(gamepad1.dpad_down || queue.get(0) == "d"){
+                        if (queue.get(0) == "d") {
+                            queue.remove(0);
+                        }
                         Pose2d gridMove = new Pose2d(currentGridX,currentGridY-(sign*24),Math.toRadians(currentGridHeading));
                         Trajectory gridDown = drive.trajectoryBuilder(poseEstimate)
                                 .lineToLinearHeading(gridMove)
@@ -207,7 +224,10 @@ public class AutoDriveCode extends LinearOpMode {
                         drive.followTrajectoryAsync(gridDown);
 
                         currentMode = Mode.AUTOMATIC_CONTROL;
-                    } else if(gamepad1.dpad_left){
+                    } else if(gamepad1.dpad_left || queue.get(0) == "l"){
+                        if (queue.get(0) == "l") {
+                            queue.remove(0);
+                        }
                         Pose2d gridMove = new Pose2d(currentGridX-(sign*24),currentGridY,Math.toRadians(currentGridHeading));
                         Trajectory gridLeft = drive.trajectoryBuilder(poseEstimate)
                                 .lineToLinearHeading(gridMove)
@@ -222,6 +242,36 @@ public class AutoDriveCode extends LinearOpMode {
                     if (gamepad1.x) {
                         drive.breakFollowing();
                         currentMode = Mode.DRIVER_CONTROL;
+                        queue.clear();
+                    }
+
+                    if (gamepad1.dpad_up && !dPadU) {
+                        dPadU = true;
+                    }
+                    if (!gamepad1.dpad_up && dPadU) {
+                        dPadU = false;
+                        queue.add("u");
+                    }
+                    if (gamepad1.dpad_right && !dPadR) {
+                        dPadR = true;
+                    }
+                    if (!gamepad1.dpad_right && dPadR) {
+                        dPadR = false;
+                        queue.add("r");
+                    }
+                    if (gamepad1.dpad_down && !dPadD) {
+                        dPadD = true;
+                    }
+                    if (!gamepad1.dpad_down && dPadD) {
+                        dPadD = false;
+                        queue.add("d");
+                    }
+                    if (gamepad1.dpad_left && !dPadL) {
+                        dPadL = true;
+                    }
+                    if (!gamepad1.dpad_left && dPadL) {
+                        dPadL = false;
+                        queue.add("l");
                     }
 
                     // If drive finishes its task, cede control to the driver
