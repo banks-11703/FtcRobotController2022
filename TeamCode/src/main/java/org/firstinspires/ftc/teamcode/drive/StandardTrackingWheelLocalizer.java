@@ -31,16 +31,16 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
     public static double WHEEL_RADIUS = 0.688976; // in
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (encoder) speed
 
-    public static double LATERAL_DISTANCE = 14.25; // in; distance between the left and right wheels
-    public static double FORWARD_OFFSET = 0; // in; offset of the lateral wheel 2.5 toward front
+    public static double LATERAL_DISTANCE = 14.3125; // in; distance between the left and right wheels
+    public static double FORWARD_OFFSET = -0.125; // in; offset of the lateral wheel 2.5 toward front
 
     private Encoder leftEncoder, rightEncoder, frontEncoder;
 
     public StandardTrackingWheelLocalizer(HardwareMap hardwareMap) {
         super(Arrays.asList(
-                new Pose2d(2.5, LATERAL_DISTANCE / 2, 0), // left
-                new Pose2d(2.5, -LATERAL_DISTANCE / 2, 0), // right
-                new Pose2d(FORWARD_OFFSET, 6.5, Math.toRadians(90)) // front
+                new Pose2d(1.25, LATERAL_DISTANCE / 2, 0), // left
+                new Pose2d(1.25, -LATERAL_DISTANCE / 2, 0), // right
+                new Pose2d(FORWARD_OFFSET, -6.375, Math.toRadians(90)) // front
         ));
 
         rightEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "br"));
@@ -48,13 +48,14 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
         frontEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "fr"));
 
         // TODO: reverse any encoders using Encoder.setDirection(Encoder.Direction.REVERSE)
+
     }
 
     public static double encoderTicksToInches(double ticks) {
         return WHEEL_RADIUS * 2 * Math.PI * GEAR_RATIO * ticks / TICKS_PER_REV;
     }
     public static double X_MULTIPLIER = 1; // Multiplier in the X direction
-    public static double Y_MULTIPLIER = 1; // Multiplier in the Y direction
+    public static double Y_MULTIPLIER = 1.00795756; // Multiplier in the Y direction
     @NonNull
     @Override
     public List<Double> getWheelPositions() {
