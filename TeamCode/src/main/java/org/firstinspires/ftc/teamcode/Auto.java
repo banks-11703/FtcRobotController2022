@@ -12,14 +12,16 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 
 @Autonomous
 public class Auto extends CameraTesting {
-    boolean button_b_was_pressed = false;
-    boolean button_a_was_pressed = false;
-    boolean button_x_was_pressed = false;
+    boolean button_b_was_pressed = false; //Team
+    boolean button_a_was_pressed = false; //Side
+    boolean button_x_was_pressed = false; //Mode
     int team = 0;// 0 = red 1 = blue    which team we are on
     int side = 0;// 0 = left 1 = right  are we left or right
-    int mode = 0;//0 = nothing          are we just parking or otherwise?
+    int Mode = 0;//0 = nothing          are we just parking or otherwise?
     int autoParkPosition = 0;
-    int numOfTrajs = 1;
+    int yMod = 1;
+    int xMod = 0;
+    int headingMod = 0;
     public int Team() {
         return team % 2;
     }
@@ -29,7 +31,7 @@ public class Auto extends CameraTesting {
     }
 
     public int Mode() {
-        return mode % 3;
+        return Mode % 3;
     }
 
     @Override
@@ -69,117 +71,100 @@ public class Auto extends CameraTesting {
                  */
             }
         });
+
+
         while (!opModeIsActive()) {
 
 
-
-                if (gamepad1.b && !button_b_was_pressed) {
-                    team++;
-                    button_b_was_pressed = true;
-                } else if (!gamepad1.b && button_b_was_pressed) {
-                    button_b_was_pressed = false;
-                }
-                if (gamepad1.a && !button_a_was_pressed) {
-                    side++;
-                    button_a_was_pressed = true;
-                } else if (!gamepad1.a && button_a_was_pressed) {
-                    button_a_was_pressed = false;
-                }
-                if (gamepad1.x && !button_x_was_pressed) {
-                    mode++;
-                    button_x_was_pressed = true;
-                } else if (!gamepad1.x && button_x_was_pressed) {
-                    button_x_was_pressed = false;
-                }
-                switch (Team()){
-                    case (0):
-                        telemetry.addData("Team", "Red");
-                        telemetry.update();
-                        switch (Side()){
-                            case(0):
-                                telemetry.addData("Side", "Left");
-                                telemetry.update();
-                                switch(Mode()){
-                                    case(0):
-                                        telemetry.addData("Mode", "Nothing");
-                                        telemetry.update();
-                                        break;
-                                    case(1):
-                                        telemetry.addData("Mode", "Cycle");
-                                        telemetry.update();
-                                        break;
-                                    case(2):
-                                        telemetry.addData("Mode", "Park Only");
-                                        telemetry.update();
-                                        break;
-                                }
-                                break;
-                            case(1):
-                                telemetry.addData("Side", "Right");
-                                telemetry.update();
-                                switch(Mode()){
-                                    case(0):
-                                        telemetry.addData("Mode", "Nothing");
-                                        telemetry.update();
-                                        break;
-                                    case(1):
-                                        telemetry.addData("Mode", "Cycle");
-                                        telemetry.update();
-                                        break;
-                                    case(2):
-                                        telemetry.addData("Mode", "Park Only");
-                                        telemetry.update();
-                                        break;
-                                }
-                                break;
-                        }
-                        break;
-                    case (1):
-                        telemetry.addData("Team", "Blue");
-                        telemetry.update();
-                        switch (Side()){
-                            case(0):
-                                telemetry.addData("Side", "Left");
-                                telemetry.update();
-                                switch(Mode()){
-                                    case(0):
-                                        telemetry.addData("Mode", "Nothing");
-                                        telemetry.update();
-                                        break;
-                                    case(1):
-                                        telemetry.addData("Mode", "Cycle");
-                                        telemetry.update();
-                                        break;
-                                    case(2):
-                                        telemetry.addData("Mode", "Park Only");
-                                        telemetry.update();
-                                        break;
-                                }
-                                break;
-                            case(1):
-                                telemetry.addData("Side", "Right");
-                                telemetry.update();
-                                switch(Mode()){
-                                    case(0):
-                                        telemetry.addData("Mode", "Nothing");
-                                        telemetry.update();
-                                        break;
-                                    case(1):
-                                        telemetry.addData("Mode", "Cycle");
-                                        telemetry.update();
-                                        break;
-                                    case(2):
-                                        telemetry.addData("Mode", "Park Only");
-                                        telemetry.update();
-                                        break;
-                                }
-                                break;
-                        }
-                        break;
-                }
+            if (gamepad1.b && !button_b_was_pressed) {
+                team++;
+                button_b_was_pressed = true;
+            } else if (!gamepad1.b && button_b_was_pressed) {
+                button_b_was_pressed = false;
+            }
+            if (gamepad1.a && !button_a_was_pressed) {
+                side++;
+                button_a_was_pressed = true;
+            } else if (!gamepad1.a && button_a_was_pressed) {
+                button_a_was_pressed = false;
+            }
+            if (gamepad1.x && !button_x_was_pressed) {
+                Mode++;
+                button_x_was_pressed = true;
+            } else if (!gamepad1.x && button_x_was_pressed) {
+                button_x_was_pressed = false;
+            }
+            switch (Team()){
+                case (0):
+                    telemetry.addData("Team", "Red");
+                    switch (Side()){
+                        case(0):
+                            telemetry.addData("Side", "Left");
+                            switch(Mode()){
+                                case(0):
+                                    telemetry.addData("Mode", "Nothing");
+                                    break;
+                                case(1):
+                                    telemetry.addData("Mode", "Cycle");
+                                    break;
+                                case(2):
+                                    telemetry.addData("Mode", "Park Only");
+                                    break;
+                            }
+                            break;
+                        case(1):
+                            telemetry.addData("Side", "Right");
+                            switch(Mode()){
+                                case(0):
+                                    telemetry.addData("Mode", "Nothing");
+                                    break;
+                                case(1):
+                                    telemetry.addData("Mode", "Cycle");
+                                    break;
+                                case(2):
+                                    telemetry.addData("Mode", "Park Only");
+                                    break;
+                            }
+                            break;
+                    }
+                    break;
+                case (1):
+                    telemetry.addData("Team", "Blue");
+                    switch (Side()){
+                        case(0):
+                            telemetry.addData("Side", "Left");
+                            switch(Mode()){
+                                case(0):
+                                    telemetry.addData("Mode", "Nothing");
+                                    break;
+                                case(1):
+                                    telemetry.addData("Mode", "Cycle");
+                                    break;
+                                case(2):
+                                    telemetry.addData("Mode", "Park Only");
+                                    break;
+                            }
+                            break;
+                        case(1):
+                            telemetry.addData("Side", "Right");
+                            switch(Mode()){
+                                case(0):
+                                    telemetry.addData("Mode", "Nothing");
+                                    break;
+                                case(1):
+                                    telemetry.addData("Mode", "Cycle");
+                                    break;
+                                case(2):
+                                    telemetry.addData("Mode", "Park Only");
+                                    break;
+                            }
+                            break;
+                    }
+                    break;
+            }
 
 
-                autoParkPosition = pipeline.getAnalysis();
+            autoParkPosition = pipeline.getAnalysis();
 
 
 
@@ -187,9 +172,8 @@ public class Auto extends CameraTesting {
             if (isStopRequested()) return;
             drive.setPoseEstimate(StartingPos());
             autoParkPosition = pipeline.getAnalysis();
-            webcam.stopStreaming();
             telemetry.addData("Analysis", pipeline.getAnalysis());
-            sleep(100);
+
             telemetry.update();
 
             /*
@@ -280,113 +264,160 @@ public class Auto extends CameraTesting {
                     break;
             }*/
 
-
-            // Transfer the current pose to PoseStorage so we can use it in TeleOp
+            if (team % 2 == 1) {
+                yMod = -1;
+            }else {
+                yMod = 1;
+            }
+            if (team % 2 == 0 && side % 2 == 0 || team % 2 == 1 && side % 2 == 1) {
+                xMod = 1;
+                headingMod = 1;
+            }else if (team % 2 == 0 && side % 2 == 1 || team % 2 == 1 && side % 2 == 0) {
+                xMod = -1;
+                headingMod = -1;
+            }
         }
-        Trajectory myTrajectory = drive.trajectoryBuilder(new Pose2d()).build();
-        Trajectory myTrajectory2 = drive.trajectoryBuilder(new Pose2d()).build();
-        Trajectory myTrajectory3 = drive.trajectoryBuilder(new Pose2d()).build();
 
-        switch(autoParkPosition){
-            case 1:
-                numOfTrajs = 3;
-                myTrajectory = drive.trajectoryBuilder(new Pose2d())
-                        .strafeRight(24)
-                        .build();
-                myTrajectory2 = drive.trajectoryBuilder(new Pose2d())
-                        .forward(50.6)
-                        .build();
-                myTrajectory3 = drive.trajectoryBuilder(new Pose2d())
-                        .strafeLeft(24)
-                        .build();
-                waitForStart();
-                if(numOfTrajs == 1) {
-                    drive.followTrajectory(myTrajectory);
-                    PoseStorage.currentPose = drive.getPoseEstimate();
-                } else if(numOfTrajs == 2){
-                    drive.followTrajectory(myTrajectory);
-                    PoseStorage.currentPose = drive.getPoseEstimate();
-                    drive.followTrajectory(myTrajectory2);
-                    PoseStorage.currentPose = drive.getPoseEstimate();
-                }else if(numOfTrajs == 3){
-                    drive.followTrajectory(myTrajectory);
-                    PoseStorage.currentPose = drive.getPoseEstimate();
-                    drive.followTrajectory(myTrajectory2);
-                    PoseStorage.currentPose = drive.getPoseEstimate();
-                    drive.followTrajectory(myTrajectory3);
-                    PoseStorage.currentPose = drive.getPoseEstimate();
-                }
-                if(isStopRequested())return;
-                break;
-            case 2:
-                numOfTrajs = 2;
-                myTrajectory = drive.trajectoryBuilder(new Pose2d())
-                        .strafeLeft(24)
-                        .build();
-                myTrajectory2 = drive.trajectoryBuilder(new Pose2d())
-                        .forward(26.6)
-                        .build();
-                waitForStart();
-                if(numOfTrajs == 1) {
-                    drive.followTrajectory(myTrajectory);
-                    PoseStorage.currentPose = drive.getPoseEstimate();
+        //webcam.stopStreaming();
 
-                } else if(numOfTrajs == 2){
-                    drive.followTrajectory(myTrajectory);
-                    PoseStorage.currentPose = drive.getPoseEstimate();
+        Pose2d movement1 = new Pose2d(-12*xMod,-60*yMod,Math.toRadians(90));
+        Pose2d movement2 = new Pose2d(-12*xMod,-12*yMod,Math.toRadians(180*headingMod));
+        Pose2d scorePos = new Pose2d(-24*xMod,-12*yMod,Math.toRadians(180*headingMod));    //Score Position
+        Pose2d intakeStackPos = new Pose2d(-62+xMod,-12*yMod,Math.toRadians(180*headingMod));    //Intake cone stack Position
+        Pose2d park1 = new Pose2d(-60*xMod,-12*yMod,Math.toRadians(180*headingMod));
+        Pose2d park2 = new Pose2d(-36*xMod,-12*yMod,Math.toRadians(180*headingMod));
+        Pose2d park3 = new Pose2d(-12*xMod,-12*yMod,Math.toRadians(180*headingMod));
 
-                    drive.followTrajectory(myTrajectory2);
-                    PoseStorage.currentPose = drive.getPoseEstimate();
+        Trajectory Movement1 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                .lineToLinearHeading(movement1)
+                .build();
+        Trajectory Movement2 = drive.trajectoryBuilder(Movement1.end())
+                .lineToLinearHeading(movement2)
+                .build();
+        Trajectory ScorePos1 = drive.trajectoryBuilder(Movement2.end())
+                .lineToLinearHeading(scorePos)
+                .build();
+        Trajectory IntakeStackPos1 = drive.trajectoryBuilder(ScorePos1.end())
+                .lineToLinearHeading(intakeStackPos)
+                .build();
+        Trajectory ScorePos2 = drive.trajectoryBuilder(IntakeStackPos1.end())
+                .lineToLinearHeading(scorePos)
+                .build();
+        Trajectory IntakeStackPos2 = drive.trajectoryBuilder(ScorePos2.end())
+                .lineToLinearHeading(intakeStackPos)
+                .build();
+        Trajectory ScorePos3 = drive.trajectoryBuilder(IntakeStackPos2.end())
+                .lineToLinearHeading(scorePos)
+                .build();
+        Trajectory IntakeStackPos3 = drive.trajectoryBuilder(ScorePos3.end())
+                .lineToLinearHeading(intakeStackPos)
+                .build();
+        Trajectory ScorePos4 = drive.trajectoryBuilder(IntakeStackPos3.end())
+                .lineToLinearHeading(scorePos)
+                .build();
+        Trajectory IntakeStackPos4 = drive.trajectoryBuilder(ScorePos4.end())
+                .lineToLinearHeading(intakeStackPos)
+                .build();
+        Trajectory ScorePos5 = drive.trajectoryBuilder(IntakeStackPos4.end())
+                .lineToLinearHeading(scorePos)
+                .build();
+        Trajectory IntakeStackPos5 = drive.trajectoryBuilder(ScorePos5.end())
+                .lineToLinearHeading(intakeStackPos)
+                .build();
+        Trajectory ScorePos6 = drive.trajectoryBuilder(IntakeStackPos5.end())
+                .lineToLinearHeading(scorePos)
+                .build();
+        Trajectory Park1 = drive.trajectoryBuilder(ScorePos6.end())
+                .lineToLinearHeading(park1)
+                .build();
+        Trajectory Park2 = drive.trajectoryBuilder(ScorePos6.end())
+                .lineToLinearHeading(park2)
+                .build();
+        Trajectory Park3 = drive.trajectoryBuilder(ScorePos6.end())
+                .lineToLinearHeading(park3)
+                .build();
 
-                }else if(numOfTrajs == 3){
-                    drive.followTrajectory(myTrajectory);
-                    PoseStorage.currentPose = drive.getPoseEstimate();
+        if (Mode % 3 == 0) {//doing stuff to get it to work
 
-                    drive.followTrajectory(myTrajectory2);
-                    PoseStorage.currentPose = drive.getPoseEstimate();
+            Trajectory forward = drive.trajectoryBuilder(ScorePos6.end())
+                    .forward(46)
+                    .build();
 
-                    drive.followTrajectory(myTrajectory3);
-                    PoseStorage.currentPose = drive.getPoseEstimate();
+            drive.claw.setPosition(0.150);
+            drive.followTrajectory(forward);
+        }else if (Mode % 3 == 1) {//cycling
+            drive.followTrajectory(Movement1);
+            drive.followTrajectory(Movement2);
+            drive.followTrajectory(ScorePos1);
+            //Score Cone
+            drive.followTrajectory(IntakeStackPos1);
+            //Intake Cone
+            drive.followTrajectory(ScorePos2);
+            //Score Cone
+            drive.followTrajectory(IntakeStackPos2);
+            //Intake Cone
+            drive.followTrajectory(ScorePos3);
+            //Score Cone
+            drive.followTrajectory(IntakeStackPos3);
+            //Intake Cone
+            drive.followTrajectory(ScorePos4);
+            //Score Cone
+            drive.followTrajectory(IntakeStackPos4);
+            //Intake Cone
+            drive.followTrajectory(ScorePos5);
+            //Score Cone
+            drive.followTrajectory(IntakeStackPos5);
+            //Intake Cone
+            drive.followTrajectory(ScorePos6);
+            //Score Cone
 
-                }
-                if(isStopRequested()) return;
+            switch(autoParkPosition){
+                case 1:
+                    drive.followTrajectory(Park2);
+                    if(isStopRequested())return;
+                    break;
+                case 2:
+                    drive.followTrajectory(Park1);
+                    if(isStopRequested()) return;
+                    break;
+                default:
+                    drive.followTrajectory(Park3);
+                    if(isStopRequested()) return;
+                    break;
 
-                break;
-            default:
-                numOfTrajs = 2;
-                myTrajectory = drive.trajectoryBuilder(new Pose2d())
-                        .strafeRight(24)
-                        .build();
-                myTrajectory2 = drive.trajectoryBuilder(new Pose2d())
-                        .forward(26.6)
-                        .build();
-                waitForStart();
-                if(isStopRequested()) return;
-                if(numOfTrajs == 1) {
-                    drive.followTrajectory(myTrajectory);
-                    PoseStorage.currentPose = drive.getPoseEstimate();
-                } else if(numOfTrajs == 2){
-                    drive.followTrajectory(myTrajectory);
-                    PoseStorage.currentPose = drive.getPoseEstimate();
-                    drive.followTrajectory(myTrajectory2);
-                    PoseStorage.currentPose = drive.getPoseEstimate();
-                }else if(numOfTrajs == 3){
-                    drive.followTrajectory(myTrajectory);
-                    PoseStorage.currentPose = drive.getPoseEstimate();
-                    drive.followTrajectory(myTrajectory2);
-                    PoseStorage.currentPose = drive.getPoseEstimate();
-                    drive.followTrajectory(myTrajectory3);
-                    PoseStorage.currentPose = drive.getPoseEstimate();
-                }
-                break;
 
+            }
+        }else if (Mode % 3 == 2) {//Just Parking
+            drive.followTrajectory(Movement1);
+            drive.followTrajectory(Movement2);
+
+            switch(autoParkPosition){
+                case 1:
+                    drive.followTrajectory(Park2);
+                    if(isStopRequested())return;
+                    break;
+                case 2:
+                    drive.followTrajectory(Park1);
+                    if(isStopRequested()) return;
+                    break;
+                default:
+                    drive.followTrajectory(Park3);
+                    if(isStopRequested()) return;
+                    break;
+
+
+            }
         }
+
+        PoseStorage.team = team % 2;
     }
+
+
 
     public Pose2d StartingPos() {
         double x, y, a;
         if (team == 0) {
-            y = -62.6;
+            y = -63.75;
             a = 90;
             if (side == 1) {
                 x = 36;
@@ -395,7 +426,7 @@ public class Auto extends CameraTesting {
 
             }
         } else {
-            y = 62.6;
+            y = 63.75;
             a = -90;
             if (side == 1) {
                 x = 36;
@@ -405,7 +436,7 @@ public class Auto extends CameraTesting {
             }
         }
 
-        return new Pose2d(x, y, a);
+        return new Pose2d(x, y, Math.toRadians(a));
     }
 
 }
