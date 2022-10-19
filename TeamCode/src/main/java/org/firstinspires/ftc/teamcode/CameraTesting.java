@@ -102,11 +102,11 @@ public class CameraTesting extends LinearOpMode
         /*
          * The core values which define the location and size of the sample regions
          */
-        static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(159,75);
-        static final Point REGION2_TOPLEFT_ANCHOR_POINT = new Point(159,125);
-        static final Point REGION3_TOPLEFT_ANCHOR_POINT = new Point(159,175);
-        static final int REGION_WIDTH = 50;
-        static final int REGION_HEIGHT = 50;
+        static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(140,75);
+        static final Point REGION2_TOPLEFT_ANCHOR_POINT = new Point(140,140);
+        static final Point REGION3_TOPLEFT_ANCHOR_POINT = new Point(140,200);
+        static final int REGION_WIDTH = 125;
+        static final int REGION_HEIGHT = 60;
 
         /*
          * Points which actually define the sample region rectangles, derived from above values
