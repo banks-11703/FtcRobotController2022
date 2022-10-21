@@ -192,11 +192,16 @@ public class DriveCode extends LinearOpMode {
                 telemetry.addData("TT at ", "Home");
                 telemetry.update();
             } else {
-                if (!turningtoright && !turningtoleft && !autoHome) {
-                    drive.turntable.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                    drive.turntable.setPower((gamepad2.right_trigger - gamepad2.left_trigger) / 2);
+                double tablePower = 0;
+                if (!turningtoright && !turningtoleft && !autoHome && drive.turntable.getCurrentPosition() > 2000) {
+                    tablePower = -gamepad2.left_trigger;
+                } else if (!turningtoright && !turningtoleft && !autoHome && drive.turntable.getCurrentPosition() < -2000) {
+                    tablePower = gamepad2.right_trigger;
+                } else {
+                    tablePower = gamepad2.right_trigger - gamepad2.left_trigger;
                 }
-
+                drive.turntable.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                drive.turntable.setPower(tablePower / 2);
             }
             // Update everything. Odometry. Etc.
             drive.update();
