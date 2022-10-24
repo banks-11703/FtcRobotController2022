@@ -114,7 +114,10 @@ public class BasicOpMode_Linear extends LinearOpMode {
             FrontLeftDrive.setPower((+forward_reverse + rotate - strafe) );
             FrontRightDrive.setPower((+forward_reverse - rotate + strafe) );
             BackRightDrive.setPower((+forward_reverse - rotate - strafe) );
-
+            telemetry.addData("motors", FrontLeftDrive.getCurrentPosition());
+            telemetry.addData("motors2", FrontRightDrive.getCurrentPosition());
+            telemetry.addData("motors3", BackLeftDrive.getCurrentPosition());
+            telemetry.addData("motors4", BackRightDrive.getCurrentPosition());
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.update();

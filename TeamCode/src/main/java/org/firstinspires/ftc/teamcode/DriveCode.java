@@ -46,7 +46,6 @@ public class DriveCode extends LinearOpMode {
         // We want to turn off velocity control for teleop
         // Velocity control per wheel is not necessary outside of motion profiled auto
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        drive.lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         drive.turntable.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         // Retrieve our pose from the PoseStorage.currentPose static field
         // this is what we get from autonomous
@@ -241,10 +240,10 @@ public class DriveCode extends LinearOpMode {
             // Print pose to telemetry
             telemetry.addData("Turn Limiter", drive.turnlimiter.getState());
             telemetry.addData("TurnTable", drive.turntable.getCurrentPosition());
-            telemetry.addData("Lift", drive.lift.getCurrentPosition());
             telemetry.addData("x", poseEstimate.getX());
             telemetry.addData("y", poseEstimate.getY());
             telemetry.addData("heading", poseEstimate.getHeading());
+
             telemetry.addData("TT is at home", lastwasforward);
             if (Level() == 1) {
                 telemetry.addData("Level:", "Intake");
