@@ -95,10 +95,6 @@ public class SampleMecanumDrive extends MecanumDrive {
         }
 
         // TODO: adjust the names of the following hardware devices to match your configuration
-//        imu = hardwareMap.get(BNO055IMU.class, "imu");
-//        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-//        parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
-//        imu.initialize(parameters);
 
         // TODO: If the hub containing the IMU you are using is mounted so that the "REV" logo does
         // not face up, remap the IMU axes so that the z-axis points upward (normal to the floor.)
@@ -126,13 +122,13 @@ public class SampleMecanumDrive extends MecanumDrive {
         leftRear = hardwareMap.get(DcMotorEx.class, "bl");
         rightRear = hardwareMap.get(DcMotorEx.class, "br");
         rightFront = hardwareMap.get(DcMotorEx.class, "fr");
+
+        motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
+
         lift = hardwareMap.get(DcMotor.class,"l");
         turntable = hardwareMap.get(DcMotor.class,"tt");
         claw = hardwareMap.get(Servo.class,"c");
-//        arm = hardwareMap.get(Servo.class,"a");
         turnlimiter = hardwareMap.get(DigitalChannel.class, "tl");
-        motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
-
         for (DcMotorEx motor : motors) {
             MotorConfigurationType motorConfigurationType = motor.getMotorType().clone();
             motorConfigurationType.setAchieveableMaxRPMFraction(1.0);
@@ -309,12 +305,7 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     @Override
     public Double getExternalHeadingVelocity() {
-        // To work around an SDK bug, use -zRotationRate in place of xRotationRate
-        // and -xRotationRate in place of zRotationRate (yRotationRate behaves as 
-        // expected). This bug does NOT affect orientation. 
-        //
-        // See https://github.com/FIRST-Tech-Challenge/FtcRobotController/issues/251 for details.
-        return (double) -imu.getAngularVelocity().xRotationRate;
+        return (double) imu.getAngularVelocity().zRotationRate;
     }
 
     public static TrajectoryVelocityConstraint getVelocityConstraint(double maxVel, double maxAngularVel, double trackWidth) {
