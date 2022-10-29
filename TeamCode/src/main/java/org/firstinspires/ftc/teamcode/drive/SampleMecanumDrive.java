@@ -55,8 +55,8 @@ import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kV;
  */
 @Config
 public class SampleMecanumDrive extends MecanumDrive {
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0, 0, 0);
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(0, 0, 0);
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(8, 0, 0);
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(8, 0, 0);
 
     public static double LATERAL_MULTIPLIER = 1;
 
@@ -70,12 +70,15 @@ public class SampleMecanumDrive extends MecanumDrive {
     private static final TrajectoryAccelerationConstraint ACCEL_CONSTRAINT = getAccelerationConstraint(MAX_ACCEL);
 
     private TrajectoryFollower follower;
-    public DcMotor lift;
+    public DcMotor mainLift;
+    public DcMotor backupLift;
     private DcMotorEx leftFront, leftRear, rightRear, rightFront;
     private List<DcMotorEx> motors;
     public Servo claw;
     public Servo arm;
     public DigitalChannel turnlimiter;
+    public DigitalChannel turnlimiterl;
+    public DigitalChannel turnlimiterr;
     public DcMotor turntable;
     private BNO055IMU imu;
     private VoltageSensor batteryVoltageSensor;
@@ -118,17 +121,25 @@ public class SampleMecanumDrive extends MecanumDrive {
         // For example, if +Y in this diagram faces downwards, you would use AxisDirection.NEG_Y.
         // BNO055IMUUtil.remapZAxis(imu, AxisDirection.NEG_Y);
 
-        leftFront = hardwareMap.get(DcMotorEx.class, "fl");
-        leftRear = hardwareMap.get(DcMotorEx.class, "bl");
-        rightRear = hardwareMap.get(DcMotorEx.class, "br");
+        leftFront = hardwareMap.get (DcMotorEx.class, "fl");
+        leftRear = hardwareMap.get  (DcMotorEx.class, "bl");
+        rightRear = hardwareMap.get (DcMotorEx.class, "br");
         rightFront = hardwareMap.get(DcMotorEx.class, "fr");
-
+        // TODO: reverse any motors using DcMotor.setDirection()
+        leftFront.setDirection (DcMotorSimple.Direction.REVERSE);
+        leftRear.setDirection  (DcMotorSimple.Direction.REVERSE);
+        rightFront.setDirection(DcMotorSimple.Direction.FORWARD);
+        rightRear.setDirection (DcMotorSimple.Direction.FORWARD);
+        // TODO: if desired, use setLocalizer() to change the localization method
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
 
-        lift = hardwareMap.get(DcMotor.class,"l");
+        mainLift = hardwareMap.get(DcMotor.class,"l");
+ //       backupLift = hardwareMap.get(DcMotor.class,"bl");
         turntable = hardwareMap.get(DcMotor.class,"tt");
         claw = hardwareMap.get(Servo.class,"c");
         turnlimiter = hardwareMap.get(DigitalChannel.class, "tl");
+//        turnlimiterl = hardwareMap.get(DigitalChannel.class, "tll");
+//        turnlimiterr = hardwareMap.get(DigitalChannel.class, "tlr");
         for (DcMotorEx motor : motors) {
             MotorConfigurationType motorConfigurationType = motor.getMotorType().clone();
             motorConfigurationType.setAchieveableMaxRPMFraction(1.0);
@@ -145,10 +156,7 @@ public class SampleMecanumDrive extends MecanumDrive {
             setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, MOTOR_VELO_PID);
         }
 
-        // TODO: reverse any motors using DcMotor.setDirection()
-        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
-        leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
-        // TODO: if desired, use setLocalizer() to change the localization method
+
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
         setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
         trajectorySequenceRunner = new TrajectorySequenceRunner(follower, HEADING_PID);
