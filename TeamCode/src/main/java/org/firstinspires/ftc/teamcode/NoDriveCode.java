@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 
 @TeleOp
-public class DriveCode extends LinearOpMode {
+public class NoDriveCode extends LinearOpMode {
     boolean autoHome;
     boolean turntoforward = false;
     boolean turntoright = false;
@@ -29,7 +29,7 @@ public class DriveCode extends LinearOpMode {
     double claw;
     int yMod = 0;
     int xMod = 0;
-
+    int liftpos;
     public double Level() {
         return level % 5;
     }
@@ -46,14 +46,16 @@ public class DriveCode extends LinearOpMode {
         // We want to turn off velocity control for teleop
         // Velocity control per wheel is not necessary outside of motion profiled auto
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        drive.mainLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         drive.mainLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         // Retrieve our pose from the PoseStorage.currentPose static field
         // this is what we get from autonomous
         drive.setPoseEstimate(PoseStorage.currentPose);
 
         waitForStart();
         if (isStopRequested()) return;
-
+drive.mainLift.setTargetPosition(-30);
         while (opModeIsActive() && !isStopRequested()) {
 
             if (gamepad1.dpad_up) {
@@ -71,13 +73,6 @@ public class DriveCode extends LinearOpMode {
                 xMod = 0;
             }
 
-            drive.setWeightedDrivePower(
-                    new Pose2d(
-                            -gamepad1.left_stick_y + yMod,
-                            -gamepad1.left_stick_x - xMod,
-                            -gamepad1.right_stick_x
-                    )
-            );
             // && drive.lift.getCurrentPosition() >= -5600
             //&& drive.lift.getCurrentPosition() <= -100
 //            if (Level() == 1) {
@@ -100,16 +95,33 @@ public class DriveCode extends LinearOpMode {
 //                }
 //            }
 
-            if (gamepad2.a && drive.mainLift.getCurrentPosition() <= -10) {
-                drive.mainLift.setPower(0.1);
-                drive.backupLift.setPower(-0.1);
+//            if (gamepad2.a && drive.mainLift.getCurrentPosition() <= -10) {
+//                drive.mainLift.setPower(0.1);
+//                drive.backupLift.setPower(-0.1);
+//            } else if (gamepad2.y && drive.mainLift.getCurrentPosition() >= -1000) {
+//                drive.mainLift.setPower(-1);
+//                drive.backupLift.setPower(1);
+//            } else {
+//                drive.mainLift.setPower(0);
+//                drive.backupLift.setPower(0);
+//            }
+            if (gamepad2.a && drive.mainLift.getCurrentPosition() <= -100) {
+             liftpos = drive.mainLift.getTargetPosition();
+             liftpos += 40;
+             drive.mainLift.setTargetPosition(liftpos);
+                drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             } else if (gamepad2.y && drive.mainLift.getCurrentPosition() >= -1000) {
-                drive.mainLift.setPower(-1);
-                drive.backupLift.setPower(1);
-            } else {
-                drive.mainLift.setPower(0);
-                drive.backupLift.setPower(0);
+                liftpos = drive.mainLift.getTargetPosition();
+                liftpos -= 40;
+                drive.mainLift.setTargetPosition(liftpos);
+                drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             }
+            if (Math.abs(drive.mainLift.getCurrentPosition()- drive.mainLift.getTargetPosition()) <= 20){
+                drive.mainLift.setPower(-0.1);
+            } else if (drive.mainLift.isBusy()){
+                drive.mainLift.setPower(-0.4);
+            }
+            drive.backupLift.setPower(-drive.mainLift.getPower());
             if (Claw() == 0) {
                 drive.claw.setPosition(0.3);//0.225
                 telemetry.addData("Claw:", "Closed");
@@ -327,11 +339,13 @@ public class DriveCode extends LinearOpMode {
             } else if (!gamepad2.x && button_x2_was_pressed) {
                 button_x2_was_pressed = false;
             }
+
             // Read pose
             Pose2d poseEstimate = drive.getPoseEstimate();
             // Print pose to telemetry
             telemetry.addData("Turn Limiter", drive.turnlimiter.getState());
             telemetry.addData("Lift", drive.mainLift.getCurrentPosition());
+            telemetry.addData("Lift Projected", drive.mainLift.getTargetPosition());
             telemetry.addData("x", poseEstimate.getX());
             telemetry.addData("y", poseEstimate.getY());
             telemetry.addData("heading", poseEstimate.getHeading());
