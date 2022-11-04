@@ -29,6 +29,7 @@ public class DriveCode extends LinearOpMode {
     double claw;
     int yMod = 0;
     int xMod = 0;
+    int liftpos;
 
     public double Level() {
         return level % 5;
@@ -46,13 +47,16 @@ public class DriveCode extends LinearOpMode {
         // We want to turn off velocity control for teleop
         // Velocity control per wheel is not necessary outside of motion profiled auto
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        drive.mainLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         drive.mainLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        drive.mainLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         // Retrieve our pose from the PoseStorage.currentPose static field
         // this is what we get from autonomous
         drive.setPoseEstimate(PoseStorage.currentPose);
 
         waitForStart();
         if (isStopRequested()) return;
+        drive.mainLift.setTargetPosition(drive.mainLift.getCurrentPosition());
 
         while (opModeIsActive() && !isStopRequested()) {
 
@@ -100,15 +104,22 @@ public class DriveCode extends LinearOpMode {
 //                }
 //            }
 
-            if (gamepad2.a && drive.mainLift.getCurrentPosition() <= -10) {
-                drive.mainLift.setPower(0.1);
-                drive.backupLift.setPower(-0.1);
-            } else if (gamepad2.y && drive.mainLift.getCurrentPosition() >= -1000) {
-                drive.mainLift.setPower(-1);
-                drive.backupLift.setPower(1);
-            } else {
+            if (gamepad2.a && drive.mainLift.getCurrentPosition() <= -100 && drive.mainLift.getTargetPosition() <= -100) {
+                liftpos = drive.mainLift.getTargetPosition();
+                liftpos += 40;
+                drive.mainLift.setTargetPosition(liftpos);
+                drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            } else if (gamepad2.y && drive.mainLift.getCurrentPosition() >= -2950 && drive.mainLift.getTargetPosition() >= -2950) {
+                liftpos = drive.mainLift.getTargetPosition();
+                liftpos -= 40;
+                drive.mainLift.setTargetPosition(liftpos);
+                drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
+
+            if (Math.abs(drive.mainLift.getCurrentPosition() - drive.mainLift.getTargetPosition()) <= 5 ){
                 drive.mainLift.setPower(0);
-                drive.backupLift.setPower(0);
+            } else if (drive.mainLift.isBusy()) {
+                drive.mainLift.setPower(-1);
             }
             if (Claw() == 0) {
                 drive.claw.setPosition(0.3);//0.225

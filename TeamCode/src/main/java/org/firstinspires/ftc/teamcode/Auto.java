@@ -302,62 +302,62 @@ waitForStart();
         Pose2d park1 = new Pose2d((60*xReflect) + xShift, 12 * yMod, Math.toRadians(-90*yMod));
         Pose2d park2 = new Pose2d((36*xReflect) + xShift, 12 * yMod, Math.toRadians(-90*yMod));
         Pose2d park3 = new Pose2d((12*xReflect) + xShift, 12 * yMod, Math.toRadians(-90*yMod));
-//        Trajectory Movement1 = drive.trajectoryBuilder(drive.getPoseEstimate())
-//                .lineToLinearHeading(movement1)
-//                .build();
-//        Trajectory Movement2 = drive.trajectoryBuilder(Movement1.end())
-//                .lineToLinearHeading(movement2)
-//                .build();
-//        Trajectory ScorePos1 = drive.trajectoryBuilder(Movement1.end())
-//                .lineToLinearHeading(scorePos, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
-//                        DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
-//                .build();
-//        Trajectory IntakeStackPos1 = drive.trajectoryBuilder(ScorePos1.end())
-//                .lineToLinearHeading(intakeStackPos, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
-//                        DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
-//                .build();
-//        Trajectory ScorePos2 = drive.trajectoryBuilder(IntakeStackPos1.end())
-//                .lineToLinearHeading(scorePos, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
-//                        DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
-//                .build();
-//        Trajectory IntakeStackPos2 = drive.trajectoryBuilder(ScorePos2.end())
-//                .lineToLinearHeading(intakeStackPos, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
-//                        DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
-//                .build();
-//        Trajectory ScorePos3 = drive.trajectoryBuilder(IntakeStackPos2.end())
-//                .lineToLinearHeading(scorePos, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
-//                        DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
-//                .build();
-//        Trajectory IntakeStackPos3 = drive.trajectoryBuilder(ScorePos3.end())
-//                .lineToLinearHeading(intakeStackPos, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
-//                        DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
-//                .build();
-//        Trajectory ScorePos4 = drive.trajectoryBuilder(IntakeStackPos3.end())
-//                .lineToLinearHeading(scorePos, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
-//                        DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
-//                .build();
-//        Trajectory IntakeStackPos4 = drive.trajectoryBuilder(ScorePos4.end())
-//                .lineToLinearHeading(intakeStackPos, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
-//                        DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
-//                .build();
-//        Trajectory ScorePos5 = drive.trajectoryBuilder(IntakeStackPos4.end())
-//                .lineToLinearHeading(scorePos, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
-//                        DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
-//                .build();
-//        Trajectory IntakeStackPos5 = drive.trajectoryBuilder(ScorePos5.end())
-//                .lineToLinearHeading(intakeStackPos, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
-//                        DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
-//                .build();
-//        Trajectory ScorePos6 = drive.trajectoryBuilder(IntakeStackPos5.end())
-//                .lineToLinearHeading(scorePos, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
-//                        DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
-//                .build();
-//        Trajectory Park1 = drive.trajectoryBuilder(Movement2.end())
-//                .lineToLinearHeading(park1)
-//                .build();
-//        Trajectory Park2 = drive.trajectoryBuilder(Movement2.end())
-//                .lineToLinearHeading(park2)
-//                .build();
+        Trajectory Movement1 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                .lineToLinearHeading(movement1)
+                .build();
+        Trajectory Movement2 = drive.trajectoryBuilder(Movement1.end())
+                .lineToLinearHeading(movement2)
+                .build();
+        Trajectory ScorePos1 = drive.trajectoryBuilder(Movement1.end())
+                .lineToLinearHeading(scorePos, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
+                        DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
+                .build();
+        Trajectory IntakeStackPos1 = drive.trajectoryBuilder(ScorePos1.end())
+                .lineToLinearHeading(intakeStackPos, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
+                        DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
+                .build();
+        Trajectory ScorePos2 = drive.trajectoryBuilder(IntakeStackPos1.end())
+                .lineToLinearHeading(scorePos, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
+                        DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
+                .build();
+        Trajectory IntakeStackPos2 = drive.trajectoryBuilder(ScorePos2.end())
+                .lineToLinearHeading(intakeStackPos, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
+                        DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
+                .build();
+        Trajectory ScorePos3 = drive.trajectoryBuilder(IntakeStackPos2.end())
+                .lineToLinearHeading(scorePos, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
+                        DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
+                .build();
+        Trajectory IntakeStackPos3 = drive.trajectoryBuilder(ScorePos3.end())
+                .lineToLinearHeading(intakeStackPos, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
+                        DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
+                .build();
+        Trajectory ScorePos4 = drive.trajectoryBuilder(IntakeStackPos3.end())
+                .lineToLinearHeading(scorePos, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
+                        DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
+                .build();
+        Trajectory IntakeStackPos4 = drive.trajectoryBuilder(ScorePos4.end())
+                .lineToLinearHeading(intakeStackPos, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
+                        DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
+                .build();
+        Trajectory ScorePos5 = drive.trajectoryBuilder(IntakeStackPos4.end())
+                .lineToLinearHeading(scorePos, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
+                        DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
+                .build();
+        Trajectory IntakeStackPos5 = drive.trajectoryBuilder(ScorePos5.end())
+                .lineToLinearHeading(intakeStackPos, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
+                        DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
+                .build();
+        Trajectory ScorePos6 = drive.trajectoryBuilder(IntakeStackPos5.end())
+                .lineToLinearHeading(scorePos, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
+                        DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
+                .build();
+        Trajectory Park1 = drive.trajectoryBuilder(Movement2.end())
+                .lineToLinearHeading(park1)
+                .build();
+        Trajectory Park2 = drive.trajectoryBuilder(Movement2.end())
+                .lineToLinearHeading(park2)
+                .build();
 //        Trajectory Park3 = drive.trajectoryBuilder(Movement2.end())
 //                .lineToLinearHeading(park3)
 //                .build();
@@ -370,96 +370,94 @@ waitForStart();
 //        Trajectory Movement3 = drive.trajectoryBuilder(Movement1.end())
 //                .back(10*5)
 //                .build();
-        Trajectory Movement4 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                .forward(70)
-                .build();
-        Trajectory Park1 = drive.trajectoryBuilder(Movement4.end())
-                .strafeLeft(155)
-                .build();
-//        Trajectory Park2 = drive.trajectoryBuilder(Movement4.end())
-//                .strafeLeft(24*6*xReflect)
+//        Trajectory Movement4 = drive.trajectoryBuilder(drive.getPoseEstimate())
+//                .forward(70)
 //                .build();
-        Trajectory Park3 = drive.trajectoryBuilder(Movement4.end())
-                .strafeRight(155)
-                .build();
+//        Trajectory Park1 = drive.trajectoryBuilder(Movement4.end())
+//                .strafeLeft(155)
+//                .build();
+////        Trajectory Park2 = drive.trajectoryBuilder(Movement4.end())
+////                .strafeLeft(24*6*xReflect)
+////                .build();
+//        Trajectory Park3 = drive.trajectoryBuilder(Movement4.end())
+//                .strafeRight(155)
+//                .build();
         if (Mode % 3 == 0) {//doing nothing
             drive.turn(Math.toRadians(45));
         } else if (Mode % 3 == 1) {//cycling
-//            drive.followTrajectory(Movement1);
-//            drive.followTrajectory(Movement2);
-//            drive.followTrajectory(ScorePos1);
-//            //Score Cone
-//            drive.followTrajectory(IntakeStackPos1);
-//            //Intake Cone
-//            drive.followTrajectory(ScorePos2);
-//            //Score Cone
-//            drive.followTrajectory(IntakeStackPos2);
-//            //Intake Cone
-//            drive.followTrajectory(ScorePos3);
-//            //Score Cone
-//            drive.followTrajectory(IntakeStackPos3);
-//            //Intake Cone
-//            drive.followTrajectory(ScorePos4);
-//            //Score Cone
-//            drive.followTrajectory(IntakeStackPos4);
-//            //Intake Cone
-//            drive.followTrajectory(ScorePos5);
-//            //Score Cone
-//            drive.followTrajectory(IntakeStackPos5);
-//            //Intake Cone
-//            drive.followTrajectory(ScorePos6);
-//            //Score Cone
+            drive.followTrajectory(Movement1);
+            drive.followTrajectory(Movement2);
+            drive.followTrajectory(ScorePos1);
+            //Score Cone
+            drive.followTrajectory(IntakeStackPos1);
+            //Intake Cone
+            drive.followTrajectory(ScorePos2);
+            //Score Cone
+            drive.followTrajectory(IntakeStackPos2);
+            //Intake Cone
+            drive.followTrajectory(ScorePos3);
+            //Score Cone
+            drive.followTrajectory(IntakeStackPos3);
+            //Intake Cone
+            drive.followTrajectory(ScorePos4);
+            //Score Cone
+            drive.followTrajectory(IntakeStackPos4);
+            //Intake Cone
+            drive.followTrajectory(ScorePos5);
+            //Score Cone
+
+            drive.followTrajectory(IntakeStackPos5);
+            //Intake Cone
+            drive.followTrajectory(ScorePos6);
+            //Score Cone
 
             switch (autoParkPosition) {
                 case 1:
-//                    drive.followTrajectory(Park2);
+                    drive.followTrajectory(Park2);
                     if (isStopRequested()) return;
                     break;
                 case 2:
-//                    drive.followTrajectory(Park1);
+                    if (side % 2 == 0) {
+//                        drive.followTrajectory(Park3);
+                    } else {
+                        drive.followTrajectory(Park1);
+                    }
                     if (isStopRequested()) return;
                     break;
                 default:
-//                    drive.followTrajectory(Park3);
+                    if (side % 2 == 0) {
+                        drive.followTrajectory(Park1);
+                    } else {
+//                        drive.followTrajectory(Park3);
+                    }
                     if (isStopRequested()) return;
                     break;
-
-
             }
         } else if (Mode % 3 == 2) {//Just Parking
-//            telemetry.addData("Robot Position: ", drive.getPoseEstimate());
-//            telemetry.update();
-//            drive.followTrajectory(Movement1);
-//            telemetry.addData("Robot Position: ", drive.getPoseEstimate());
-//            telemetry.update();
-//            drive.followTrajectory(Movement2);
-//            telemetry.addData("Robot Position: ", drive.getPoseEstimate());
-//            telemetry.update();
-//            drive.followTrajectory(Movement3);
-//            telemetry.addData("Robot Position: ", drive.getPoseEstimate());
-//            telemetry.update();
-            drive.followTrajectory(Movement4);
-            telemetry.addData("Robot Position: ", drive.getPoseEstimate());
-            telemetry.update();
+            drive.followTrajectory(Movement1);
+            drive.followTrajectory(Movement2);
+
             switch (autoParkPosition) {
-                case 0:
-                        drive.followTrajectory(Park1);
-                        drive.turn(Math.toRadians(45));
+                case 1:
+                    drive.followTrajectory(Park2);
                     if (isStopRequested()) return;
                     break;
-                case 1:
-//                    drive.followTrajectory(Park2);
-                    //                    drive.followTrajectory(Park1);
+                case 2:
+                    if (side % 2 == 0) {
+//                        drive.followTrajectory(Park3);
+                    } else {
+                        drive.followTrajectory(Park1);
+                    }
                     if (isStopRequested()) return;
                     break;
                 default:
-                        drive.followTrajectory(Park3);
-                        drive.turn(Math.toRadians(45));
-//                    drive.followTrajectory(Park3);
+                    if (side % 2 == 0) {
+                        drive.followTrajectory(Park1);
+                    } else {
+//                        drive.followTrajectory(Park3);
+                    }
                     if (isStopRequested()) return;
                     break;
-
-
             }
         }
 
