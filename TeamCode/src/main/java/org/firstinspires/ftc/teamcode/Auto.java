@@ -186,11 +186,11 @@ public class Auto extends LinearOpMode {
             yMod = -1;
         }
         if ((team % 2 == 0 && side % 2 == 0) || (team % 2 == 1 && side % 2 == 1)) {
-            xReflect = 1;
+            xReflect = -1;
             xShift = 0;
             headingMod = 0;
         } else if ((team % 2 == 0 && side % 2 == 1) || (team % 2 == 1 && side % 2 == 0)) {
-            xReflect = -1;
+            xReflect = 1;
             xShift = 72;
             headingMod = 180;
         }
@@ -295,6 +295,7 @@ waitForStart();
                     break;
             }*/
 
+        Pose2d movement0 = new Pose2d(36 * xReflect, 60 * yMod, Math.toRadians(-90*yMod));
         Pose2d movement1 = new Pose2d(12 * xReflect, 60 * yMod, Math.toRadians(-90*yMod));
         Pose2d movement2 = new Pose2d(12 * xReflect, 12 * yMod, Math.toRadians(-90*yMod));
         Pose2d scorePos = new Pose2d(24 * xReflect, 12 * yMod, Math.toRadians(180 + headingMod));    //Score Position
@@ -302,7 +303,10 @@ waitForStart();
         Pose2d park1 = new Pose2d((60*xReflect) + xShift, 12 * yMod, Math.toRadians(-90*yMod));
         Pose2d park2 = new Pose2d((36*xReflect) + xShift, 12 * yMod, Math.toRadians(-90*yMod));
         Pose2d park3 = new Pose2d((12*xReflect) + xShift, 12 * yMod, Math.toRadians(-90*yMod));
-        Trajectory Movement1 = drive.trajectoryBuilder(drive.getPoseEstimate())
+        Trajectory Movement0 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                .lineToLinearHeading(movement0)
+                .build();
+        Trajectory Movement1 = drive.trajectoryBuilder(movement0)
                 .lineToLinearHeading(movement1)
                 .build();
         Trajectory Movement2 = drive.trajectoryBuilder(Movement1.end())
@@ -383,8 +387,9 @@ waitForStart();
 //                .strafeRight(155)
 //                .build();
         if (Mode % 3 == 0) {//doing nothing
-            drive.turn(Math.toRadians(45));
+
         } else if (Mode % 3 == 1) {//cycling
+            drive.followTrajectory(Movement0);
             drive.followTrajectory(Movement1);
             drive.followTrajectory(Movement2);
             drive.followTrajectory(ScorePos1);
@@ -434,6 +439,7 @@ waitForStart();
                     break;
             }
         } else if (Mode % 3 == 2) {//Just Parking
+            drive.followTrajectory(Movement0);
             drive.followTrajectory(Movement1);
             drive.followTrajectory(Movement2);
 
@@ -471,19 +477,19 @@ waitForStart();
             y = -63.75;
             a = 90;
             if (side == 1) {
-                x = 36;
+                x = 40;
             } else {
-                x = -36;
+                x = -40;
 
             }
         } else {
             y = 63.75;
             a = -90;
             if (side == 1) {
-                x = -36;
+                x = -40;
 
             } else {
-                x = 36;
+                x = 40;
             }
         }
 
