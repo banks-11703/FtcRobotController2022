@@ -34,6 +34,7 @@ public class Auto extends LinearOpMode {
     int xReflect = 1;
     int xShift = 0;
     int headingMod = 0;
+    int turnMod = 1;
 
     public int Team() {
         return team % 2;
@@ -186,13 +187,18 @@ public class Auto extends LinearOpMode {
             yMod = -1;
         }
         if ((team % 2 == 0 && side % 2 == 0) || (team % 2 == 1 && side % 2 == 1)) {
-            xReflect = -1;
-            xShift = 0;
-            headingMod = 0;
-        } else if ((team % 2 == 0 && side % 2 == 1) || (team % 2 == 1 && side % 2 == 0)) {
             xReflect = 1;
-            xShift = 72;
+            xShift = 0;
             headingMod = 180;
+        } else if ((team % 2 == 0 && side % 2 == 1) || (team % 2 == 1 && side % 2 == 0)) {
+            xReflect = -1;
+            xShift = 72;
+            headingMod = 0;
+        }
+        if(side % 2 == 0) {
+            turnMod = -1;
+        } else {
+            turnMod = 1;
         }
 
 waitForStart();
@@ -295,22 +301,19 @@ waitForStart();
                     break;
             }*/
 
-        Pose2d movement0 = new Pose2d(36 * xReflect, 60 * yMod, Math.toRadians(-90*yMod));
-        Pose2d movement1 = new Pose2d(12 * xReflect, 60 * yMod, Math.toRadians(-90*yMod));
-        Pose2d movement2 = new Pose2d(12 * xReflect, 12 * yMod, Math.toRadians(-90*yMod));
-        Pose2d scorePos = new Pose2d(24 * xReflect, 12 * yMod, Math.toRadians(180 + headingMod));    //Score Position
-        Pose2d intakeStackPos = new Pose2d(62 * xReflect, 12 * yMod, Math.toRadians(180 + headingMod));    //Intake cone stack Position
-        Pose2d park1 = new Pose2d((60*xReflect) + xShift, 12 * yMod, Math.toRadians(-90*yMod));
-        Pose2d park2 = new Pose2d((36*xReflect) + xShift, 12 * yMod, Math.toRadians(-90*yMod));
-        Pose2d park3 = new Pose2d((12*xReflect) + xShift, 12 * yMod, Math.toRadians(-90*yMod));
-        Trajectory Movement0 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                .lineToLinearHeading(movement0)
-                .build();
-        Trajectory Movement1 = drive.trajectoryBuilder(movement0)
-                .lineToLinearHeading(movement1)
-                .build();
-        Trajectory Movement2 = drive.trajectoryBuilder(Movement1.end())
-                .lineToLinearHeading(movement2)
+
+//        Pose2d movement1 = new Pose2d(36 * xReflect, 60 * yMod, Math.toRadians(-90*yMod));
+        Pose2d movement2 = new Pose2d(-36 * xReflect, 13 * yMod, Math.toRadians(-90*yMod));
+        Pose2d scorePos = new Pose2d(-24 * xReflect, 13 * yMod, Math.toRadians(180+headingMod));    //Score Position
+        Pose2d intakeStackPos = new Pose2d(-62 * xReflect, 13 * yMod, Math.toRadians(180+headingMod));    //Intake cone stack Position
+        Pose2d park1 = new Pose2d((-56)+xShift, 13 * yMod, Math.toRadians(180+headingMod));
+        Pose2d park2 = new Pose2d((-36)+xShift, 13 * yMod, Math.toRadians(180+headingMod));
+        Pose2d park3 = new Pose2d((-12)+xShift, 13 * yMod, Math.toRadians(180+headingMod));
+
+
+        Trajectory Movement1 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                .lineToLinearHeading(movement2, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
+                        DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
                 .build();
         Trajectory ScorePos1 = drive.trajectoryBuilder(Movement1.end())
                 .lineToLinearHeading(scorePos, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
@@ -356,42 +359,33 @@ waitForStart();
                 .lineToLinearHeading(scorePos, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
                         DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
                 .build();
-        Trajectory Park1 = drive.trajectoryBuilder(Movement2.end())
+        Trajectory CyclePark1 = drive.trajectoryBuilder(Movement1.end())
                 .lineToLinearHeading(park1)
                 .build();
-        Trajectory Park2 = drive.trajectoryBuilder(Movement2.end())
-                .lineToLinearHeading(park2)
+//        Trajectory CyclePark2 = drive.trajectoryBuilder(Movement1.end())
+//                .lineToLinearHeading(park2)
+//                .build();
+        Trajectory CyclePark3 = drive.trajectoryBuilder(Movement1.end())
+                .lineToLinearHeading(park3)
                 .build();
-//        Trajectory Park3 = drive.trajectoryBuilder(Movement2.end())
-//                .lineToLinearHeading(park3)
+        Trajectory Park1 = drive.trajectoryBuilder(Movement1.end().plus(new Pose2d(0, 0, Math.toRadians(turnMod*90))))
+                .lineToLinearHeading(park1, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
+                        DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
+                .build();
+//        Trajectory Park2 = drive.trajectoryBuilder(Movement1.end().plus(new Pose2d(0, 0, Math.toRadians(turnMod*90))))
+//                .lineToLinearHeading(park2, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
+//                        DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
 //                .build();
-//        Trajectory Movement1 = drive.trajectoryBuilder(drive.getPoseEstimate())
-//                .forward(2)
-//                .build();
-//        Trajectory Movement2 = drive.trajectoryBuilder(Movement1.end())
-//                .strafeRight(24*6*xReflect)
-//                .build();
-//        Trajectory Movement3 = drive.trajectoryBuilder(Movement1.end())
-//                .back(10*5)
-//                .build();
-//        Trajectory Movement4 = drive.trajectoryBuilder(drive.getPoseEstimate())
-//                .forward(70)
-//                .build();
-//        Trajectory Park1 = drive.trajectoryBuilder(Movement4.end())
-//                .strafeLeft(155)
-//                .build();
-////        Trajectory Park2 = drive.trajectoryBuilder(Movement4.end())
-////                .strafeLeft(24*6*xReflect)
-////                .build();
-//        Trajectory Park3 = drive.trajectoryBuilder(Movement4.end())
-//                .strafeRight(155)
-//                .build();
+        Trajectory Park3 = drive.trajectoryBuilder(Movement1.end().plus(new Pose2d(0, 0, Math.toRadians(turnMod*90))))
+                .lineToLinearHeading(park3, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
+                        DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
+                .build();
+
         if (Mode % 3 == 0) {//doing nothing
 
         } else if (Mode % 3 == 1) {//cycling
-            drive.followTrajectory(Movement0);
+//            drive.followTrajectory(Movement1);
             drive.followTrajectory(Movement1);
-            drive.followTrajectory(Movement2);
             drive.followTrajectory(ScorePos1);
             //Score Cone
             drive.followTrajectory(IntakeStackPos1);
@@ -418,49 +412,45 @@ waitForStart();
 
             switch (autoParkPosition) {
                 case 1:
-                    drive.followTrajectory(Park2);
+//                    drive.followTrajectory(Park2);
                     if (isStopRequested()) return;
                     break;
                 case 2:
-                    if (side % 2 == 0) {
-//                        drive.followTrajectory(Park3);
-                    } else {
-                        drive.followTrajectory(Park1);
-                    }
+                        drive.followTrajectory(Park3);
                     if (isStopRequested()) return;
                     break;
                 default:
-                    if (side % 2 == 0) {
                         drive.followTrajectory(Park1);
-                    } else {
-//                        drive.followTrajectory(Park3);
-                    }
                     if (isStopRequested()) return;
                     break;
             }
         } else if (Mode % 3 == 2) {//Just Parking
-            drive.followTrajectory(Movement0);
             drive.followTrajectory(Movement1);
-            drive.followTrajectory(Movement2);
+            if(side % 2 == 0) {
+                drive.turn(Math.toRadians(-90));
+            } else {
+                drive.turn(Math.toRadians(90));
+            }
 
             switch (autoParkPosition) {
                 case 1:
-                    drive.followTrajectory(Park2);
+//                    drive.followTrajectory(Park2);
                     if (isStopRequested()) return;
                     break;
                 case 2:
-                    if (side % 2 == 0) {
-//                        drive.followTrajectory(Park3);
+                    if(team % 2 == 0) {
+                        drive.followTrajectory(Park3);
                     } else {
                         drive.followTrajectory(Park1);
                     }
+
                     if (isStopRequested()) return;
                     break;
                 default:
-                    if (side % 2 == 0) {
+                    if(team % 2 == 0) {
                         drive.followTrajectory(Park1);
                     } else {
-//                        drive.followTrajectory(Park3);
+                        drive.followTrajectory(Park3);
                     }
                     if (isStopRequested()) return;
                     break;
@@ -474,22 +464,22 @@ waitForStart();
     public Pose2d StartingPos() {
         double x, y, a;
         if (team == 0) {
-            y = -63.75;
+            y = -63;
             a = 90;
             if (side == 1) {
-                x = 40;
+                x = 36;
             } else {
-                x = -40;
+                x = -36;
 
             }
         } else {
-            y = 63.75;
+            y = 63;
             a = -90;
             if (side == 1) {
-                x = -40;
+                x = -36;
 
             } else {
-                x = 40;
+                x = 36;
             }
         }
 

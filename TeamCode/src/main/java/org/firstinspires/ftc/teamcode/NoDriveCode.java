@@ -25,7 +25,9 @@ public class NoDriveCode extends LinearOpMode {
     boolean button_dpadleft2_was_pressed = false;
     boolean button_dpadright2_was_pressed = false;
     boolean button_x2_was_pressed = false;
-    boolean button_a_was_pressed = false;
+    boolean button_a2_was_pressed = false;
+    boolean button_y2_was_pressed = false;
+    boolean button_b2_was_pressed = false;
     double level;
     double claw;
     int yMod = 0;
@@ -76,14 +78,26 @@ drive.mainLift.setTargetPosition(drive.mainLift.getCurrentPosition());
 
             // && drive.lift.getCurrentPosition() >= -5600
             //&& drive.lift.getCurrentPosition() <= -100
-            if (Level() == 1) {
-                if (button_a_was_pressed) {
+                if (button_a2_was_pressed) { // intake
                     drive.mainLift.setTargetPosition(0);
-                    drive.mainLift.setPower(0.5);
+                    drive.mainLift.setPower(1);
+                    drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                } else if (button_b2_was_pressed){ // low
+                    drive.mainLift.setTargetPosition(-1150);
+                    drive.mainLift.setPower(1);
                     drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 }
-            } else if (Level() == 4) {
-            }
+                else if (button_x2_was_pressed){ // mid
+                    drive.mainLift.setTargetPosition(-2000);
+                    drive.mainLift.setPower(1);
+                    drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                }
+                else if (button_y2_was_pressed){ // high
+                    drive.mainLift.setTargetPosition(-2600);
+                    drive.mainLift.setPower(1);
+                    drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                }
+
 //                if (gamepad1.right_bumper) {
 //                    drive.lift.setPower(-1);
 //                } else if (gamepad1.left_bumper) {
@@ -103,23 +117,23 @@ drive.mainLift.setTargetPosition(drive.mainLift.getCurrentPosition());
 //                drive.mainLift.setPower(0);
 //                drive.backupLift.setPower(0);
 //            }
-            if (gamepad2.a && drive.mainLift.getCurrentPosition() <= -100 && drive.mainLift.getTargetPosition() <= -100) {
-             liftpos = drive.mainLift.getTargetPosition();
-             liftpos += 40;
-             drive.mainLift.setTargetPosition(liftpos);
-                drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            } else if (gamepad2.y && drive.mainLift.getCurrentPosition() >= -2950 && drive.mainLift.getTargetPosition() >= -2950) {
-                liftpos = drive.mainLift.getTargetPosition();
-                liftpos -= 40;
-                drive.mainLift.setTargetPosition(liftpos);
-                drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            }
-
-            if (Math.abs(drive.mainLift.getCurrentPosition() - drive.mainLift.getTargetPosition()) <= 5 ){
-                drive.mainLift.setPower(0);
-            } else if (drive.mainLift.isBusy()) {
-                drive.mainLift.setPower(-1);
-            }
+//            if (gamepad2.a && drive.mainLift.getCurrentPosition() <= -100 && drive.mainLift.getTargetPosition() <= -100) {
+//             liftpos = drive.mainLift.getTargetPosition();
+//             liftpos += 40;
+//             drive.mainLift.setTargetPosition(liftpos);
+//                drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//            } else if (gamepad2.y && drive.mainLift.getCurrentPosition() >= -2950 && drive.mainLift.getTargetPosition() >= -2950) {
+//                liftpos = drive.mainLift.getTargetPosition();
+//                liftpos -= 40;
+//                drive.mainLift.setTargetPosition(liftpos);
+//                drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//            }
+//
+//            if (Math.abs(drive.mainLift.getCurrentPosition() - drive.mainLift.getTargetPosition()) <= 5 ){
+//                drive.mainLift.setPower(0);
+//            } else if (drive.mainLift.isBusy()) {
+//                drive.mainLift.setPower(-1);
+//            }
             if (Claw() == 0) {
                 drive.claw.setPosition(0.3);//0.225
                 telemetry.addData("Claw:", "Closed");
@@ -218,7 +232,6 @@ drive.mainLift.setTargetPosition(drive.mainLift.getCurrentPosition());
 
 
 
-
 /*
             // test zone for future use
             if (turntoforward && !turningtoleft && !turningtoright) {
@@ -307,7 +320,7 @@ drive.mainLift.setTargetPosition(drive.mainLift.getCurrentPosition());
             // Update everything. Odometry. Etc.
             drive.update();
             if (gamepad2.dpad_down && !button_dpaddown2_was_pressed) {
-                level++;
+                claw++;
                 button_dpaddown2_was_pressed = true;
             } else if (!gamepad2.dpad_down && button_dpaddown2_was_pressed) {
                 button_dpaddown2_was_pressed = false;
@@ -332,12 +345,25 @@ drive.mainLift.setTargetPosition(drive.mainLift.getCurrentPosition());
             }
 
             if (gamepad2.x && !button_x2_was_pressed) {
-                claw++;
                 button_x2_was_pressed = true;
             } else if (!gamepad2.x && button_x2_was_pressed) {
                 button_x2_was_pressed = false;
             }
-
+            if (gamepad2.a && !button_a2_was_pressed) {
+                button_a2_was_pressed = true;
+            } else if (!gamepad2.a && button_a2_was_pressed) {
+                button_a2_was_pressed = false;
+            }
+            if (gamepad2.y && !button_y2_was_pressed) {
+                button_y2_was_pressed = true;
+            } else if (!gamepad2.y && button_y2_was_pressed) {
+                button_y2_was_pressed = false;
+            }
+            if (gamepad2.b && !button_b2_was_pressed) {
+                button_b2_was_pressed = true;
+            } else if (!gamepad2.y && button_b2_was_pressed) {
+                button_b2_was_pressed = false;
+            }
             // Read pose
             Pose2d poseEstimate = drive.getPoseEstimate();
             // Print pose to telemetry
