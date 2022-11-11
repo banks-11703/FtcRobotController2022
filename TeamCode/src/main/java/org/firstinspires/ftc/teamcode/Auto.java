@@ -35,6 +35,7 @@ public class Auto extends LinearOpMode {
     int xShift = 0;
     int headingMod = 0;
     int turnMod = 1;
+    double tileWidth = 23.5;
 
     public int Team() {
         return team % 2;
@@ -213,102 +214,13 @@ waitForStart();
         sleep(100);
         telemetry.update();
 
-            /*
-            switch (Team()){
-                case (0):
-                    telemetry.addData("Team", "Red");
-                    telemetry.update();
-                    switch (Side()){
-                        case(0):
-                            telemetry.addData("Side", "Left");
-                            telemetry.update();
-                            switch(Mode()){
-                                case 0:
-                                    telemetry.addData("Mode", "Nothing");
-                                    telemetry.update();
-                                    break;
-                                case 1:
-                                    telemetry.addData("Mode", "Cycle");
-                                    telemetry.update();
-                                    break;
-                                case 2:
-                                    telemetry.addData("Mode", "Park Only");
-                                    telemetry.update();
-                                    break;
-                            }
-                            break;
-                        case(1):
-                            telemetry.addData("Side", "Right");
-                            telemetry.update();
-                            switch(Mode()){
-                                case 0:
-                                    telemetry.addData("Mode", "Nothing");
-                                    telemetry.update();
-                                    break;
-                                case 1:
-                                    telemetry.addData("Mode", "Cycle");
-                                    telemetry.update();
-                                    break;
-                                case 2:
-                                    telemetry.addData("Mode", "Park Only");
-                                    telemetry.update();
-                                    break;
-                            }
-                            break;
-                    }
-                    break;
-                case (1):
-                    telemetry.addData("Team", "Blue");
-                    telemetry.update();
-                    switch (Side()){
-                        case(0):
-                            telemetry.addData("Side", "Left");
-                            telemetry.update();
-                            switch(Mode()){
-                                case(0):
-                                    telemetry.addData("Mode", "Nothing");
-                                    telemetry.update();
-                                    break;
-                                case(1):
-                                    telemetry.addData("Mode", "Cycle");
-                                    telemetry.update();
-                                    break;
-                                case(2):
-                                    telemetry.addData("Mode", "Park Only");
-                                    telemetry.update();
-                                    break;
-                            }
-                            break;
-                        case(1):
-                            telemetry.addData("Side", "Right");
-                            telemetry.update();
-                            switch(Mode()){
-                                case(0):
-                                    telemetry.addData("Mode", "Nothing");
-                                    telemetry.update();
-                                    break;
-                                case(1):
-                                    telemetry.addData("Mode", "Cycle");
-                                    telemetry.update();
-                                    break;
-                                case(2):
-                                    telemetry.addData("Mode", "Park Only");
-                                    telemetry.update();
-                                    break;
-                            }
-                            break;
-                    }
-                    break;
-            }*/
-
-
 //        Pose2d movement1 = new Pose2d(36 * xReflect, 60 * yMod, Math.toRadians(-90*yMod));
-        Pose2d movement2 = new Pose2d(-36 * xReflect, 13 * yMod, Math.toRadians(-90*yMod));
-        Pose2d scorePos = new Pose2d(-24 * xReflect, 13 * yMod, Math.toRadians(180+headingMod));    //Score Position
-        Pose2d intakeStackPos = new Pose2d(-62 * xReflect, 13 * yMod, Math.toRadians(180+headingMod));    //Intake cone stack Position
-        Pose2d park1 = new Pose2d((-56)+xShift, 13 * yMod, Math.toRadians(180+headingMod));
-        Pose2d park2 = new Pose2d((-36)+xShift, 13 * yMod, Math.toRadians(180+headingMod));
-        Pose2d park3 = new Pose2d((-12)+xShift, 13 * yMod, Math.toRadians(180+headingMod));
+        Pose2d movement2 = new Pose2d((-1.5)*tileWidth * xReflect, 18 * yMod, Math.toRadians(-90*yMod));
+        Pose2d scorePos = new Pose2d((-1)*tileWidth * xReflect, 18 * yMod, Math.toRadians(180+headingMod));    //Score Position
+        Pose2d intakeStackPos = new Pose2d((-62/24)*tileWidth * xReflect, 18 * yMod, Math.toRadians(180+headingMod));    //Intake cone stack Position
+        Pose2d park1 = new Pose2d(56, 11 * yMod, Math.toRadians(180+headingMod));
+        Pose2d park2 = new Pose2d(36, 11 * yMod, Math.toRadians(180+headingMod));
+        Pose2d park3 = new Pose2d(12*xReflect, 11 * yMod, Math.toRadians(180+headingMod));
 
 
         Trajectory Movement1 = drive.trajectoryBuilder(drive.getPoseEstimate())
@@ -438,7 +350,7 @@ waitForStart();
                     if (isStopRequested()) return;
                     break;
                 case 2:
-                    if(team % 2 == 0) {
+                    if(side % 2 == 0) {
                         drive.followTrajectory(Park3);
                     } else {
                         drive.followTrajectory(Park1);
@@ -447,7 +359,7 @@ waitForStart();
                     if (isStopRequested()) return;
                     break;
                 default:
-                    if(team % 2 == 0) {
+                    if(side % 2 == 0) {
                         drive.followTrajectory(Park1);
                     } else {
                         drive.followTrajectory(Park3);
@@ -463,23 +375,23 @@ waitForStart();
 
     public Pose2d StartingPos() {
         double x, y, a;
-        if (team == 0) {
+        if (team % 2 == 0) {
             y = -63;
             a = 90;
-            if (side == 1) {
-                x = 36;
+            if (side % 2 == 1) {
+                x = (1.5)*tileWidth;
             } else {
-                x = -36;
+                x = -(1.5)*tileWidth;
 
             }
         } else {
             y = 63;
             a = -90;
-            if (side == 1) {
-                x = -36;
+            if (side % 2 == 1) {
+                x = -(1.5)*tileWidth;
 
             } else {
-                x = 36;
+                x = (1.5)*tileWidth;
             }
         }
 
