@@ -4,6 +4,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
@@ -48,6 +49,102 @@ public class Auto extends LinearOpMode {
     public int Mode() {
         return Mode % 3;
     }
+    public void telemetryWhileInitialization(){
+        switch (Team()) {
+            case (0):
+                telemetry.addData("Team", "Red");
+                switch (Side()) {
+                    case (0):
+                        telemetry.addData("Side", "Left");
+                        switch (Mode()) {
+                            case (0):
+                                telemetry.addData("Mode", "Nothing");
+                                break;
+                            case (1):
+                                telemetry.addData("Mode", "Cycle");
+                                break;
+                            case (2):
+                                telemetry.addData("Mode", "Park Only");
+                                break;
+                        }
+                        break;
+                    case (1):
+                        telemetry.addData("Side", "Right");
+                        switch (Mode()) {
+                            case (0):
+                                telemetry.addData("Mode", "Nothing");
+                                break;
+                            case (1):
+                                telemetry.addData("Mode", "Cycle");
+                                break;
+                            case (2):
+                                telemetry.addData("Mode", "Park Only");
+                                break;
+                        }
+                        break;
+                }
+                break;
+            case (1):
+                telemetry.addData("Team", "Blue");
+                switch (Side()) {
+                    case (0):
+                        telemetry.addData("Side", "Left");
+                        switch (Mode()) {
+                            case (0):
+                                telemetry.addData("Mode", "Nothing");
+                                break;
+                            case (1):
+                                telemetry.addData("Mode", "Cycle");
+                                break;
+                            case (2):
+                                telemetry.addData("Mode", "Park Only");
+                                break;
+                        }
+                        break;
+                    case (1):
+                        telemetry.addData("Side", "Right");
+                        switch (Mode()) {
+                            case (0):
+                                telemetry.addData("Mode", "Nothing");
+                                break;
+                            case (1):
+                                telemetry.addData("Mode", "Cycle");
+                                break;
+                            case (2):
+                                telemetry.addData("Mode", "Park Only");
+                                break;
+                        }
+                        break;
+                }
+                break;
+        }
+
+
+
+    }
+
+    public void initInputs(){
+        if (gamepad1.b && !button_b_was_pressed) {
+            team++;
+            button_b_was_pressed = true;
+        } else if (!gamepad1.b && button_b_was_pressed) {
+            button_b_was_pressed = false;
+        }
+        if (gamepad1.a && !button_a_was_pressed) {
+            side++;
+            button_a_was_pressed = true;
+        } else if (!gamepad1.a && button_a_was_pressed) {
+            button_a_was_pressed = false;
+        }
+        if (gamepad1.x && !button_x_was_pressed) {
+            Mode++;
+            button_x_was_pressed = true;
+        } else if (!gamepad1.x && button_x_was_pressed) {
+            button_x_was_pressed = false;
+        }
+    }
+
+
     OpenCvWebcam webcam;
     SleeveOrientationPipeline pipeline;
     @Override
@@ -90,119 +187,21 @@ public class Auto extends LinearOpMode {
 
         while (!opModeIsActive()) {
 
+            //Gets inputs before init for gui
+            initInputs();
 
-            if (gamepad1.b && !button_b_was_pressed) {
-                team++;
-                button_b_was_pressed = true;
-            } else if (!gamepad1.b && button_b_was_pressed) {
-                button_b_was_pressed = false;
-            }
-            if (gamepad1.a && !button_a_was_pressed) {
-                side++;
-                button_a_was_pressed = true;
-            } else if (!gamepad1.a && button_a_was_pressed) {
-                button_a_was_pressed = false;
-            }
-            if (gamepad1.x && !button_x_was_pressed) {
-                Mode++;
-                button_x_was_pressed = true;
-            } else if (!gamepad1.x && button_x_was_pressed) {
-                button_x_was_pressed = false;
-            }
-            switch (Team()) {
-                case (0):
-                    telemetry.addData("Team", "Red");
-                    switch (Side()) {
-                        case (0):
-                            telemetry.addData("Side", "Left");
-                            switch (Mode()) {
-                                case (0):
-                                    telemetry.addData("Mode", "Nothing");
-                                    break;
-                                case (1):
-                                    telemetry.addData("Mode", "Cycle");
-                                    break;
-                                case (2):
-                                    telemetry.addData("Mode", "Park Only");
-                                    break;
-                            }
-                            break;
-                        case (1):
-                            telemetry.addData("Side", "Right");
-                            switch (Mode()) {
-                                case (0):
-                                    telemetry.addData("Mode", "Nothing");
-                                    break;
-                                case (1):
-                                    telemetry.addData("Mode", "Cycle");
-                                    break;
-                                case (2):
-                                    telemetry.addData("Mode", "Park Only");
-                                    break;
-                            }
-                            break;
-                    }
-                    break;
-                case (1):
-                    telemetry.addData("Team", "Blue");
-                    switch (Side()) {
-                        case (0):
-                            telemetry.addData("Side", "Left");
-                            switch (Mode()) {
-                                case (0):
-                                    telemetry.addData("Mode", "Nothing");
-                                    break;
-                                case (1):
-                                    telemetry.addData("Mode", "Cycle");
-                                    break;
-                                case (2):
-                                    telemetry.addData("Mode", "Park Only");
-                                    break;
-                            }
-                            break;
-                        case (1):
-                            telemetry.addData("Side", "Right");
-                            switch (Mode()) {
-                                case (0):
-                                    telemetry.addData("Mode", "Nothing");
-                                    break;
-                                case (1):
-                                    telemetry.addData("Mode", "Cycle");
-                                    break;
-                                case (2):
-                                    telemetry.addData("Mode", "Park Only");
-                                    break;
-                            }
-                            break;
-                    }
-                    break;
-            }
+            //Does Telemetry
+            telemetryWhileInitialization();
+
             telemetry.addData("Robot Position: ", drive.getPoseEstimate());
             telemetry.addData("Analysis", pipeline.getAnalysis());
             telemetry.update();
+
         }
 
-        if (team % 2 == 1) {
-            yMod = 1;
-        } else {
-            yMod = -1;
-        }
-        if ((team % 2 == 0 && side % 2 == 0) || (team % 2 == 1 && side % 2 == 1)) {
-            xReflect = 1;
-            xShift = 0;
-            headingMod = 180;
-        } else if ((team % 2 == 0 && side % 2 == 1) || (team % 2 == 1 && side % 2 == 0)) {
-            xReflect = -1;
-            xShift = 72;
-            headingMod = 0;
-        }
-        if(side % 2 == 0) {
-            turnMod = -1;
-        } else {
-            turnMod = 1;
-        }
+        processPosition(); //Which numbers correlate to each side
 
-waitForStart();
+        waitForStart();
         autoParkPosition = pipeline.getAnalysis();
 
 
@@ -213,82 +212,61 @@ waitForStart();
         telemetry.addData("Analysis", pipeline.getAnalysis());
         sleep(100);
         telemetry.update();
+        drive.mainLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        drive.mainLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        drive.mainLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 //        Pose2d movement1 = new Pose2d(36 * xReflect, 60 * yMod, Math.toRadians(-90*yMod));
-        Pose2d movement2 = new Pose2d((-1.5)*tileWidth * xReflect, 18 * yMod, Math.toRadians(-90*yMod));
-        Pose2d scorePos = new Pose2d((-1)*tileWidth * xReflect, 18 * yMod, Math.toRadians(180+headingMod));    //Score Position
-        Pose2d intakeStackPos = new Pose2d((-62/24)*tileWidth * xReflect, 18 * yMod, Math.toRadians(180+headingMod));    //Intake cone stack Position
-        Pose2d park1 = new Pose2d(56, 11 * yMod, Math.toRadians(180+headingMod));
-        Pose2d park2 = new Pose2d(36, 11 * yMod, Math.toRadians(180+headingMod));
-        Pose2d park3 = new Pose2d(12*xReflect, 11 * yMod, Math.toRadians(180+headingMod));
+        Pose2d movement2      = new Pose2d(-36 * xReflect, 12 * yMod, Math.toRadians(-90*yMod));
+        Pose2d scorePos       = new Pose2d(-24 * xReflect, 12 * yMod, Math.toRadians(180+headingMod));    //Score Position
+        Pose2d intakeStackPos = new Pose2d(-62 * xReflect, 12 * yMod, Math.toRadians(180+headingMod));    //Intake cone stack Position
+        Pose2d park1          = new Pose2d(-56 * xReflect, 12 * yMod, Math.toRadians(180+headingMod));
+        Pose2d park2          = new Pose2d(-36 * xReflect, 12 * yMod, Math.toRadians(180+headingMod));
+        Pose2d park3          = new Pose2d(-12 * xReflect, 12 * yMod, Math.toRadians(180+headingMod));
 
+        //Building trajectories
 
+        //Park Only
         Trajectory Movement1 = drive.trajectoryBuilder(drive.getPoseEstimate())
                 .lineToLinearHeading(movement2, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
                         DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
                 .build();
-        Trajectory ScorePos1 = drive.trajectoryBuilder(Movement1.end())
-                .lineToLinearHeading(scorePos, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
-                        DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
-                .build();
-        Trajectory IntakeStackPos1 = drive.trajectoryBuilder(ScorePos1.end())
-                .lineToLinearHeading(intakeStackPos, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
-                        DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
-                .build();
-        Trajectory ScorePos2 = drive.trajectoryBuilder(IntakeStackPos1.end())
-                .lineToLinearHeading(scorePos, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
-                        DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
-                .build();
-        Trajectory IntakeStackPos2 = drive.trajectoryBuilder(ScorePos2.end())
-                .lineToLinearHeading(intakeStackPos, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
-                        DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
-                .build();
-        Trajectory ScorePos3 = drive.trajectoryBuilder(IntakeStackPos2.end())
-                .lineToLinearHeading(scorePos, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
-                        DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
-                .build();
-        Trajectory IntakeStackPos3 = drive.trajectoryBuilder(ScorePos3.end())
-                .lineToLinearHeading(intakeStackPos, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
-                        DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
-                .build();
-        Trajectory ScorePos4 = drive.trajectoryBuilder(IntakeStackPos3.end())
-                .lineToLinearHeading(scorePos, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
-                        DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
-                .build();
-        Trajectory IntakeStackPos4 = drive.trajectoryBuilder(ScorePos4.end())
-                .lineToLinearHeading(intakeStackPos, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
-                        DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
-                .build();
-        Trajectory ScorePos5 = drive.trajectoryBuilder(IntakeStackPos4.end())
-                .lineToLinearHeading(scorePos, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
-                        DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
-                .build();
-        Trajectory IntakeStackPos5 = drive.trajectoryBuilder(ScorePos5.end())
-                .lineToLinearHeading(intakeStackPos, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
-                        DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
-                .build();
-        Trajectory ScorePos6 = drive.trajectoryBuilder(IntakeStackPos5.end())
-                .lineToLinearHeading(scorePos, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
-                        DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
-                .build();
-        Trajectory CyclePark1 = drive.trajectoryBuilder(Movement1.end())
-                .lineToLinearHeading(park1)
-                .build();
-//        Trajectory CyclePark2 = drive.trajectoryBuilder(Movement1.end())
-//                .lineToLinearHeading(park2)
-//                .build();
-        Trajectory CyclePark3 = drive.trajectoryBuilder(Movement1.end())
-                .lineToLinearHeading(park3)
-                .build();
+
         Trajectory Park1 = drive.trajectoryBuilder(Movement1.end().plus(new Pose2d(0, 0, Math.toRadians(turnMod*90))))
                 .lineToLinearHeading(park1, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
                         DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
                 .build();
-//        Trajectory Park2 = drive.trajectoryBuilder(Movement1.end().plus(new Pose2d(0, 0, Math.toRadians(turnMod*90))))
-//                .lineToLinearHeading(park2, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
-//                        DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
-//                .build();
+        //Trajectory Park2 = drive.trajectoryBuilder(Movement1.end().plus(new Pose2d(0, 0, Math.toRadians(turnMod*90))))
+        //        .lineToLinearHeading(park2, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
+        //                DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
+        //        .build();
         Trajectory Park3 = drive.trajectoryBuilder(Movement1.end().plus(new Pose2d(0, 0, Math.toRadians(turnMod*90))))
+                .lineToLinearHeading(park3, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
+                        DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
+                .build();
+        //Cycle
+        //Movement1
+        Trajectory  ScorePreloaded= drive.trajectoryBuilder(Movement1.end().plus(new Pose2d(0, 0, Math.toRadians(turnMod*90))))
+                .lineToLinearHeading(scorePos, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
+                        DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
+                .build();
+        Trajectory  Intake1= drive.trajectoryBuilder(ScorePreloaded.end())
+                .lineToLinearHeading(intakeStackPos, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
+                        DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
+                .build();
+        Trajectory Score1 = drive.trajectoryBuilder(Intake1.end())
+                .lineToLinearHeading(scorePos, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
+                        DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
+                .build();
+        Trajectory CyclePark1 = drive.trajectoryBuilder(Score1.end())
+                .lineToLinearHeading(park1, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
+                        DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
+                .build();
+        Trajectory CyclePark2 = drive.trajectoryBuilder(Score1.end())
+                .lineToLinearHeading(park2, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
+                        DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
+                .build();
+        Trajectory CyclePark3 = drive.trajectoryBuilder(Score1.end())
                 .lineToLinearHeading(park3, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
                         DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
                 .build();
@@ -296,43 +274,82 @@ waitForStart();
         if (Mode % 3 == 0) {//doing nothing
 
         } else if (Mode % 3 == 1) {//cycling
-//            drive.followTrajectory(Movement1);
             drive.followTrajectory(Movement1);
-            drive.followTrajectory(ScorePos1);
-            //Score Cone
-            drive.followTrajectory(IntakeStackPos1);
-            //Intake Cone
-            drive.followTrajectory(ScorePos2);
-            //Score Cone
-            drive.followTrajectory(IntakeStackPos2);
-            //Intake Cone
-            drive.followTrajectory(ScorePos3);
-            //Score Cone
-            drive.followTrajectory(IntakeStackPos3);
-            //Intake Cone
-            drive.followTrajectory(ScorePos4);
-            //Score Cone
-            drive.followTrajectory(IntakeStackPos4);
-            //Intake Cone
-            drive.followTrajectory(ScorePos5);
-            //Score Cone
+            if(side % 2 == 0) {
+                drive.turn(Math.toRadians(turnMod*90));
+            } else {
+                drive.turn(Math.toRadians(turnMod*90));
+            }
+            drive.followTrajectory(ScorePreloaded);
+            //score
+                //raise lift
+                drive.mainLift.setTargetPosition(-2600);
+                drive.mainLift.setPower(1);
+                drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                while(drive.mainLift.isBusy()) {}
+                //turn table to junction
+                drive.turntable.setPower(-0.5*turnMod);
+                sleep(100);
+                while(drive.turnlimiter.getState()) {}
+                drive.turntable.setPower(0);
+                //drop cone
+                //lower lift
+                drive.mainLift.setTargetPosition(0);
+                drive.mainLift.setPower(1);
+                drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                while(drive.mainLift.isBusy()) {}
+                //turn table back to base
+                drive.turntable.setPower(0.5*turnMod);
+                sleep(100);
+                while(drive.turnlimiter.getState()) {}
+                drive.turntable.setPower(0);
 
-            drive.followTrajectory(IntakeStackPos5);
-            //Intake Cone
-            drive.followTrajectory(ScorePos6);
-            //Score Cone
+            drive.followTrajectory(Intake1);
+            //intake
+            drive.followTrajectory(Score1);
+            //score
+                //raise lift
+                drive.mainLift.setTargetPosition(-2600);
+                drive.mainLift.setPower(1);
+                drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                while(drive.mainLift.isBusy()) {}
+                //turn table to junction
+                drive.turntable.setPower(-0.5*turnMod);
+                sleep(100);
+                while(drive.turnlimiter.getState()) {}
+                drive.turntable.setPower(0);
+                //drop cone
+                //lower lift
+                drive.mainLift.setTargetPosition(0);
+                drive.mainLift.setPower(1);
+                drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                while(drive.mainLift.isBusy()) {}
+                //turn table back to base
+                drive.turntable.setPower(0.5*turnMod);
+                sleep(100);
+                while(drive.turnlimiter.getState()) {}
+                drive.turntable.setPower(0);
 
             switch (autoParkPosition) {
                 case 1:
-//                    drive.followTrajectory(Park2);
+                    drive.followTrajectory(CyclePark2);
                     if (isStopRequested()) return;
                     break;
                 case 2:
-                        drive.followTrajectory(Park3);
+                    if(side % 2 == 0) {
+                        drive.followTrajectory(CyclePark3);
+                    } else {
+                        drive.followTrajectory(CyclePark1);
+                    }
+
                     if (isStopRequested()) return;
                     break;
                 default:
-                        drive.followTrajectory(Park1);
+                    if(side % 2 == 0) {
+                        drive.followTrajectory(CyclePark1);
+                    } else {
+                        drive.followTrajectory(CyclePark3);
+                    }
                     if (isStopRequested()) return;
                     break;
             }
@@ -372,31 +389,52 @@ waitForStart();
         PoseStorage.team = team % 2;
     }
 
-
     public Pose2d StartingPos() {
         double x, y, a;
         if (team % 2 == 0) {
             y = -63;
             a = 90;
             if (side % 2 == 1) {
-                x = (1.5)*tileWidth;
+                x = 36;
             } else {
-                x = -(1.5)*tileWidth;
+                x = -36;
 
             }
         } else {
             y = 63;
             a = -90;
             if (side % 2 == 1) {
-                x = -(1.5)*tileWidth;
+                x = -36;
 
             } else {
-                x = (1.5)*tileWidth;
+                x = 36;
             }
         }
 
         return new Pose2d(x, y, Math.toRadians(a));
     }
+
+    public void processPosition(){
+        if (team % 2 == 1) {
+            yMod = 1;
+        } else {
+            yMod = -1;
+        }
+        if ((team % 2 == 0 && side % 2 == 0) || (team % 2 == 1 && side % 2 == 1)) {
+            xReflect = 1;
+            xShift = 0;
+            headingMod = 180;
+        } else if ((team % 2 == 0 && side % 2 == 1) || (team % 2 == 1 && side % 2 == 0)) {
+            xReflect = -1;
+            xShift = 72;
+            headingMod = 0;
+        }
+        if(side % 2 == 0) {
+            turnMod = -1;
+        } else {
+            turnMod = 1;
+        }
+    };
 
     public static class SleeveOrientationPipeline extends OpenCvPipeline
     {

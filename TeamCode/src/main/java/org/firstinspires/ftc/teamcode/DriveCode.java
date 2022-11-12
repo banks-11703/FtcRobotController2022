@@ -12,8 +12,8 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 @TeleOp
 public class DriveCode extends LinearOpMode {
     boolean autoHome = false;
-    boolean turntoforward = false;
-    boolean turntoright = false;
+    boolean turnToForward = false;
+    boolean turnToRight = false;
     boolean turntoleft = false;
     boolean lastwasforward = false;
     boolean lastwasright = false;
@@ -79,13 +79,13 @@ public class DriveCode extends LinearOpMode {
                 xMod = 0;
             }
 
-            drive.setWeightedDrivePower(
-                    new Pose2d(
-                            -gamepad1.left_stick_y + yMod,
-                            -gamepad1.left_stick_x - xMod,
-                            -((gamepad1.right_stick_x) / 2)
-                    )
-            );
+//            drive.setWeightedDrivePower(
+//                    new Pose2d(
+//                            -gamepad1.left_stick_y + yMod,
+//                            -gamepad1.left_stick_x - xMod,
+//                            -((gamepad1.right_stick_x) / 2)
+//                    )
+//            );
             if (button_a2_was_pressed) { // intake
                 drive.mainLift.setTargetPosition(0);
                 drive.mainLift.setPower(0.5);
@@ -121,7 +121,7 @@ public class DriveCode extends LinearOpMode {
             } else if (autoHome && !drive.turnlimiter.getState()) {
                 drive.turntable.setPower(0);
                 turntimer = 0;
-                turntoforward = false;
+                turnToForward = false;
                 lastwasright = false;
                 lastwasleft = false;
                 autoHome = false;
