@@ -46,10 +46,10 @@ public class Auto extends CameraTesting {
     // UNITS ARE PIXELS
     // NOTE: this calibration is for the C920 webcam at 800x448.
     // You will need to do your own calibration for other configurations!
-    double fx = 578.272;
-    double fy = 578.272;
-    double cx = 402.145;
-    double cy = 221.506;
+    double fx = 1430;
+    double fy = 1430;
+    double cx = 480 ;
+    double cy = 620;
 
     // UNITS ARE METERS
     double tagsize = 0.166;
@@ -81,7 +81,7 @@ public class Auto extends CameraTesting {
             @Override
             public void onOpened()
             {
-                camera.startStreaming(800,448, OpenCvCameraRotation.UPRIGHT);
+                camera.startStreaming(1280,960, OpenCvCameraRotation.UPRIGHT);
             }
 
             @Override
