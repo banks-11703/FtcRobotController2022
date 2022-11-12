@@ -79,13 +79,13 @@ public class DriveCode extends LinearOpMode {
                 xMod = 0;
             }
 
-//            drive.setWeightedDrivePower(
-//                    new Pose2d(
-//                            -gamepad1.left_stick_y + yMod,
-//                            -gamepad1.left_stick_x - xMod,
-//                            -((gamepad1.right_stick_x) / 2)
-//                    )
-//            );
+            drive.setWeightedDrivePower(
+                    new Pose2d(
+                            -gamepad1.left_stick_y + yMod,
+                            -gamepad1.left_stick_x - xMod,
+                            -((gamepad1.right_stick_x) / 2)
+                    )
+            );
             if (button_a2_was_pressed) { // intake
                 drive.mainLift.setTargetPosition(0);
                 drive.mainLift.setPower(0.5);
@@ -105,10 +105,10 @@ public class DriveCode extends LinearOpMode {
             }
 
             if (Claw() == 0) {
-                drive.claw.setPosition(0.3);//0.225
+                drive.claw.setPosition(0);//0.225
                 telemetry.addData("Claw:", "Closed");
             } else if (Claw() == 1) {
-                drive.claw.setPosition(0.150);//0.150
+                drive.claw.setPosition(1);//0.150
                 telemetry.addData("Claw:", "Open");
             }
             if (autoHome && drive.turnlimiter.getState()) {
