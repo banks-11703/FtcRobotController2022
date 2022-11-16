@@ -134,7 +134,7 @@ public class DriveCode extends LinearOpMode {
                     turntimer += tablePower;
                 }
 
-                drive.turntable.setPower(tablePower / 2);
+                drive.turntable.setPower(tablePower / 1.5);
             }
             
                 // Update everything. Odometry. Etc.
