@@ -106,10 +106,10 @@ public class DriveCode extends LinearOpMode {
 
             if (Claw() == 0) {
                 drive.claw.setPosition(0);//0.225
-                telemetry.addData("Claw:", "Closed");
-            } else if (Claw() == 1) {
-                drive.claw.setPosition(1);//0.150
                 telemetry.addData("Claw:", "Open");
+            } else if (Claw() == 1) {
+                drive.claw.setPosition(0.95);//0.150
+                telemetry.addData("Claw:", "Closed");
             }
             if (autoHome && drive.turnlimiter.getState()) {
                 telemetry.addData("TT is ", "Trying to go Home");
@@ -151,7 +151,7 @@ public class DriveCode extends LinearOpMode {
                 } else if (!gamepad2.dpad_up && button_dpadup2_was_pressed) {
                     button_dpadup2_was_pressed = false;
                 }
-//                if (gamepad2.dpad_left && !button_dpadleft2_was_pressed) {
+//00                if (gamepad2.dpad_left && !button_dpadleft2_was_pressed) {
 //                    turntoleft = true;
 //                    button_dpadleft2_was_pressed = true;
 //                } else if (!gamepad2.dpad_left && button_dpadleft2_was_pressed) {
