@@ -192,7 +192,7 @@ public class DriveCode extends LinearOpMode {
                 magnetwastouched = true;
                 if (autoHome && turnsensorcounter != 0) {
                     turnsensorcounter--;
-                } else if (!autoHome && turntimer >= 100) {
+                } else if (!autoHome && Math.abs(turntimer) >= 100) {
                     turnsensorcounter++;
                 }
             } else if (drive.turnlimiter.getState() && magnetwastouched) {
