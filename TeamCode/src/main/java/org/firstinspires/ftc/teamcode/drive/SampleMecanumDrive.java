@@ -326,4 +326,41 @@ public class SampleMecanumDrive extends MecanumDrive {
     public static TrajectoryAccelerationConstraint getAccelerationConstraint(double maxAccel) {
         return new ProfileAccelerationConstraint(maxAccel);
     }
+
+    public final void sleep(long milliseconds) {
+        try {
+            Thread.sleep(milliseconds);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+
+    public void turnTableRight() {
+        turntable.setPower(-0.5);
+        sleep(100);
+        while (turnlimiter.getState()) {
+        }
+        turntable.setPower(0);
+    }
+
+    public void turnTableLeft() {
+        turntable.setPower(0.5);
+        sleep(100);
+        while (turnlimiter.getState()) {
+        }
+        turntable.setPower(0);
+    }
+
+    public void moveMainLift(int position) {
+        mainLift.setTargetPosition(position);
+        if(position <= 1000) {
+            mainLift.setPower(0.75);
+        }else {
+            mainLift.setPower(1);
+        }
+
+        mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        while (mainLift.isBusy()) {
+        }
+    }
 }

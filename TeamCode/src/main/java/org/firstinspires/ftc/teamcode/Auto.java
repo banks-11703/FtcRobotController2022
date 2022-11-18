@@ -53,99 +53,9 @@ public class Auto extends LinearOpMode {
         return Mode % 3;
     }
 
-    public void telemetryWhileInitialization() {
-        switch (Team()) {
-            case (0):
-                telemetry.addData("Team", "Red");
-                switch (Side()) {
-                    case (0):
-                        telemetry.addData("Side", "Left");
-                        switch (Mode()) {
-                            case (0):
-                                telemetry.addData("Mode", "Nothing");
-                                break;
-                            case (1):
-                                telemetry.addData("Mode", "Cycle");
-                                break;
-                            case (2):
-                                telemetry.addData("Mode", "Park Only");
-                                break;
-                        }
-                        break;
-                    case (1):
-                        telemetry.addData("Side", "Right");
-                        switch (Mode()) {
-                            case (0):
-                                telemetry.addData("Mode", "Nothing");
-                                break;
-                            case (1):
-                                telemetry.addData("Mode", "Cycle");
-                                break;
-                            case (2):
-                                telemetry.addData("Mode", "Park Only");
-                                break;
-                        }
-                        break;
-                }
-                break;
-            case (1):
-                telemetry.addData("Team", "Blue");
-                switch (Side()) {
-                    case (0):
-                        telemetry.addData("Side", "Left");
-                        switch (Mode()) {
-                            case (0):
-                                telemetry.addData("Mode", "Nothing");
-                                break;
-                            case (1):
-                                telemetry.addData("Mode", "Cycle");
-                                break;
-                            case (2):
-                                telemetry.addData("Mode", "Park Only");
-                                break;
-                        }
-                        break;
-                    case (1):
-                        telemetry.addData("Side", "Right");
-                        switch (Mode()) {
-                            case (0):
-                                telemetry.addData("Mode", "Nothing");
-                                break;
-                            case (1):
-                                telemetry.addData("Mode", "Cycle");
-                                break;
-                            case (2):
-                                telemetry.addData("Mode", "Park Only");
-                                break;
-                        }
-                        break;
-                }
-                break;
-        }
 
 
-    }
 
-    public void initInputs() {
-        if (gamepad1.b && !button_b_was_pressed) {
-            team++;
-            button_b_was_pressed = true;
-        } else if (!gamepad1.b && button_b_was_pressed) {
-            button_b_was_pressed = false;
-        }
-        if (gamepad1.a && !button_a_was_pressed) {
-            side++;
-            button_a_was_pressed = true;
-        } else if (!gamepad1.a && button_a_was_pressed) {
-            button_a_was_pressed = false;
-        }
-        if (gamepad1.x && !button_x_was_pressed) {
-            Mode++;
-            button_x_was_pressed = true;
-        } else if (!gamepad1.x && button_x_was_pressed) {
-            button_x_was_pressed = false;
-        }
-    }
 
 
     OpenCvCamera camera;
@@ -316,72 +226,60 @@ public class Auto extends LinearOpMode {
                         DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
                 .build();
 
+        drive.claw.setPosition(0.95);
         if (Mode % 3 == 0) {//doing nothing
 
         } else if (Mode % 3 == 1) {//cycling
             drive.followTrajectory(Movement1);
-            if (side % 2 == 0) {
+            if (Side() == 0) {
                 drive.turn(Math.toRadians(turnMod * 90));
             } else {
                 drive.turn(Math.toRadians(turnMod * 90));
             }
             drive.followTrajectory(ScorePreloaded);
-            //score
             //raise lift
-            drive.mainLift.setTargetPosition(-2600);
-            drive.mainLift.setPower(1);
-            drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            while (drive.mainLift.isBusy()) {
-            }
+            drive.moveMainLift(2600);
             //turn table to junction
-            drive.turntable.setPower(-0.5 * turnMod);
-            sleep(100);
-            while (drive.turnlimiter.getState()) {
+            if(Side()==0) {
+                drive.turnTableRight();
+            }else {
+                drive.turnTableLeft();
             }
-            drive.turntable.setPower(0);
             //drop cone
+            drive.claw.setPosition(0);
+            //turn table back to home
+            if(Side()==0) {
+                drive.turnTableLeft();
+            }else {
+                drive.turnTableRight();
+            }
             //lower lift
-            drive.mainLift.setTargetPosition(0);
-            drive.mainLift.setPower(1);
-            drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            while (drive.mainLift.isBusy()) {
-            }
-            //turn table back to base
-            drive.turntable.setPower(0.5 * turnMod);
-            sleep(100);
-            while (drive.turnlimiter.getState()) {
-            }
-            drive.turntable.setPower(0);
+            drive.moveMainLift(400);
 
             drive.followTrajectory(Intake1);
             //intake
+            drive.moveMainLift(318);
+            drive.claw.setPosition(0.95);
+
             drive.followTrajectory(Score1);
-            //score
             //raise lift
-            drive.mainLift.setTargetPosition(-2600);
-            drive.mainLift.setPower(1);
-            drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            while (drive.mainLift.isBusy()) {
-            }
+            drive.moveMainLift(2600);
             //turn table to junction
-            drive.turntable.setPower(-0.5 * turnMod);
-            sleep(100);
-            while (drive.turnlimiter.getState()) {
+            if(Side()==0) {
+                drive.turnTableRight();
+            }else {
+                drive.turnTableLeft();
             }
-            drive.turntable.setPower(0);
             //drop cone
+            drive.claw.setPosition(0);
+            //turn table back to home
+            if(Side()==0) {
+                drive.turnTableLeft();
+            }else {
+                drive.turnTableRight();
+            }
             //lower lift
-            drive.mainLift.setTargetPosition(0);
-            drive.mainLift.setPower(1);
-            drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            while (drive.mainLift.isBusy()) {
-            }
-            //turn table back to base
-            drive.turntable.setPower(0.5 * turnMod);
-            sleep(100);
-            while (drive.turnlimiter.getState()) {
-            }
-            drive.turntable.setPower(0);
+            drive.moveMainLift(0);
 
             switch (autoParkPosition) {
                 case 1:
@@ -389,7 +287,7 @@ public class Auto extends LinearOpMode {
                     if (isStopRequested()) return;
                     break;
                 case 2:
-                    if (side % 2 == 0) {
+                    if (Side() == 0) {
                         drive.followTrajectory(CyclePark3);
                     } else {
                         drive.followTrajectory(CyclePark1);
@@ -398,7 +296,7 @@ public class Auto extends LinearOpMode {
                     if (isStopRequested()) return;
                     break;
                 default:
-                    if (side % 2 == 0) {
+                    if (Side() == 0) {
                         drive.followTrajectory(CyclePark1);
                     } else {
                         drive.followTrajectory(CyclePark3);
@@ -408,7 +306,7 @@ public class Auto extends LinearOpMode {
             }
         } else if (Mode % 3 == 2) {//Just Parking
             drive.followTrajectory(Movement1);
-            if (side % 2 == 0) {
+            if (Side() == 0) {
                 drive.turn(Math.toRadians(-90));
             } else {
                 drive.turn(Math.toRadians(90));
@@ -420,7 +318,7 @@ public class Auto extends LinearOpMode {
                     if (isStopRequested()) return;
                     break;
                 case 2:
-                    if (side % 2 == 0) {
+                    if (Side() == 0) {
                         drive.followTrajectory(Park3);
                     } else {
                         drive.followTrajectory(Park1);
@@ -429,7 +327,7 @@ public class Auto extends LinearOpMode {
                     if (isStopRequested()) return;
                     break;
                 default:
-                    if (side % 2 == 0) {
+                    if (Side() == 0) {
                         drive.followTrajectory(Park1);
                     } else {
                         drive.followTrajectory(Park3);
@@ -444,10 +342,10 @@ public class Auto extends LinearOpMode {
 
     public Pose2d StartingPos() {
         double x, y, a;
-        if (team % 2 == 0) {
+        if (Team() == 0) {
             y = -63;
             a = 90;
-            if (side % 2 == 1) {
+            if (Side() == 1) {
                 x = 36;
             } else {
                 x = -36;
@@ -456,7 +354,7 @@ public class Auto extends LinearOpMode {
         } else {
             y = 63;
             a = -90;
-            if (side % 2 == 1) {
+            if (Side() == 1) {
                 x = -36;
 
             } else {
@@ -467,14 +365,98 @@ public class Auto extends LinearOpMode {
         return new Pose2d(x, y, Math.toRadians(a));
     }
 
-    void tagToTelemetry(AprilTagDetection detection) {
-        telemetry.addLine(String.format("\nDetected tag ID=%d", detection.id));
-        telemetry.addLine(String.format("Translation X: %.2f feet", detection.pose.x * FEET_PER_METER));
-        telemetry.addLine(String.format("Translation Y: %.2f feet", detection.pose.y * FEET_PER_METER));
-        telemetry.addLine(String.format("Translation Z: %.2f feet", detection.pose.z * FEET_PER_METER));
-        telemetry.addLine(String.format("Rotation Yaw: %.2f degrees", Math.toDegrees(detection.pose.yaw)));
-        telemetry.addLine(String.format("Rotation Pitch: %.2f degrees", Math.toDegrees(detection.pose.pitch)));
-        telemetry.addLine(String.format("Rotation Roll: %.2f degrees", Math.toDegrees(detection.pose.roll)));
+    public void telemetryWhileInitialization() {
+        switch (Team()) {
+            case (0):
+                telemetry.addData("Team", "Red");
+                switch (Side()) {
+                    case (0):
+                        telemetry.addData("Side", "Left");
+                        switch (Mode()) {
+                            case (0):
+                                telemetry.addData("Mode", "Nothing");
+                                break;
+                            case (1):
+                                telemetry.addData("Mode", "Cycle");
+                                break;
+                            case (2):
+                                telemetry.addData("Mode", "Park Only");
+                                break;
+                        }
+                        break;
+                    case (1):
+                        telemetry.addData("Side", "Right");
+                        switch (Mode()) {
+                            case (0):
+                                telemetry.addData("Mode", "Nothing");
+                                break;
+                            case (1):
+                                telemetry.addData("Mode", "Cycle");
+                                break;
+                            case (2):
+                                telemetry.addData("Mode", "Park Only");
+                                break;
+                        }
+                        break;
+                }
+                break;
+            case (1):
+                telemetry.addData("Team", "Blue");
+                switch (Side()) {
+                    case (0):
+                        telemetry.addData("Side", "Left");
+                        switch (Mode()) {
+                            case (0):
+                                telemetry.addData("Mode", "Nothing");
+                                break;
+                            case (1):
+                                telemetry.addData("Mode", "Cycle");
+                                break;
+                            case (2):
+                                telemetry.addData("Mode", "Park Only");
+                                break;
+                        }
+                        break;
+                    case (1):
+                        telemetry.addData("Side", "Right");
+                        switch (Mode()) {
+                            case (0):
+                                telemetry.addData("Mode", "Nothing");
+                                break;
+                            case (1):
+                                telemetry.addData("Mode", "Cycle");
+                                break;
+                            case (2):
+                                telemetry.addData("Mode", "Park Only");
+                                break;
+                        }
+                        break;
+                }
+                break;
+        }
+
+
+    }
+
+    public void initInputs() {
+        if (gamepad1.b && !button_b_was_pressed) {
+            team++;
+            button_b_was_pressed = true;
+        } else if (!gamepad1.b && button_b_was_pressed) {
+            button_b_was_pressed = false;
+        }
+        if (gamepad1.a && !button_a_was_pressed) {
+            side++;
+            button_a_was_pressed = true;
+        } else if (!gamepad1.a && button_a_was_pressed) {
+            button_a_was_pressed = false;
+        }
+        if (gamepad1.x && !button_x_was_pressed) {
+            Mode++;
+            button_x_was_pressed = true;
+        } else if (!gamepad1.x && button_x_was_pressed) {
+            button_x_was_pressed = false;
+        }
     }
 
     public void processPosition() {
@@ -499,5 +481,13 @@ public class Auto extends LinearOpMode {
         }
     }
 
-    ;
+    void tagToTelemetry(AprilTagDetection detection) {
+        telemetry.addLine(String.format("\nDetected tag ID=%d", detection.id));
+        telemetry.addLine(String.format("Translation X: %.2f feet", detection.pose.x * FEET_PER_METER));
+        telemetry.addLine(String.format("Translation Y: %.2f feet", detection.pose.y * FEET_PER_METER));
+        telemetry.addLine(String.format("Translation Z: %.2f feet", detection.pose.z * FEET_PER_METER));
+        telemetry.addLine(String.format("Rotation Yaw: %.2f degrees", Math.toDegrees(detection.pose.yaw)));
+        telemetry.addLine(String.format("Rotation Pitch: %.2f degrees", Math.toDegrees(detection.pose.pitch)));
+        telemetry.addLine(String.format("Rotation Roll: %.2f degrees", Math.toDegrees(detection.pose.roll)));
+    }
 }
