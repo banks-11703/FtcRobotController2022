@@ -28,12 +28,14 @@ public class DriveCode extends LinearOpMode {
     boolean button_a2_was_pressed = false;
     boolean button_y2_was_pressed = false;
     boolean button_b2_was_pressed = false;
+    boolean magnetwastouched;
     double level;
     double claw;
     double turntimer;
     int yMod = 0;
     int xMod = 0;
     int liftpos;
+    int turnsensorcounter;
 
     public double Level() {
         return level % 5;
@@ -91,15 +93,15 @@ public class DriveCode extends LinearOpMode {
                 drive.mainLift.setPower(0.5);
                 drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             } else if (button_b2_was_pressed) { // low
-                drive.mainLift.setTargetPosition(-1150);
+                drive.mainLift.setTargetPosition(1150);
                 drive.mainLift.setPower(1);
                 drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             } else if (button_x2_was_pressed) { // mid
-                drive.mainLift.setTargetPosition(-2000);
+                drive.mainLift.setTargetPosition(2000);
                 drive.mainLift.setPower(1);
                 drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             } else if (button_y2_was_pressed) { // high
-                drive.mainLift.setTargetPosition(-2600);
+                drive.mainLift.setTargetPosition(2600);
                 drive.mainLift.setPower(1);
                 drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             }
@@ -111,6 +113,8 @@ public class DriveCode extends LinearOpMode {
                 drive.claw.setPosition(0.95);//0.150
                 telemetry.addData("Claw:", "Closed");
             }
+
+
             if (autoHome && drive.turnlimiter.getState()) {
                 telemetry.addData("TT is ", "Trying to go Home");
                 if (turntimer > 0) {
@@ -118,7 +122,7 @@ public class DriveCode extends LinearOpMode {
                 } else {
                     drive.turntable.setPower(0.5);
                 }
-            } else if (autoHome && !drive.turnlimiter.getState()) {
+            } else if (autoHome && !drive.turnlimiter.getState() && turnsensorcounter == 0) {
                 drive.turntable.setPower(0);
                 turntimer = 0;
                 turnToForward = false;
@@ -136,22 +140,22 @@ public class DriveCode extends LinearOpMode {
 
                 drive.turntable.setPower(tablePower / 1.5);
             }
-            
-                // Update everything. Odometry. Etc.
-                drive.update();
-                if (gamepad2.dpad_down && !button_dpaddown2_was_pressed) {
-                    claw++;
-                    button_dpaddown2_was_pressed = true;
-                } else if (!gamepad2.dpad_down && button_dpaddown2_was_pressed) {
-                    button_dpaddown2_was_pressed = false;
-                }
-                if (gamepad2.dpad_up && !button_dpadup2_was_pressed) {
-                    autoHome = true;
-                    button_dpadup2_was_pressed = true;
-                } else if (!gamepad2.dpad_up && button_dpadup2_was_pressed) {
-                    button_dpadup2_was_pressed = false;
-                }
-//00                if (gamepad2.dpad_left && !button_dpadleft2_was_pressed) {
+
+            // Update everything. Odometry. Etc.
+            drive.update();
+            if (gamepad2.dpad_down && !button_dpaddown2_was_pressed) {
+                claw++;
+                button_dpaddown2_was_pressed = true;
+            } else if (!gamepad2.dpad_down && button_dpaddown2_was_pressed) {
+                button_dpaddown2_was_pressed = false;
+            }
+            if (gamepad2.dpad_up && !button_dpadup2_was_pressed) {
+                autoHome = true;
+                button_dpadup2_was_pressed = true;
+            } else if (!gamepad2.dpad_up && button_dpadup2_was_pressed) {
+                button_dpadup2_was_pressed = false;
+            }
+//                if (gamepad2.dpad_left && !button_dpadleft2_was_pressed) {
 //                    turntoleft = true;
 //                    button_dpadleft2_was_pressed = true;
 //                } else if (!gamepad2.dpad_left && button_dpadleft2_was_pressed) {
@@ -164,49 +168,59 @@ public class DriveCode extends LinearOpMode {
 //                    button_dpadright2_was_pressed = false;
 //                }
 
-                if (gamepad2.x && !button_x2_was_pressed) {
-                    button_x2_was_pressed = true;
-                } else if (!gamepad2.x && button_x2_was_pressed) {
-                    button_x2_was_pressed = false;
-                }
-                if (gamepad2.a && !button_a2_was_pressed) {
-                    button_a2_was_pressed = true;
-                } else if (!gamepad2.a && button_a2_was_pressed) {
-                    button_a2_was_pressed = false;
-                }
-                if (gamepad2.y && !button_y2_was_pressed) {
-                    button_y2_was_pressed = true;
-                } else if (!gamepad2.y && button_y2_was_pressed) {
-                    button_y2_was_pressed = false;
-                }
-                if (gamepad2.b && !button_b2_was_pressed) {
-                    button_b2_was_pressed = true;
-                } else if (!gamepad2.y && button_b2_was_pressed) {
-                    button_b2_was_pressed = false;
-                }
-                // Read pose
-                Pose2d poseEstimate = drive.getPoseEstimate();
-                // Print pose to telemetry
-                telemetry.addData("turn counter", turntimer);
-                telemetry.addData("Turn Limiter", drive.turnlimiter.getState());
-                telemetry.addData("Lift", drive.mainLift.getCurrentPosition());
-                telemetry.addData("x", poseEstimate.getX());
-                telemetry.addData("y", poseEstimate.getY());
-                telemetry.addData("heading", poseEstimate.getHeading());
-                telemetry.addData("TT is at home", lastwasforward);
-                if (Level() == 1) {
-                    telemetry.addData("Level:", "Intake");
-                } else if (Level() == 2) {
-                    telemetry.addData("Level:", "Low");
-                } else if (Level() == 3) {
-                    telemetry.addData("Level:", "Mid (like you)");
-                } else if (Level() == 4) {
-                    telemetry.addData("Level:", "High (as a kite)");
-                } else {
-                    telemetry.addData("Manual", "Control");
-                }
-                telemetry.update();
+            if (gamepad2.x && !button_x2_was_pressed) {
+                button_x2_was_pressed = true;
+            } else if (!gamepad2.x && button_x2_was_pressed) {
+                button_x2_was_pressed = false;
             }
+            if (gamepad2.a && !button_a2_was_pressed) {
+                button_a2_was_pressed = true;
+            } else if (!gamepad2.a && button_a2_was_pressed) {
+                button_a2_was_pressed = false;
+            }
+            if (gamepad2.y && !button_y2_was_pressed) {
+                button_y2_was_pressed = true;
+            } else if (!gamepad2.y && button_y2_was_pressed) {
+                button_y2_was_pressed = false;
+            }
+            if (gamepad2.b && !button_b2_was_pressed) {
+                button_b2_was_pressed = true;
+            } else if (!gamepad2.y && button_b2_was_pressed) {
+                button_b2_was_pressed = false;
+            }
+            if (!drive.turnlimiter.getState() && !magnetwastouched) {
+                magnetwastouched = true;
+                if (autoHome && turnsensorcounter != 0) {
+                    turnsensorcounter--;
+                } else if (!autoHome && turntimer >= 100) {
+                    turnsensorcounter++;
+                }
+            } else if (drive.turnlimiter.getState() && magnetwastouched) {
+                magnetwastouched = false;
+            }
+            // Read pose
+            Pose2d poseEstimate = drive.getPoseEstimate();
+            // Print pose to telemetry
+            telemetry.addData("turn counter", turntimer);
+            telemetry.addData("Turn Limiter", drive.turnlimiter.getState());
+            telemetry.addData("Lift", drive.mainLift.getCurrentPosition());
+            telemetry.addData("x", poseEstimate.getX());
+            telemetry.addData("y", poseEstimate.getY());
+            telemetry.addData("heading", poseEstimate.getHeading());
+            telemetry.addData("TT is at home", lastwasforward);
+            if (Level() == 1) {
+                telemetry.addData("Level:", "Intake");
+            } else if (Level() == 2) {
+                telemetry.addData("Level:", "Low");
+            } else if (Level() == 3) {
+                telemetry.addData("Level:", "Mid (like you)");
+            } else if (Level() == 4) {
+                telemetry.addData("Level:", "High (as a kite)");
+            } else {
+                telemetry.addData("Manual", "Control");
+            }
+            telemetry.update();
         }
     }
+}
 

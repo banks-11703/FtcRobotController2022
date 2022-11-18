@@ -52,7 +52,8 @@ public class Auto extends LinearOpMode {
     public int Mode() {
         return Mode % 3;
     }
-    public void telemetryWhileInitialization(){
+
+    public void telemetryWhileInitialization() {
         switch (Team()) {
             case (0):
                 telemetry.addData("Team", "Red");
@@ -123,10 +124,9 @@ public class Auto extends LinearOpMode {
         }
 
 
-
     }
 
-    public void initInputs(){
+    public void initInputs() {
         if (gamepad1.b && !button_b_was_pressed) {
             team++;
             button_b_was_pressed = true;
@@ -159,7 +159,7 @@ public class Auto extends LinearOpMode {
     // You will need to do your own calibration for other configurations!
     double fx = 1430;
     double fy = 1430;
-    double cx = 480 ;
+    double cx = 480;
     double cy = 620;
 
     // UNITS ARE METERS
@@ -170,6 +170,7 @@ public class Auto extends LinearOpMode {
     int ID_TAG_OF_INTEREST3 = 3; // Tag ID 3 from the 36h11 family
 
     AprilTagDetection tagOfInterest = null;
+
     @Override
     public void runOpMode() {
         // Declare your drive class
@@ -186,17 +187,14 @@ public class Auto extends LinearOpMode {
         aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
 
         camera.setPipeline(aprilTagDetectionPipeline);
-        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
-        {
+        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
-            public void onOpened()
-            {
-                camera.startStreaming(1280,960, OpenCvCameraRotation.UPRIGHT);
+            public void onOpened() {
+                camera.startStreaming(1280, 960, OpenCvCameraRotation.UPRIGHT);
             }
 
             @Override
-            public void onError(int errorCode)
-            {
+            public void onError(int errorCode) {
 
             }
         });
@@ -204,47 +202,29 @@ public class Auto extends LinearOpMode {
         telemetry.setMsTransmissionInterval(50);
 
 
-        while (!opModeIsActive()) {
+        while (!opModeIsActive() && !isStopRequested()) {
 
             ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
 
             if (currentDetections.size() != 0) {
                 boolean tagFound = false;
 
-                for (AprilTagDetection tag : currentDetections) {
-                    if (tag.id == ID_TAG_OF_INTEREST) {
-                        autoParkPosition = 0;
-                        tagOfInterest = tag;
-                        tagFound = true;
-                        break;
-                    }
-                    if (tag.id == ID_TAG_OF_INTEREST2) {
-                        autoParkPosition = 1;
-                        tagOfInterest = tag;
-                        tagFound = true;
-                        break;
-                    }
-                    if (tag.id == ID_TAG_OF_INTEREST3) {
-                        autoParkPosition = 2;
-                        tagOfInterest = tag;
-                        tagFound = true;
-                        break;
-                    }
-                }
+                for (AprilTagDetection tag : currentDetections)
 
-                if (tagFound) {
-                    telemetry.addLine("Tag of interest is in sight!\n\nLocation data:");
-                    tagToTelemetry(tagOfInterest);
-                } else {
-                    telemetry.addLine("Don't see tag of interest :(");
 
-                    if (tagOfInterest == null) {
-                        telemetry.addLine("(The tag has never been seen)");
-                    } else {
-                        telemetry.addLine("\nBut we HAVE seen the tag before; last seen at:");
+                    if (tagFound) {
+                        telemetry.addLine("Tag of interest is in sight!\n\nLocation data:");
                         tagToTelemetry(tagOfInterest);
+                    } else {
+                        telemetry.addLine("Don't see tag of interest :(");
+
+                        if (tagOfInterest == null) {
+                            telemetry.addLine("(The tag has never been seen)");
+                        } else {
+                            telemetry.addLine("\nBut we HAVE seen the tag before; last seen at:");
+                            tagToTelemetry(tagOfInterest);
+                        }
                     }
-                }
 
             } else {
                 telemetry.addLine("Don't see tag of interest :(");
@@ -282,12 +262,12 @@ public class Auto extends LinearOpMode {
         drive.mainLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 //        Pose2d movement1 = new Pose2d(36 * xReflect, 60 * yMod, Math.toRadians(-90*yMod));
-        Pose2d movement2      = new Pose2d(-36 * xReflect, 12 * yMod, Math.toRadians(-90*yMod));
-        Pose2d scorePos       = new Pose2d(-24 * xReflect, 12 * yMod, Math.toRadians(180+headingMod));    //Score Position
-        Pose2d intakeStackPos = new Pose2d(-62 * xReflect, 12 * yMod, Math.toRadians(180+headingMod));    //Intake cone stack Position
-        Pose2d park1          = new Pose2d(-56 * xReflect, 12 * yMod, Math.toRadians(180+headingMod));
-        Pose2d park2          = new Pose2d(-36 * xReflect, 12 * yMod, Math.toRadians(180+headingMod));
-        Pose2d park3          = new Pose2d(-12 * xReflect, 12 * yMod, Math.toRadians(180+headingMod));
+        Pose2d movement2 = new Pose2d(-36 * xReflect, 12 * yMod, Math.toRadians(-90 * yMod));
+        Pose2d scorePos = new Pose2d(-24 * xReflect, 12 * yMod, Math.toRadians(180 + headingMod));    //Score Position
+        Pose2d intakeStackPos = new Pose2d(-62 * xReflect, 12 * yMod, Math.toRadians(180 + headingMod));    //Intake cone stack Position
+        Pose2d park1 = new Pose2d(-56 * xReflect, 12 * yMod, Math.toRadians(180 + headingMod));
+        Pose2d park2 = new Pose2d(-36 * xReflect, 12 * yMod, Math.toRadians(180 + headingMod));
+        Pose2d park3 = new Pose2d(-12 * xReflect, 12 * yMod, Math.toRadians(180 + headingMod));
 
         //Building trajectories
 
@@ -297,7 +277,7 @@ public class Auto extends LinearOpMode {
                         DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
                 .build();
 
-        Trajectory Park1 = drive.trajectoryBuilder(Movement1.end().plus(new Pose2d(0, 0, Math.toRadians(turnMod*90))))
+        Trajectory Park1 = drive.trajectoryBuilder(Movement1.end().plus(new Pose2d(0, 0, Math.toRadians(turnMod * 90))))
                 .lineToLinearHeading(park1, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
                         DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
                 .build();
@@ -305,17 +285,17 @@ public class Auto extends LinearOpMode {
         //        .lineToLinearHeading(park2, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
         //                DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
         //        .build();
-        Trajectory Park3 = drive.trajectoryBuilder(Movement1.end().plus(new Pose2d(0, 0, Math.toRadians(turnMod*90))))
+        Trajectory Park3 = drive.trajectoryBuilder(Movement1.end().plus(new Pose2d(0, 0, Math.toRadians(turnMod * 90))))
                 .lineToLinearHeading(park3, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
                         DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
                 .build();
         //Cycle
         //Movement1
-        Trajectory  ScorePreloaded= drive.trajectoryBuilder(Movement1.end().plus(new Pose2d(0, 0, Math.toRadians(turnMod*90))))
+        Trajectory ScorePreloaded = drive.trajectoryBuilder(Movement1.end().plus(new Pose2d(0, 0, Math.toRadians(turnMod * 90))))
                 .lineToLinearHeading(scorePos, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
                         DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
                 .build();
-        Trajectory  Intake1= drive.trajectoryBuilder(ScorePreloaded.end())
+        Trajectory Intake1 = drive.trajectoryBuilder(ScorePreloaded.end())
                 .lineToLinearHeading(intakeStackPos, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
                         DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
                 .build();
@@ -340,60 +320,68 @@ public class Auto extends LinearOpMode {
 
         } else if (Mode % 3 == 1) {//cycling
             drive.followTrajectory(Movement1);
-            if(side % 2 == 0) {
-                drive.turn(Math.toRadians(turnMod*90));
+            if (side % 2 == 0) {
+                drive.turn(Math.toRadians(turnMod * 90));
             } else {
-                drive.turn(Math.toRadians(turnMod*90));
+                drive.turn(Math.toRadians(turnMod * 90));
             }
             drive.followTrajectory(ScorePreloaded);
             //score
-                //raise lift
-                drive.mainLift.setTargetPosition(-2600);
-                drive.mainLift.setPower(1);
-                drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                while(drive.mainLift.isBusy()) {}
-                //turn table to junction
-                drive.turntable.setPower(-0.5*turnMod);
-                sleep(100);
-                while(drive.turnlimiter.getState()) {}
-                drive.turntable.setPower(0);
-                //drop cone
-                //lower lift
-                drive.mainLift.setTargetPosition(0);
-                drive.mainLift.setPower(1);
-                drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                while(drive.mainLift.isBusy()) {}
-                //turn table back to base
-                drive.turntable.setPower(0.5*turnMod);
-                sleep(100);
-                while(drive.turnlimiter.getState()) {}
-                drive.turntable.setPower(0);
+            //raise lift
+            drive.mainLift.setTargetPosition(-2600);
+            drive.mainLift.setPower(1);
+            drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            while (drive.mainLift.isBusy()) {
+            }
+            //turn table to junction
+            drive.turntable.setPower(-0.5 * turnMod);
+            sleep(100);
+            while (drive.turnlimiter.getState()) {
+            }
+            drive.turntable.setPower(0);
+            //drop cone
+            //lower lift
+            drive.mainLift.setTargetPosition(0);
+            drive.mainLift.setPower(1);
+            drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            while (drive.mainLift.isBusy()) {
+            }
+            //turn table back to base
+            drive.turntable.setPower(0.5 * turnMod);
+            sleep(100);
+            while (drive.turnlimiter.getState()) {
+            }
+            drive.turntable.setPower(0);
 
             drive.followTrajectory(Intake1);
             //intake
             drive.followTrajectory(Score1);
             //score
-                //raise lift
-                drive.mainLift.setTargetPosition(-2600);
-                drive.mainLift.setPower(1);
-                drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                while(drive.mainLift.isBusy()) {}
-                //turn table to junction
-                drive.turntable.setPower(-0.5*turnMod);
-                sleep(100);
-                while(drive.turnlimiter.getState()) {}
-                drive.turntable.setPower(0);
-                //drop cone
-                //lower lift
-                drive.mainLift.setTargetPosition(0);
-                drive.mainLift.setPower(1);
-                drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                while(drive.mainLift.isBusy()) {}
-                //turn table back to base
-                drive.turntable.setPower(0.5*turnMod);
-                sleep(100);
-                while(drive.turnlimiter.getState()) {}
-                drive.turntable.setPower(0);
+            //raise lift
+            drive.mainLift.setTargetPosition(-2600);
+            drive.mainLift.setPower(1);
+            drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            while (drive.mainLift.isBusy()) {
+            }
+            //turn table to junction
+            drive.turntable.setPower(-0.5 * turnMod);
+            sleep(100);
+            while (drive.turnlimiter.getState()) {
+            }
+            drive.turntable.setPower(0);
+            //drop cone
+            //lower lift
+            drive.mainLift.setTargetPosition(0);
+            drive.mainLift.setPower(1);
+            drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            while (drive.mainLift.isBusy()) {
+            }
+            //turn table back to base
+            drive.turntable.setPower(0.5 * turnMod);
+            sleep(100);
+            while (drive.turnlimiter.getState()) {
+            }
+            drive.turntable.setPower(0);
 
             switch (autoParkPosition) {
                 case 1:
@@ -401,7 +389,7 @@ public class Auto extends LinearOpMode {
                     if (isStopRequested()) return;
                     break;
                 case 2:
-                    if(side % 2 == 0) {
+                    if (side % 2 == 0) {
                         drive.followTrajectory(CyclePark3);
                     } else {
                         drive.followTrajectory(CyclePark1);
@@ -410,7 +398,7 @@ public class Auto extends LinearOpMode {
                     if (isStopRequested()) return;
                     break;
                 default:
-                    if(side % 2 == 0) {
+                    if (side % 2 == 0) {
                         drive.followTrajectory(CyclePark1);
                     } else {
                         drive.followTrajectory(CyclePark3);
@@ -420,7 +408,7 @@ public class Auto extends LinearOpMode {
             }
         } else if (Mode % 3 == 2) {//Just Parking
             drive.followTrajectory(Movement1);
-            if(side % 2 == 0) {
+            if (side % 2 == 0) {
                 drive.turn(Math.toRadians(-90));
             } else {
                 drive.turn(Math.toRadians(90));
@@ -432,7 +420,7 @@ public class Auto extends LinearOpMode {
                     if (isStopRequested()) return;
                     break;
                 case 2:
-                    if(side % 2 == 0) {
+                    if (side % 2 == 0) {
                         drive.followTrajectory(Park3);
                     } else {
                         drive.followTrajectory(Park1);
@@ -441,7 +429,7 @@ public class Auto extends LinearOpMode {
                     if (isStopRequested()) return;
                     break;
                 default:
-                    if(side % 2 == 0) {
+                    if (side % 2 == 0) {
                         drive.followTrajectory(Park1);
                     } else {
                         drive.followTrajectory(Park3);
@@ -478,17 +466,18 @@ public class Auto extends LinearOpMode {
 
         return new Pose2d(x, y, Math.toRadians(a));
     }
-        void tagToTelemetry(AprilTagDetection detection)
-        {
-            telemetry.addLine(String.format("\nDetected tag ID=%d", detection.id));
-            telemetry.addLine(String.format("Translation X: %.2f feet", detection.pose.x*FEET_PER_METER));
-            telemetry.addLine(String.format("Translation Y: %.2f feet", detection.pose.y*FEET_PER_METER));
-            telemetry.addLine(String.format("Translation Z: %.2f feet", detection.pose.z*FEET_PER_METER));
-            telemetry.addLine(String.format("Rotation Yaw: %.2f degrees", Math.toDegrees(detection.pose.yaw)));
-            telemetry.addLine(String.format("Rotation Pitch: %.2f degrees", Math.toDegrees(detection.pose.pitch)));
-            telemetry.addLine(String.format("Rotation Roll: %.2f degrees", Math.toDegrees(detection.pose.roll)));
-        }
-    public void processPosition(){
+
+    void tagToTelemetry(AprilTagDetection detection) {
+        telemetry.addLine(String.format("\nDetected tag ID=%d", detection.id));
+        telemetry.addLine(String.format("Translation X: %.2f feet", detection.pose.x * FEET_PER_METER));
+        telemetry.addLine(String.format("Translation Y: %.2f feet", detection.pose.y * FEET_PER_METER));
+        telemetry.addLine(String.format("Translation Z: %.2f feet", detection.pose.z * FEET_PER_METER));
+        telemetry.addLine(String.format("Rotation Yaw: %.2f degrees", Math.toDegrees(detection.pose.yaw)));
+        telemetry.addLine(String.format("Rotation Pitch: %.2f degrees", Math.toDegrees(detection.pose.pitch)));
+        telemetry.addLine(String.format("Rotation Roll: %.2f degrees", Math.toDegrees(detection.pose.roll)));
+    }
+
+    public void processPosition() {
         if (team % 2 == 1) {
             yMod = 1;
         } else {
@@ -503,10 +492,12 @@ public class Auto extends LinearOpMode {
             xShift = 72;
             headingMod = 0;
         }
-        if(side % 2 == 0) {
+        if (side % 2 == 0) {
             turnMod = -1;
         } else {
             turnMod = 1;
         }
-    };
+    }
+
+    ;
 }
