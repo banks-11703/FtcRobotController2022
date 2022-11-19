@@ -70,9 +70,10 @@ public class SampleMecanumDrive extends MecanumDrive {
     private static final TrajectoryAccelerationConstraint ACCEL_CONSTRAINT = getAccelerationConstraint(MAX_ACCEL);
 
     private TrajectoryFollower follower;
+    public DcMotor re;
     public DcMotor mainLift;
     public DcMotor backupLift;
-    private DcMotorEx leftFront, leftRear, rightRear, rightFront;
+    public DcMotorEx leftFront, leftRear, rightRear, rightFront;
     private List<DcMotorEx> motors;
     public Servo claw;
     public Servo arm;
@@ -87,7 +88,7 @@ public class SampleMecanumDrive extends MecanumDrive {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
 
         follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
-                new Pose2d(0.5, 0.5, Math.toRadians(5.0)), 0.5);
+                new Pose2d(0.5, 0.5, Math.toRadians(1.0)), 0.5);
 
         LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
 
@@ -133,6 +134,7 @@ public class SampleMecanumDrive extends MecanumDrive {
         // TODO: if desired, use setLocalizer() to change the localization method
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
 
+        re = hardwareMap.get(DcMotor.class,"re");
         mainLift = hardwareMap.get(DcMotor.class,"l");
         backupLift = hardwareMap.get(DcMotor.class,"sl");
         turntable = hardwareMap.get(DcMotor.class,"tt");
@@ -325,42 +327,5 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     public static TrajectoryAccelerationConstraint getAccelerationConstraint(double maxAccel) {
         return new ProfileAccelerationConstraint(maxAccel);
-    }
-
-    public final void sleep(long milliseconds) {
-        try {
-            Thread.sleep(milliseconds);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
-    }
-
-    public void turnTableRight() {
-        turntable.setPower(-0.5);
-        sleep(100);
-        while (turnlimiter.getState()) {
-        }
-        turntable.setPower(0);
-    }
-
-    public void turnTableLeft() {
-        turntable.setPower(0.5);
-        sleep(100);
-        while (turnlimiter.getState()) {
-        }
-        turntable.setPower(0);
-    }
-
-    public void moveMainLift(int position) {
-        mainLift.setTargetPosition(position);
-        if(position <= 1000) {
-            mainLift.setPower(0.75);
-        }else {
-            mainLift.setPower(1);
-        }
-
-        mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        while (mainLift.isBusy()) {
-        }
     }
 }
