@@ -50,7 +50,7 @@ public class Auto extends LinearOpMode {
     }
 
     public int Mode() {
-        return Mode % 3;
+        return Mode % 4;
     }
 
 
@@ -178,7 +178,7 @@ public class Auto extends LinearOpMode {
 
 //        Pose2d movement1 = new Pose2d(36 * xReflect, 60 * yMod, Math.toRadians(-90*yMod));
         Pose2d movement2 = new Pose2d(-34.5 * xReflect, 14 * yMod, Math.toRadians(-90 * yMod));
-        Pose2d scorePos = new Pose2d(-29.5 * xReflect, 13 * yMod, Math.toRadians(180 + headingMod));    //Score Position
+        Pose2d scorePos = new Pose2d(-26.5 * xReflect, 14 * yMod, Math.toRadians(180 + headingMod));    //Score Position
         Pose2d intakeStackPos = new Pose2d(-62.5 * xReflect, 13 * yMod, Math.toRadians(180 + headingMod));    //Intake cone stack Position
         Pose2d park1 = new Pose2d(-57.5 * xReflect, 13 * yMod, Math.toRadians(180 + headingMod));
         Pose2d park2 = new Pose2d(-34.5 * xReflect, 13 * yMod, Math.toRadians(180 + headingMod));
@@ -240,9 +240,9 @@ public class Auto extends LinearOpMode {
                 .build();
 
         drive.claw.setPosition(0.95);
-        if (Mode % 3 == 0) {//doing nothing
+        if (Mode() == 0) {//doing nothing
 
-        } else if (Mode % 3 == 1) {//cycling
+        } else if (Mode() == 1) {//cycling
             drive.followTrajectory(Movement1);
             if (Side() == 0) {
                 drive.turn(Math.toRadians(turnMod * 90));
@@ -255,7 +255,7 @@ public class Auto extends LinearOpMode {
             drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             drive.mainLift.setPower(0.75);
 
-            sleep(1100);
+            sleep(1200);
             //turn table to junction
             if(Side()==0) {
                 boolean magnetWasTouched = false;
@@ -321,7 +321,7 @@ public class Auto extends LinearOpMode {
             drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             drive.mainLift.setPower(0.75);
 
-            sleep(400);
+//            sleep(400);
 
             drive.followTrajectory(Intake1);
             //intake
@@ -346,7 +346,7 @@ public class Auto extends LinearOpMode {
             drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             drive.mainLift.setPower(0.75);
 
-            sleep(550);
+            sleep(600);
             //turn table to junction
             if(Side()==0) {
                 boolean magnetWasTouched = false;
@@ -412,7 +412,7 @@ public class Auto extends LinearOpMode {
             drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             drive.mainLift.setPower(0.75);
 
-            sleep(400);
+//            sleep(400);
 
             drive.followTrajectory(Intake2);
             //intake
@@ -437,7 +437,7 @@ public class Auto extends LinearOpMode {
             drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             drive.mainLift.setPower(0.75);
 
-            sleep(550);
+            sleep(600);
             //turn table to junction
             if(Side()==0) {
                 boolean magnetWasTouched = false;
@@ -526,7 +526,7 @@ public class Auto extends LinearOpMode {
                     if (isStopRequested()) return;
                     break;
             }
-        } else if (Mode % 3 == 2) {//Just Parking
+        } else if (Mode() == 2) {//Just Parking
             drive.followTrajectory(Movement1);
             if (Side() == 0) {
                 drive.turn(Math.toRadians(-90));
@@ -553,6 +553,42 @@ public class Auto extends LinearOpMode {
                         drive.followTrajectory(Park1);
                     } else {
                         drive.followTrajectory(Park3);
+                    }
+                    if (isStopRequested()) return;
+                    break;
+            }
+        } else if (Mode() == 3) {//testing
+            drive.followTrajectory(Movement1);
+            if (Side() == 0) {
+                drive.turn(Math.toRadians(turnMod * 90));
+            } else {
+                drive.turn(Math.toRadians(turnMod * 90));
+            }
+            drive.followTrajectory(ScorePreloaded);
+            drive.followTrajectory(Intake1);
+            drive.followTrajectory(Score1);
+            drive.followTrajectory(Intake2);
+            drive.followTrajectory(Score2);
+
+            switch (autoParkPosition) {
+                case 1:
+                    drive.followTrajectory(CyclePark2);
+                    if (isStopRequested()) return;
+                    break;
+                case 2:
+                    if (Side() == 0) {
+                        drive.followTrajectory(CyclePark3);
+                    } else {
+                        drive.followTrajectory(CyclePark1);
+                    }
+
+                    if (isStopRequested()) return;
+                    break;
+                default:
+                    if (Side() == 0) {
+                        drive.followTrajectory(CyclePark1);
+                    } else {
+                        drive.followTrajectory(CyclePark3);
                     }
                     if (isStopRequested()) return;
                     break;
@@ -606,6 +642,9 @@ public class Auto extends LinearOpMode {
                             case (2):
                                 telemetry.addData("Mode", "Park Only");
                                 break;
+                            case (3):
+                                telemetry.addData("Mode", "Testing");
+                                break;
                         }
                         break;
                     case (1):
@@ -619,6 +658,9 @@ public class Auto extends LinearOpMode {
                                 break;
                             case (2):
                                 telemetry.addData("Mode", "Park Only");
+                                break;
+                            case (3):
+                                telemetry.addData("Mode", "Testing");
                                 break;
                         }
                         break;
@@ -639,6 +681,9 @@ public class Auto extends LinearOpMode {
                             case (2):
                                 telemetry.addData("Mode", "Park Only");
                                 break;
+                            case (3):
+                                telemetry.addData("Mode", "Testing");
+                                break;
                         }
                         break;
                     case (1):
@@ -652,6 +697,9 @@ public class Auto extends LinearOpMode {
                                 break;
                             case (2):
                                 telemetry.addData("Mode", "Park Only");
+                                break;
+                            case (3):
+                                telemetry.addData("Mode", "Testing");
                                 break;
                         }
                         break;

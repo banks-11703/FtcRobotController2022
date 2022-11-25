@@ -28,6 +28,7 @@ public class DriveCode extends LinearOpMode {
     boolean button_a2_was_pressed = false;
     boolean button_y2_was_pressed = false;
     boolean button_b2_was_pressed = false;
+    boolean resettingEncoders = false;
     boolean magnetwastouched;
     boolean magnetwastouchedduringauto;
     double coneLevel;
@@ -65,10 +66,7 @@ public class DriveCode extends LinearOpMode {
         drive.mainLift.setTargetPosition(drive.mainLift.getCurrentPosition());
         turntimer = 0;
         while (opModeIsActive() && !isStopRequested()) {
-            if(gamepad2.left_stick_button && gamepad2.right_stick_button && gamepad1.start){
-                drive.mainLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                drive.mainLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            }
+
 
             if (gamepad1.dpad_up) {
                 yMod = 1;
@@ -92,7 +90,11 @@ public class DriveCode extends LinearOpMode {
                             -((gamepad1.right_stick_x) / 2)
                     )
             );
-            if (button_a2_was_pressed) { // intake
+            if (resettingEncoders){
+                drive.mainLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                drive.mainLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                drive.mainLift.setPower(-0.4);
+            }else if (button_a2_was_pressed) { // intake
                 drive.mainLift.setTargetPosition(0);
                 drive.mainLift.setPower(0.75);
                 drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -138,7 +140,6 @@ public class DriveCode extends LinearOpMode {
                 drive.claw.setPosition(0.95);//0.150
                 telemetry.addData("Claw:", "Closed");
             }
-
 
             if (autoHome && drive.turnlimiter.getState()) {
                 telemetry.addData("TT is ", "Trying to go Home");
@@ -208,9 +209,16 @@ public class DriveCode extends LinearOpMode {
             }
             if (gamepad2.b && !button_b2_was_pressed) {
                 button_b2_was_pressed = true;
-            } else if (!gamepad2.y && button_b2_was_pressed) {
+            } else if (!gamepad2.b && button_b2_was_pressed) {
                 button_b2_was_pressed = false;
             }
+            if (gamepad2.left_stick_button && gamepad2.right_stick_button && gamepad1.start && !resettingEncoders) {
+                resettingEncoders = true;
+            } else if (!(gamepad2.left_stick_button && gamepad2.right_stick_button && gamepad1.start) && resettingEncoders) {
+                drive.mainLift.setPower(0);
+                resettingEncoders = false;
+            }
+
             // Read pose
             Pose2d poseEstimate = drive.getPoseEstimate();
             // Print pose to telemetry
