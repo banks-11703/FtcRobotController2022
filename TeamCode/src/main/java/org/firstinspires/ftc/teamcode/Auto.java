@@ -36,10 +36,16 @@ public class Auto extends LinearOpMode {
     int numOfTrajs = 1;
     int yMod = 1;
     int xReflect = 1;
-    int xShift = 0;
+    double xShift = 0;
     int headingMod = 0;
     int turnMod = 1;
     double tileWidth = 23.5;
+
+    int RED   = 0;
+    int BLUE  = 1;
+    int LEFT  = 0;
+    int RIGHT = 1;
+
 
     public int Team() {
         return team % 2;
@@ -75,7 +81,7 @@ public class Auto extends LinearOpMode {
     // UNITS ARE METERS
     double tagsize = 0.0381; // 1.5 inches
 
-    int ID_TAG_OF_INTEREST = 1; // Tag ID 1 from the 36h11 family
+    int ID_TAG_OF_INTEREST  = 1; // Tag ID 1 from the 36h11 family
     int ID_TAG_OF_INTEREST2 = 2; // Tag ID 2 from the 36h11 family
     int ID_TAG_OF_INTEREST3 = 3; // Tag ID 3 from the 36h11 family
 
@@ -178,8 +184,8 @@ public class Auto extends LinearOpMode {
 
 //        Pose2d movement1 = new Pose2d(36 * xReflect, 60 * yMod, Math.toRadians(-90*yMod));
         Pose2d movement2 = new Pose2d(-34.5 * xReflect, 14 * yMod, Math.toRadians(-90 * yMod));
-        Pose2d scorePos = new Pose2d(-26.5 * xReflect, 14 * yMod, Math.toRadians(180 + headingMod));    //Score Position
-        Pose2d intakeStackPos = new Pose2d(-62.5 * xReflect, 13 * yMod, Math.toRadians(180 + headingMod));    //Intake cone stack Position
+        Pose2d scorePos = new Pose2d(-29 * xReflect, 14 * yMod, Math.toRadians(180 + headingMod));    //Score Position
+        Pose2d intakeStackPos = new Pose2d(-62.5 * xReflect, 15 * yMod, Math.toRadians(180 + headingMod));    //Intake cone stack Position
         Pose2d park1 = new Pose2d(-57.5 * xReflect, 13 * yMod, Math.toRadians(180 + headingMod));
         Pose2d park2 = new Pose2d(-34.5 * xReflect, 13 * yMod, Math.toRadians(180 + headingMod));
         Pose2d park3 = new Pose2d(-11.5 * xReflect, 13 * yMod, Math.toRadians(180 + headingMod));
@@ -243,8 +249,9 @@ public class Auto extends LinearOpMode {
         if (Mode() == 0) {//doing nothing
 
         } else if (Mode() == 1) {//cycling
+            //Move to first pos
             drive.followTrajectory(Movement1);
-            if (Side() == 0) {
+            if (Side() == LEFT) {
                 drive.turn(Math.toRadians(turnMod * 90));
             } else {
                 drive.turn(Math.toRadians(turnMod * 90));
@@ -257,7 +264,7 @@ public class Auto extends LinearOpMode {
 
             sleep(1200);
             //turn table to junction
-            if(Side()==0) {
+            if(Side() == LEFT) {
                 boolean magnetWasTouched = false;
                 if(!drive.turnlimiter.getState()) {
                     magnetWasTouched = true;
@@ -328,7 +335,7 @@ public class Auto extends LinearOpMode {
             drive.mainLift.setTargetPosition(318);
             drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             drive.mainLift.setPower(0.75);
-    
+
             sleep(300);
             drive.claw.setPosition(0.95);
             sleep(600);
@@ -376,9 +383,9 @@ public class Auto extends LinearOpMode {
                 drive.turntable.setPower(0);
             }
             //drop cone
-            sleep(400);
+            sleep(1000);
             drive.claw.setPosition(0);
-            sleep(75);
+            sleep(100);
             //turn table back to home
             if(Side()==0) {
                 boolean magnetWasTouched = false;
@@ -467,9 +474,9 @@ public class Auto extends LinearOpMode {
                 drive.turntable.setPower(0);
             }
             //drop cone
-            sleep(400);
+            sleep(100);
             drive.claw.setPosition(0);
-            sleep(75);
+            sleep(200);
             //turn table back to home
             if(Side()==0) {
                 boolean magnetWasTouched = false;
@@ -602,21 +609,19 @@ public class Auto extends LinearOpMode {
 
     public Pose2d StartingPos() {
         double x, y, a;
-        if (Team() == 0) {
+        if (Team() == RED) {
             y = -63;
             a = 90;
-            if (Side() == 1) {
+            if (Side() == RIGHT) {
                 x = 34.5;//23.25
             } else {
                 x = -34.5;//23.25
-
             }
         } else {
             y = 63;
             a = -90;
-            if (Side() == 1) {
+            if (Side() == RIGHT) {
                 x = -34.5;//23.25
-
             } else {
                 x = 34.5;
             }
@@ -743,7 +748,7 @@ public class Auto extends LinearOpMode {
             headingMod = 180;
         } else if ((team % 2 == 0 && side % 2 == 1) || (team % 2 == 1 && side % 2 == 0)) {
             xReflect = -1;
-            xShift = 72;
+            xShift = 70.5;
             headingMod = 0;
         }
         if (side % 2 == 0) {
