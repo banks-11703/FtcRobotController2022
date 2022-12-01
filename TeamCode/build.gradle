@@ -23,10 +23,8 @@ android {
         }
     }
     namespace = 'org.firstinspires.ftc.teamcode'
-
-
-    packagingOptions {
-        jniLibs.useLegacyPackaging true
+    androidResources {
+        noCompress 'tflite'
     }
 }
 
