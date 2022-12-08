@@ -9,23 +9,15 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-import org.opencv.core.Core;
-import org.opencv.core.Mat;
-import org.opencv.core.Point;
-import org.opencv.core.Rect;
-import org.opencv.core.Scalar;
-import org.opencv.imgproc.Imgproc;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
-import org.openftc.easyopencv.OpenCvPipeline;
-import org.openftc.easyopencv.OpenCvWebcam;
 
 import java.util.ArrayList;
 
 @Autonomous
-public class Auto extends LinearOpMode {
+public class BryceSchizoTest extends LinearOpMode {
     boolean button_b_was_pressed = false;
     boolean button_a_was_pressed = false;
     boolean button_x_was_pressed = false;
@@ -41,13 +33,12 @@ public class Auto extends LinearOpMode {
     int turnMod = 1;
     double tileWidth = 23.5;
 
-    double bugMultiplier = (30/29);
-
     int RED   = 0;
     int BLUE  = 1;
     int LEFT  = 0;
     int RIGHT = 1;
 
+    double bugMultiplier = (1.3);
 
     public int Team() {
         return team % 2;
@@ -183,24 +174,91 @@ public class Auto extends LinearOpMode {
         drive.mainLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         drive.mainLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         drive.mainLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        drive.claw.setPosition(0.95);
 
 //        Pose2d movement1 = new Pose2d(36 * xReflect, 60 * yMod, Math.toRadians(-90*yMod));
-        Pose2d movement2 = new Pose2d(-34.5 * xReflect, 13 * yMod, Math.toRadians(-90 * yMod));
-        Pose2d scorePos = new Pose2d(-28 * xReflect, 13 * yMod, Math.toRadians(180 + headingMod));    //Score Position
-        Pose2d intakeStackPos = new Pose2d(-63.5 * xReflect, 13 * yMod, Math.toRadians(180 + headingMod));    //Intake cone stack Position
+        Pose2d movement2 = new Pose2d(-34.5 * xReflect, 14 * yMod, Math.toRadians(-90 * yMod));
+        Pose2d scorePos = new Pose2d(-29 * xReflect, 14 * yMod, Math.toRadians(180 + headingMod));    //Score Position
+        Pose2d intakeStackPos = new Pose2d(-62.5 * xReflect, 15 * yMod, Math.toRadians(180 + headingMod));    //Intake cone stack Position
         Pose2d park1 = new Pose2d(-57.5 * xReflect, 13 * yMod, Math.toRadians(180 + headingMod));
         Pose2d park2 = new Pose2d(-34.5 * xReflect, 13 * yMod, Math.toRadians(180 + headingMod));
         Pose2d park3 = new Pose2d(-11.5 * xReflect, 13 * yMod, Math.toRadians(180 + headingMod));
 
+        Pose2d test1 = new Pose2d(0, 0, Math.toRadians(90));
+        Pose2d test2 = new Pose2d(0, 0, Math.toRadians(90));
+
         //Building trajectories
 
         //Park Only
-        Trajectory Movement1 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                .lineToLinearHeading(movement2)
+
+        Trajectory testMove1 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                .lineToLinearHeading(test2, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
+                        DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
                 .build();
 
+        Trajectory Movement1 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                .lineToLinearHeading(movement2, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
+                        DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
+                .build();
+
+        Trajectory Park1 = drive.trajectoryBuilder(Movement1.end().plus(new Pose2d(0, 0, Math.toRadians(turnMod * 90))))
+                .lineToLinearHeading(park1, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
+                        DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
+                .build();
+        //Trajectory Park2 = drive.trajectoryBuilder(Movement1.end().plus(new Pose2d(0, 0, Math.toRadians(turnMod*90))))
+        //        .lineToLinearHeading(park2, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
+        //                DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
+        //        .build();
+        Trajectory Park3 = drive.trajectoryBuilder(Movement1.end().plus(new Pose2d(0, 0, Math.toRadians(turnMod * 90))))
+                .lineToLinearHeading(park3, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
+                        DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
+                .build();
+        //Cycle
+        //Movement1
+        Trajectory ScorePreloaded = drive.trajectoryBuilder(Movement1.end().plus(new Pose2d(0, 0, Math.toRadians(turnMod * 90))))
+                .lineToLinearHeading(scorePos, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
+                        DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
+                .build();
+        Trajectory Intake1 = drive.trajectoryBuilder(ScorePreloaded.end())
+                .lineToLinearHeading(intakeStackPos, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
+                        DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
+                .build();
+        Trajectory Score1 = drive.trajectoryBuilder(Intake1.end())
+                .lineToLinearHeading(scorePos, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
+                        DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
+                .build();
+        Trajectory Intake2 = drive.trajectoryBuilder(Score1.end())
+                .lineToLinearHeading(intakeStackPos, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
+                        DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
+                .build();
+        Trajectory Score2 = drive.trajectoryBuilder(Intake2.end())
+                .lineToLinearHeading(scorePos, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
+                        DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
+                .build();
+        Trajectory CyclePark1 = drive.trajectoryBuilder(Score2.end())
+                .lineToLinearHeading(park1, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
+                        DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
+                .build();
+        Trajectory CyclePark2 = drive.trajectoryBuilder(Score2.end())
+                .lineToLinearHeading(park2, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
+                        DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
+                .build();
+        Trajectory CyclePark3 = drive.trajectoryBuilder(Score2.end())
+                .lineToLinearHeading(park3, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
+                        DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
+                .build();
+
+        drive.claw.setPosition(0.95);
         if (Mode() == 0) {//doing nothing
+
+            drive.followTrajectory(testMove1);
+            while(!isStopRequested()){
+                Pose2d poseEstimate = drive.getPoseEstimate();
+                telemetry.addData("x", poseEstimate.getX());
+                telemetry.addData("y", poseEstimate.getY());
+                telemetry.addData("heading", poseEstimate.getHeading());
+                telemetry.update();
+            }
+
 
         } else if (Mode() == 1) {//cycling
             //Move to first pos
@@ -210,12 +268,9 @@ public class Auto extends LinearOpMode {
             } else {
                 drive.turn(Math.toRadians(turnMod * 90));
             }
-            Trajectory ScorePreloaded = drive.trajectoryBuilder(drive.getPoseEstimate())
-                    .lineToLinearHeading(scorePos)
-                    .build();
             drive.followTrajectory(ScorePreloaded);
             //raise lift
-            drive.mainLift.setTargetPosition(2600);
+            drive.mainLift.setTargetPosition(2500);
             drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             drive.mainLift.setPower(0.75);
 
@@ -287,9 +342,6 @@ public class Auto extends LinearOpMode {
 
 //            sleep(400);
 
-            Trajectory Intake1 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                    .lineToLinearHeading(intakeStackPos)
-                    .build();
             drive.followTrajectory(Intake1);
             //intake
             drive.mainLift.setTargetPosition(318);
@@ -307,12 +359,9 @@ public class Auto extends LinearOpMode {
 
             sleep(400);
 
-            Trajectory Score1 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                    .lineToLinearHeading(scorePos)
-                    .build();
             drive.followTrajectory(Score1);
             //raise lift
-            drive.mainLift.setTargetPosition(2600);
+            drive.mainLift.setTargetPosition(2500);
             drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             drive.mainLift.setPower(0.75);
 
@@ -384,9 +433,6 @@ public class Auto extends LinearOpMode {
 
 //            sleep(400);
 
-            Trajectory Intake2 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                    .lineToLinearHeading(intakeStackPos)
-                    .build();
             drive.followTrajectory(Intake2);
             //intake
             drive.mainLift.setTargetPosition(150);
@@ -404,12 +450,9 @@ public class Auto extends LinearOpMode {
 
             sleep(400);
 
-            Trajectory Score2 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                    .lineToLinearHeading(scorePos)
-                    .build();
             drive.followTrajectory(Score2);
             //raise lift
-            drive.mainLift.setTargetPosition(2600);
+            drive.mainLift.setTargetPosition(2500);
             drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             drive.mainLift.setPower(0.75);
 
@@ -481,22 +524,13 @@ public class Auto extends LinearOpMode {
 
             switch (autoParkPosition) {
                 case 1:
-                    Trajectory CyclePark2 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                            .lineToLinearHeading(park2)
-                            .build();
                     drive.followTrajectory(CyclePark2);
                     if (isStopRequested()) return;
                     break;
                 case 2:
                     if (Side() == 0) {
-                        Trajectory CyclePark3 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                                .lineToLinearHeading(park3)
-                                .build();
                         drive.followTrajectory(CyclePark3);
                     } else {
-                        Trajectory CyclePark1 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                                .lineToLinearHeading(park1)
-                                .build();
                         drive.followTrajectory(CyclePark1);
                     }
 
@@ -504,14 +538,8 @@ public class Auto extends LinearOpMode {
                     break;
                 default:
                     if (Side() == 0) {
-                        Trajectory CyclePark1 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                                .lineToLinearHeading(park1)
-                                .build();
                         drive.followTrajectory(CyclePark1);
                     } else {
-                        Trajectory CyclePark3 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                                .lineToLinearHeading(park3)
-                                .build();
                         drive.followTrajectory(CyclePark3);
                     }
                     if (isStopRequested()) return;
@@ -527,23 +555,13 @@ public class Auto extends LinearOpMode {
 
             switch (autoParkPosition) {
                 case 1:
-//                    Trajectory Park2 = drive.trajectoryBuilder(drive.getPoseEstimate())
-//                            .lineToLinearHeading(park2, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
-//                                    DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
-//                            .build();
 //                    drive.followTrajectory(Park2);
                     if (isStopRequested()) return;
                     break;
                 case 2:
                     if (Side() == 0) {
-                        Trajectory Park3 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                                .lineToLinearHeading(park3)
-                                .build();
                         drive.followTrajectory(Park3);
                     } else {
-                        Trajectory Park1 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                                .lineToLinearHeading(park1)
-                                .build();
                         drive.followTrajectory(Park1);
                     }
 
@@ -551,21 +569,49 @@ public class Auto extends LinearOpMode {
                     break;
                 default:
                     if (Side() == 0) {
-                        Trajectory Park1 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                                .lineToLinearHeading(park1)
-                                .build();
                         drive.followTrajectory(Park1);
                     } else {
-                        Trajectory Park3 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                                .lineToLinearHeading(park3)
-                                .build();
                         drive.followTrajectory(Park3);
                     }
                     if (isStopRequested()) return;
                     break;
             }
         } else if (Mode() == 3) {//testing
+            drive.followTrajectory(Movement1);
+            if (Side() == 0) {
+                drive.turn(Math.toRadians(turnMod * 90));
+            } else {
+                drive.turn(Math.toRadians(turnMod * 90));
+            }
+            drive.followTrajectory(ScorePreloaded);
+            drive.followTrajectory(Intake1);
+            drive.followTrajectory(Score1);
+            drive.followTrajectory(Intake2);
+            drive.followTrajectory(Score2);
 
+            switch (autoParkPosition) {
+                case 1:
+                    drive.followTrajectory(CyclePark2);
+                    if (isStopRequested()) return;
+                    break;
+                case 2:
+                    if (Side() == 0) {
+                        drive.followTrajectory(CyclePark3);
+                    } else {
+                        drive.followTrajectory(CyclePark1);
+                    }
+
+                    if (isStopRequested()) return;
+                    break;
+                default:
+                    if (Side() == 0) {
+                        drive.followTrajectory(CyclePark1);
+                    } else {
+                        drive.followTrajectory(CyclePark3);
+                    }
+                    if (isStopRequested()) return;
+                    break;
+            }
         }
 
         PoseStorage.team = team % 2;
@@ -593,7 +639,7 @@ public class Auto extends LinearOpMode {
             }
         }
 
-        return new Pose2d(x, y, Math.toRadians(a));
+        return new Pose2d(0, 0, Math.toRadians(90));
     }
 
     public void telemetryWhileInitialization() {
