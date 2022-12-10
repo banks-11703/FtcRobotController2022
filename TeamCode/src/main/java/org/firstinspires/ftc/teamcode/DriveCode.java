@@ -38,7 +38,7 @@ public class DriveCode extends LinearOpMode {
     int xMod = 0;
     int liftpos;
     int turnsensorcounter = 0;
-
+    double tablePower = 0;
 
     public double ConeLevel() {
         return coneLevel % 5;
@@ -141,29 +141,29 @@ public class DriveCode extends LinearOpMode {
                 telemetry.addData("Claw:", "Closed");
             }
 
-            if (autoHome && drive.turnlimiter.getState()) {
-                telemetry.addData("TT is ", "Trying to go Home");
-                if (turntimer > 0) {
-                    drive.turntable.setPower(-0.5);
-                } else {
-                    drive.turntable.setPower(0.5);
-                }
-
-            } else if (autoHome && !drive.turnlimiter.getState()) {
-                drive.turntable.setPower(0);
-                turntimer = 0;
-                autoHome = false;
-
-                telemetry.addData("TT at ", "Home");
-            } else {
-                double tablePower = 0;
-                if (!turningtoright && !turningtoleft && !autoHome) {
+//            if (autoHome && drive.turnlimiter.getState()) {
+//                telemetry.addData("TT is ", "Trying to go Home");
+//                if (turntimer > 0) {
+//                    drive.turntable.setPower(-0.5);
+//                } else {
+//                    drive.turntable.setPower(0.5);
+//                }
+//
+//            } else if (autoHome && !drive.turnlimiter.getState()) {
+//                drive.turntable.setPower(0);
+//                turntimer = 0;
+//                autoHome = false;
+//
+//                telemetry.addData("TT at ", "Home");
+//            } else {
+//                double tablePower = 0;
+//                if (!turningtoright && !turningtoleft && !autoHome) {
                     tablePower =  gamepad2.left_trigger - gamepad2.right_trigger ;
                     turntimer += tablePower;
-                }
+//                }
 
                 drive.turntable.setPower(tablePower / 1.5);
-            }
+//            }
 
             // Update everything. Odometry. Etc.
             drive.update();

@@ -36,16 +36,10 @@ public class Auto extends LinearOpMode {
     int numOfTrajs = 1;
     int yMod = 1;
     int xReflect = 1;
-    double xShift = 0;
+    int xShift = 0;
     int headingMod = 0;
     int turnMod = 1;
     double tileWidth = 23.5;
-
-    int RED   = 0;
-    int BLUE  = 1;
-    int LEFT  = 0;
-    int RIGHT = 1;
-
 
     public int Team() {
         return team % 2;
@@ -71,7 +65,7 @@ public class Auto extends LinearOpMode {
 
     // Lens intrinsics
     // UNITS ARE PIXELS
-    // NOTE: this calibration is for the C920 webcam at 800x448.
+    // NOTE: this calibration is for the C920 webcam at 600x448.
     // You will need to do your own calibration for other configurations!
     double fx = 1430;
     double fy = 1430;
@@ -81,7 +75,7 @@ public class Auto extends LinearOpMode {
     // UNITS ARE METERS
     double tagsize = 0.0381; // 1.5 inches
 
-    int ID_TAG_OF_INTEREST  = 1; // Tag ID 1 from the 36h11 family
+    int ID_TAG_OF_INTEREST = 1; // Tag ID 1 from the 36h11 family
     int ID_TAG_OF_INTEREST2 = 2; // Tag ID 2 from the 36h11 family
     int ID_TAG_OF_INTEREST3 = 3; // Tag ID 3 from the 36h11 family
 
@@ -184,67 +178,79 @@ public class Auto extends LinearOpMode {
 
 //        Pose2d movement1 = new Pose2d(36 * xReflect, 60 * yMod, Math.toRadians(-90*yMod));
         Pose2d movement2 = new Pose2d(-34.5 * xReflect, 14 * yMod, Math.toRadians(-90 * yMod));
-        Pose2d scorePos = new Pose2d(-29 * xReflect, 14 * yMod, Math.toRadians(180 + headingMod));    //Score Position
-        Pose2d intakeStackPos = new Pose2d(-63 * xReflect, 14 * yMod, Math.toRadians(180 + headingMod));    //Intake cone stack Position
-        Pose2d park1 = new Pose2d(-57.5 * xReflect, 13 * yMod, Math.toRadians(180 + headingMod));
-        Pose2d park2 = new Pose2d(-34.5 * xReflect, 13 * yMod, Math.toRadians(180 + headingMod));
-        Pose2d park3 = new Pose2d(-11.5 * xReflect, 13 * yMod, Math.toRadians(180 + headingMod));
+        Pose2d scorePos = new Pose2d(-26.5 * xReflect, 14 * yMod, Math.toRadians(180 + headingMod));    //Score Position
+        Pose2d intakeStackPos = new Pose2d(-62.5 * xReflect, 13.5 * yMod, Math.toRadians(180 + headingMod));    //Intake cone stack Position
+        Pose2d park1 = new Pose2d(-57.5 * xReflect, 13.5 * yMod, Math.toRadians(180 + headingMod));
+        Pose2d park2 = new Pose2d(-34.5 * xReflect, 13.5 * yMod, Math.toRadians(180 + headingMod));
+        Pose2d park3 = new Pose2d(-11.5 * xReflect, 13.5 * yMod, Math.toRadians(180 + headingMod));
 
         //Building trajectories
 
         //Park Only
         Trajectory Movement1 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                .lineToLinearHeading(movement2)
+                .lineToLinearHeading(movement2, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
+                        DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
                 .build();
 
         Trajectory Park1 = drive.trajectoryBuilder(Movement1.end().plus(new Pose2d(0, 0, Math.toRadians(turnMod * 90))))
-                .lineToLinearHeading(park1)
+                .lineToLinearHeading(park1, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
+                        DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
                 .build();
         //Trajectory Park2 = drive.trajectoryBuilder(Movement1.end().plus(new Pose2d(0, 0, Math.toRadians(turnMod*90))))
         //        .lineToLinearHeading(park2, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
         //                DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
         //        .build();
         Trajectory Park3 = drive.trajectoryBuilder(Movement1.end().plus(new Pose2d(0, 0, Math.toRadians(turnMod * 90))))
-                .lineToLinearHeading(park3)
+                .lineToLinearHeading(park3, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
+                        DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
                 .build();
         //Cycle
         //Movement1
         Trajectory ScorePreloaded = drive.trajectoryBuilder(Movement1.end().plus(new Pose2d(0, 0, Math.toRadians(turnMod * 90))))
-                .lineToLinearHeading(scorePos)
+                .lineToLinearHeading(scorePos, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
+                        DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
                 .build();
         Trajectory Intake1 = drive.trajectoryBuilder(ScorePreloaded.end())
-                .lineToLinearHeading(intakeStackPos)
+                .lineToLinearHeading(intakeStackPos, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
+                        DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
                 .build();
         Trajectory Score1 = drive.trajectoryBuilder(Intake1.end())
-                .lineToLinearHeading(scorePos)
+                .lineToLinearHeading(scorePos, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
+                        DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
                 .build();
         Trajectory Intake2 = drive.trajectoryBuilder(Score1.end())
-                .lineToLinearHeading(intakeStackPos)
+                .lineToLinearHeading(intakeStackPos, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
+                        DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
                 .build();
         Trajectory Score2 = drive.trajectoryBuilder(Intake2.end())
-                .lineToLinearHeading(scorePos)
+                .lineToLinearHeading(scorePos, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
+                        DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
                 .build();
         Trajectory CyclePark1 = drive.trajectoryBuilder(Score2.end())
-                .lineToLinearHeading(park1)
+                .lineToLinearHeading(park1, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
+                        DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
                 .build();
         Trajectory CyclePark2 = drive.trajectoryBuilder(Score2.end())
-                .lineToLinearHeading(park2)
+                .lineToLinearHeading(park2, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
+                        DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
                 .build();
         Trajectory CyclePark3 = drive.trajectoryBuilder(Score2.end())
-                .lineToLinearHeading(park3)
+                .lineToLinearHeading(park3, SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL,
+                        DriveConstants.TRACK_WIDTH), SampleMecanumDrive.getAccelerationConstraint((DriveConstants.MAX_ACCEL)))
                 .build();
 
         drive.claw.setPosition(0.95);
         if (Mode() == 0) {//doing nothing
 
         } else if (Mode() == 1) {//cycling
-            //Move to first pos
             drive.followTrajectory(Movement1);
-            if (Side() == LEFT) {
-                drive.turn(Math.toRadians(turnMod * 90));
+            if (Side() == 0) {
+                drive.turn(Math.toRadians(turnMod * 88));
             } else {
-                drive.turn(Math.toRadians(turnMod * 90));
+                drive.turn(Math.toRadians(turnMod * 88));
             }
+            telemetry.addData("Robot Pos", drive.getPoseEstimate());
+            telemetry.update();
             drive.followTrajectory(ScorePreloaded);
             //raise lift
             drive.mainLift.setTargetPosition(2600);
@@ -253,7 +259,7 @@ public class Auto extends LinearOpMode {
 
             sleep(1200);
             //turn table to junction
-            if(Side() == LEFT) {
+            if(Side()==0) {
                 boolean magnetWasTouched = false;
                 if(!drive.turnlimiter.getState()) {
                     magnetWasTouched = true;
@@ -280,10 +286,24 @@ public class Auto extends LinearOpMode {
                 while(!isStopRequested() && opModeIsActive() &&drive.turnlimiter.getState()) {}
                 drive.turntable.setPower(0);
             }
-            //drop cone
+
             sleep(400);
+            //lower lift
+            drive.mainLift.setTargetPosition(2400);
+            drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            drive.mainLift.setPower(0.75);
+            sleep(500);
+
+            //drop cone
             drive.claw.setPosition(0);
-            sleep(75);
+            sleep(100);
+
+            //raise lift
+            drive.mainLift.setTargetPosition(2600);
+            drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            drive.mainLift.setPower(0.75);
+            sleep(500);
+
             //turn table back to home
             if(Side()==0) {
                 boolean magnetWasTouched = false;
@@ -313,7 +333,7 @@ public class Auto extends LinearOpMode {
                 drive.turntable.setPower(0);
             }
             //lower lift
-            drive.mainLift.setTargetPosition(800);
+            drive.mainLift.setTargetPosition(600);
             drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             drive.mainLift.setPower(0.75);
 
@@ -321,6 +341,7 @@ public class Auto extends LinearOpMode {
 
             drive.followTrajectory(Intake1);
             //intake
+            sleep(300);
             drive.mainLift.setTargetPosition(318);
             drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             drive.mainLift.setPower(0.75);
@@ -338,7 +359,7 @@ public class Auto extends LinearOpMode {
 
             drive.followTrajectory(Score1);
             //raise lift
-            drive.mainLift.setTargetPosition(2600);
+            drive.mainLift.setTargetPosition(2625);
             drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             drive.mainLift.setPower(0.75);
 
@@ -371,10 +392,24 @@ public class Auto extends LinearOpMode {
                 while(!isStopRequested() && opModeIsActive() &&drive.turnlimiter.getState()) {}
                 drive.turntable.setPower(0);
             }
+
+            sleep(400);
+            //lower lift
+            drive.mainLift.setTargetPosition(2400);
+            drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            drive.mainLift.setPower(0.75);
+            sleep(500);
+
             //drop cone
-            sleep(1000);
             drive.claw.setPosition(0);
             sleep(100);
+
+            //raise lift
+            drive.mainLift.setTargetPosition(2600);
+            drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            drive.mainLift.setPower(0.75);
+            sleep(500);
+
             //turn table back to home
             if(Side()==0) {
                 boolean magnetWasTouched = false;
@@ -404,96 +439,110 @@ public class Auto extends LinearOpMode {
                 drive.turntable.setPower(0);
             }
             //lower lift
-            drive.mainLift.setTargetPosition(800);
+            drive.mainLift.setTargetPosition(600);
             drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             drive.mainLift.setPower(0.75);
 
 //            sleep(400);
 
-            drive.followTrajectory(Intake2);
-            //intake
-            drive.mainLift.setTargetPosition(150);
-            drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            drive.mainLift.setPower(0.75);
+//            drive.followTrajectory(Intake2);
+//            //intake
+//            drive.mainLift.setTargetPosition(150);
+//            drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//            drive.mainLift.setPower(0.75);
+//
+//            sleep(300);
+//            drive.claw.setPosition(0.95);
+//            sleep(600);
+//
+//            //raise lift
+//            drive.mainLift.setTargetPosition(800);
+//            drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//            drive.mainLift.setPower(0.75);
+//
+//            sleep(400);
+//
+//            drive.followTrajectory(Score2);
+//            //raise lift
+//            drive.mainLift.setTargetPosition(2625);
+//            drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//            drive.mainLift.setPower(0.75);
+//
+//            sleep(600);
+//            //turn table to junction
+//            if(Side()==0) {
+//                boolean magnetWasTouched = false;
+//                if(!drive.turnlimiter.getState()) {
+//                    magnetWasTouched = true;
+//                }
+//                drive.turntable.setPower(-0.75);
+//                while(!isStopRequested() && opModeIsActive() && magnetWasTouched) {
+//                    if(magnetWasTouched && drive.turnlimiter.getState()) {
+//                        magnetWasTouched = false;
+//                    }
+//                }
+//                while(!isStopRequested() && opModeIsActive() && drive.turnlimiter.getState()) {}
+//                drive.turntable.setPower(0);
+//            }else {
+//                boolean magnetWasTouched = false;
+//                if(!drive.turnlimiter.getState()) {
+//                    magnetWasTouched = true;
+//                }
+//                drive.turntable.setPower(0.75);
+//                while(!isStopRequested() && opModeIsActive() &&magnetWasTouched) {
+//                    if(magnetWasTouched && drive.turnlimiter.getState()) {
+//                        magnetWasTouched = false;
+//                    }
+//                }
+//                while(!isStopRequested() && opModeIsActive() &&drive.turnlimiter.getState()) {}
+//                drive.turntable.setPower(0);
+//            }
 
-            sleep(300);
-            drive.claw.setPosition(0.95);
-            sleep(600);
-
-            //raise lift
-            drive.mainLift.setTargetPosition(800);
-            drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            drive.mainLift.setPower(0.75);
-
-            sleep(400);
-
-            drive.followTrajectory(Score2);
-            //raise lift
-            drive.mainLift.setTargetPosition(2600);
-            drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            drive.mainLift.setPower(0.75);
-
-            sleep(600);
-            //turn table to junction
-            if(Side()==0) {
-                boolean magnetWasTouched = false;
-                if(!drive.turnlimiter.getState()) {
-                    magnetWasTouched = true;
-                }
-                drive.turntable.setPower(-0.75);
-                while(!isStopRequested() && opModeIsActive() && magnetWasTouched) {
-                    if(magnetWasTouched && drive.turnlimiter.getState()) {
-                        magnetWasTouched = false;
-                    }
-                }
-                while(!isStopRequested() && opModeIsActive() && drive.turnlimiter.getState()) {}
-                drive.turntable.setPower(0);
-            }else {
-                boolean magnetWasTouched = false;
-                if(!drive.turnlimiter.getState()) {
-                    magnetWasTouched = true;
-                }
-                drive.turntable.setPower(0.75);
-                while(!isStopRequested() && opModeIsActive() &&magnetWasTouched) {
-                    if(magnetWasTouched && drive.turnlimiter.getState()) {
-                        magnetWasTouched = false;
-                    }
-                }
-                while(!isStopRequested() && opModeIsActive() &&drive.turnlimiter.getState()) {}
-                drive.turntable.setPower(0);
-            }
-            //drop cone
-            sleep(1000);
-            drive.claw.setPosition(0);
-            sleep(200);
-            //turn table back to home
-            if(Side()==0) {
-                boolean magnetWasTouched = false;
-                if(!drive.turnlimiter.getState()) {
-                    magnetWasTouched = true;
-                }
-                drive.turntable.setPower(0.75);
-                while(!isStopRequested() && opModeIsActive() &&magnetWasTouched) {
-                    if(magnetWasTouched && drive.turnlimiter.getState()) {
-                        magnetWasTouched = false;
-                    }
-                }
-                while(!isStopRequested() && opModeIsActive() &&drive.turnlimiter.getState()) {}
-                drive.turntable.setPower(0);
-            }else {
-                boolean magnetWasTouched = false;
-                if(!drive.turnlimiter.getState()) {
-                    magnetWasTouched = true;
-                }
-                drive.turntable.setPower(-0.75);
-                while(!isStopRequested() && opModeIsActive() && magnetWasTouched) {
-                    if(magnetWasTouched && drive.turnlimiter.getState()) {
-                        magnetWasTouched = false;
-                    }
-                }
-                while(!isStopRequested() && opModeIsActive() && drive.turnlimiter.getState()) {}
-                drive.turntable.setPower(0);
-            }
+//            sleep(400);
+//            //lower lift
+//            drive.mainLift.setTargetPosition(2400);
+//            drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//            drive.mainLift.setPower(0.75);
+//            sleep(500);
+//
+//            //drop cone
+//            drive.claw.setPosition(0);
+//            sleep(100);
+//
+//            //raise lift
+//            drive.mainLift.setTargetPosition(2600);
+//            drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//            drive.mainLift.setPower(0.75);
+//            sleep(500);
+//
+//            //turn table back to home
+//            if(Side()==0) {
+//                boolean magnetWasTouched = false;
+//                if(!drive.turnlimiter.getState()) {
+//                    magnetWasTouched = true;
+//                }
+//                drive.turntable.setPower(0.75);
+//                while(!isStopRequested() && opModeIsActive() &&magnetWasTouched) {
+//                    if(magnetWasTouched && drive.turnlimiter.getState()) {
+//                        magnetWasTouched = false;
+//                    }
+//                }
+//                while(!isStopRequested() && opModeIsActive() &&drive.turnlimiter.getState()) {}
+//                drive.turntable.setPower(0);
+//            }else {
+//                boolean magnetWasTouched = false;
+//                if(!drive.turnlimiter.getState()) {
+//                    magnetWasTouched = true;
+//                }
+//                drive.turntable.setPower(-0.75);
+//                while(!isStopRequested() && opModeIsActive() && magnetWasTouched) {
+//                    if(magnetWasTouched && drive.turnlimiter.getState()) {
+//                        magnetWasTouched = false;
+//                    }
+//                }
+//                while(!isStopRequested() && opModeIsActive() && drive.turnlimiter.getState()) {}
+//                drive.turntable.setPower(0);
+//            }
             //lower lift
             drive.mainLift.setTargetPosition(0);
             drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -554,63 +603,31 @@ public class Auto extends LinearOpMode {
                     break;
             }
         } else if (Mode() == 3) {//testing
-            drive.followTrajectory(Movement1);
-            if (Side() == 0) {
-                drive.turn(Math.toRadians(turnMod * 90));
-            } else {
-                drive.turn(Math.toRadians(turnMod * 90));
-            }
-            drive.followTrajectory(ScorePreloaded);
-            drive.followTrajectory(Intake1);
-            drive.followTrajectory(Score1);
-            drive.followTrajectory(Intake2);
-            drive.followTrajectory(Score2);
 
-            switch (autoParkPosition) {
-                case 1:
-                    drive.followTrajectory(CyclePark2);
-                    if (isStopRequested()) return;
-                    break;
-                case 2:
-                    if (Side() == 0) {
-                        drive.followTrajectory(CyclePark3);
-                    } else {
-                        drive.followTrajectory(CyclePark1);
-                    }
-
-                    if (isStopRequested()) return;
-                    break;
-                default:
-                    if (Side() == 0) {
-                        drive.followTrajectory(CyclePark1);
-                    } else {
-                        drive.followTrajectory(CyclePark3);
-                    }
-                    if (isStopRequested()) return;
-                    break;
-            }
         }
 
         PoseStorage.team = team % 2;
         PoseStorage.currentPose = drive.getPoseEstimate();
-        sleep(3000);
+        sleep(30000);
     }
 
     public Pose2d StartingPos() {
         double x, y, a;
-        if (Team() == RED) {
+        if (Team() == 0) {
             y = -63;
             a = 90;
-            if (Side() == RIGHT) {
+            if (Side() == 1) {
                 x = 34.5;//23.25
             } else {
                 x = -34.5;//23.25
+
             }
         } else {
             y = 63;
             a = -90;
-            if (Side() == RIGHT) {
+            if (Side() == 1) {
                 x = -34.5;//23.25
+
             } else {
                 x = 34.5;
             }
@@ -737,7 +754,7 @@ public class Auto extends LinearOpMode {
             headingMod = 180;
         } else if ((team % 2 == 0 && side % 2 == 1) || (team % 2 == 1 && side % 2 == 0)) {
             xReflect = -1;
-            xShift = 70.5;
+            xShift = 72;
             headingMod = 0;
         }
         if (side % 2 == 0) {
