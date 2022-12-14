@@ -12,8 +12,8 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 @TeleOp
 public class DriveCode extends LinearOpMode {
     boolean autoHome = false;
-    boolean turnToForward = false;
-    boolean turnToRight = false;
+    boolean turntoforward = false;
+    boolean turntoright = false;
     boolean turntoleft = false;
     boolean lastwasforward = false;
     boolean lastwasright = false;
@@ -90,11 +90,11 @@ public class DriveCode extends LinearOpMode {
                             -((gamepad1.right_stick_x) / 2)
                     )
             );
-            if (resettingEncoders){
+            if (resettingEncoders) {
                 drive.mainLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 drive.mainLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 drive.mainLift.setPower(-0.4);
-            }else if (button_a2_was_pressed) { // intake
+            } else if (button_a2_was_pressed) { // intake
                 drive.mainLift.setTargetPosition(0);
                 drive.mainLift.setPower(0.75);
                 drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -111,7 +111,7 @@ public class DriveCode extends LinearOpMode {
                 drive.mainLift.setPower(1);
                 drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             }
-            if((button_dpadright2_was_pressed || button_dpadleft2_was_pressed) && ConeLevel() == 0) {
+            if ((button_dpadright2_was_pressed || button_dpadleft2_was_pressed) && ConeLevel() == 0) {
                 drive.mainLift.setTargetPosition(0);
                 drive.mainLift.setPower(0.75);
                 drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -140,96 +140,128 @@ public class DriveCode extends LinearOpMode {
                 drive.claw.setPosition(0.95);//0.150
                 telemetry.addData("Claw:", "Closed");
             }
-
-            if (autoHome && drive.turnlimiter.getState()) {
-                telemetry.addData("TT is ", "Trying to go Home");
-                if (turntimer > 0) {
-                    drive.turntable.setPower(-0.5);
-                } else {
-                    drive.turntable.setPower(0.5);
+//
+//            if (turningtoleft && lastwasforward) {
+//                telemetry.addData("TT at ", "Trying to turn Left");
+//                telemetry.update();
+//                drive.turntable.setTargetPosition(-825);
+//                drive.turntable.setPower(-0.4);
+//                drive.turntable.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//                if (drive.turntable.getTargetPosition() - drive.turntable.getCurrentPosition() > 10) {
+//                    drive.turntable.setPower(0);
+//                    turntoleft = false;
+//                    lastwasleft = true;
+//                    turningtoleft = false;
+//                    lastwasforward = false;
+//                    telemetry.addData("TT at ", "Left");
+//                    telemetry.update();
+//                }
+//            }else if (turningtoright && lastwasforward) {
+//                telemetry.addData("TT at ", "Trying to turn right");
+//                drive.turntable.setTargetPosition(825);
+//                drive.turntable.setPower(0.4);
+//                drive.turntable.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//                if (drive.turntable.getTargetPosition() - drive.turntable.getCurrentPosition() < 10) {
+//                    drive.turntable.setPower(0);
+//                    turntoright = false;
+//                    lastwasright = true;
+//                    lastwasforward = false;
+//                    turningtoright = false;
+//                    telemetry.addData("TT at ", "Right");
+//                    telemetry.update();
+//                }
+//            }else if (autoHome && drive.turnlimiter.getState()) {
+//                telemetry.addData("TT is ", "Trying to go Home");
+//                telemetry.update();
+//                if (drive.turntable.getCurrentPosition() < 0) {
+//                    drive.turntable.setPower(0.3);
+//                } else {
+//                    drive.turntable.setPower(-0.3);
+//                }
+//            } else if (autoHome && !drive.turnlimiter.getState()) {
+//                drive.turntable.setPower(0);
+//                drive.turntable.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//                drive.turntable.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//                lastwasright = false;
+//                lastwasleft = false;
+//                autoHome = false;
+//                lastwasforward = true;
+//                telemetry.addData("TT at ", "Home");
+//                telemetry.update();
+//            } else {
+//                double tablePower = 0;
+//                if (!turningtoright && !turningtoleft && !autoHome && drive.turntable.getCurrentPosition() > 2000) {
+//                    tablePower = -gamepad2.left_trigger;
+//                } else {
+//                    tablePower = gamepad2.right_trigger - gamepad2.left_trigger;
+//                }
+//                drive.turntable.setPower(tablePower);
+//            }
+                // Update everything. Odometry. Etc.
+                drive.update();
+                if (gamepad2.dpad_down && !button_dpaddown2_was_pressed) {
+                    claw++;
+                    button_dpaddown2_was_pressed = true;
+                } else if (!gamepad2.dpad_down && button_dpaddown2_was_pressed) {
+                    button_dpaddown2_was_pressed = false;
+                }
+                if (gamepad2.dpad_up && !button_dpadup2_was_pressed) {
+                    autoHome = true;
+                    button_dpadup2_was_pressed = true;
+                } else if (!gamepad2.dpad_up && button_dpadup2_was_pressed) {
+                    button_dpadup2_was_pressed = false;
+                }
+                if (gamepad2.dpad_left && !button_dpadleft2_was_pressed) {
+                    coneLevel--;
+                    button_dpadleft2_was_pressed = true;
+                } else if (!gamepad2.dpad_left && button_dpadleft2_was_pressed) {
+                    button_dpadleft2_was_pressed = false;
+                }
+                if (gamepad2.dpad_right && !button_dpadright2_was_pressed) {
+                    coneLevel++;
+                    button_dpadright2_was_pressed = true;
+                } else if (!gamepad2.dpad_right && button_dpadright2_was_pressed) {
+                    button_dpadright2_was_pressed = false;
                 }
 
-            } else if (autoHome && !drive.turnlimiter.getState()) {
-                drive.turntable.setPower(0);
-                turntimer = 0;
-                autoHome = false;
-
-                telemetry.addData("TT at ", "Home");
-            } else {
-                double tablePower = 0;
-                if (!turningtoright && !turningtoleft && !autoHome) {
-                    tablePower =  gamepad2.left_trigger - gamepad2.right_trigger ;
-                    turntimer += tablePower;
+                if (gamepad2.x && !button_x2_was_pressed) {
+                    button_x2_was_pressed = true;
+                } else if (!gamepad2.x && button_x2_was_pressed) {
+                    button_x2_was_pressed = false;
+                }
+                if (gamepad2.a && !button_a2_was_pressed) {
+                    button_a2_was_pressed = true;
+                } else if (!gamepad2.a && button_a2_was_pressed) {
+                    button_a2_was_pressed = false;
+                }
+                if (gamepad2.y && !button_y2_was_pressed) {
+                    button_y2_was_pressed = true;
+                } else if (!gamepad2.y && button_y2_was_pressed) {
+                    button_y2_was_pressed = false;
+                }
+                if (gamepad2.b && !button_b2_was_pressed) {
+                    button_b2_was_pressed = true;
+                } else if (!gamepad2.b && button_b2_was_pressed) {
+                    button_b2_was_pressed = false;
+                }
+                if (gamepad2.left_stick_button && gamepad2.right_stick_button && gamepad1.start && !resettingEncoders) {
+                    resettingEncoders = true;
+                } else if (!(gamepad2.left_stick_button && gamepad2.right_stick_button && gamepad1.start) && resettingEncoders) {
+                    drive.mainLift.setPower(0);
+                    resettingEncoders = false;
                 }
 
-                drive.turntable.setPower(tablePower / 1.5);
-            }
-
-            // Update everything. Odometry. Etc.
-            drive.update();
-            if (gamepad2.dpad_down && !button_dpaddown2_was_pressed) {
-                claw++;
-                button_dpaddown2_was_pressed = true;
-            } else if (!gamepad2.dpad_down && button_dpaddown2_was_pressed) {
-                button_dpaddown2_was_pressed = false;
-            }
-            if (gamepad2.dpad_up && !button_dpadup2_was_pressed) {
-                autoHome = true;
-                button_dpadup2_was_pressed = true;
-            } else if (!gamepad2.dpad_up && button_dpadup2_was_pressed) {
-                button_dpadup2_was_pressed = false;
-            }
-            if (gamepad2.dpad_left && !button_dpadleft2_was_pressed) {
-                coneLevel--;
-                button_dpadleft2_was_pressed = true;
-            } else if (!gamepad2.dpad_left && button_dpadleft2_was_pressed) {
-                button_dpadleft2_was_pressed = false;
-            }
-            if (gamepad2.dpad_right && !button_dpadright2_was_pressed) {
-                coneLevel++;
-                button_dpadright2_was_pressed = true;
-            } else if (!gamepad2.dpad_right && button_dpadright2_was_pressed) {
-                button_dpadright2_was_pressed = false;
-            }
-
-            if (gamepad2.x && !button_x2_was_pressed) {
-                button_x2_was_pressed = true;
-            } else if (!gamepad2.x && button_x2_was_pressed) {
-                button_x2_was_pressed = false;
-            }
-            if (gamepad2.a && !button_a2_was_pressed) {
-                button_a2_was_pressed = true;
-            } else if (!gamepad2.a && button_a2_was_pressed) {
-                button_a2_was_pressed = false;
-            }
-            if (gamepad2.y && !button_y2_was_pressed) {
-                button_y2_was_pressed = true;
-            } else if (!gamepad2.y && button_y2_was_pressed) {
-                button_y2_was_pressed = false;
-            }
-            if (gamepad2.b && !button_b2_was_pressed) {
-                button_b2_was_pressed = true;
-            } else if (!gamepad2.b && button_b2_was_pressed) {
-                button_b2_was_pressed = false;
-            }
-            if (gamepad2.left_stick_button && gamepad2.right_stick_button && gamepad1.start && !resettingEncoders) {
-                resettingEncoders = true;
-            } else if (!(gamepad2.left_stick_button && gamepad2.right_stick_button && gamepad1.start) && resettingEncoders) {
-                drive.mainLift.setPower(0);
-                resettingEncoders = false;
-            }
-
-            // Read pose
-            Pose2d poseEstimate = drive.getPoseEstimate();
-            // Print pose to telemetry
-            telemetry.addData("turn counter", turntimer);
-            telemetry.addData("Turn Limiter", drive.turnlimiter.getState());
-            telemetry.addData("Lift", drive.mainLift.getCurrentPosition());
-            telemetry.addData("x", poseEstimate.getX());
-            telemetry.addData("y", poseEstimate.getY());
-            telemetry.addData("heading", poseEstimate.getHeading());
-            telemetry.addData("ConeLevel", ConeLevel()+1);
-            telemetry.addData("testing isBusy", drive.mainLift.isBusy());
+                // Read pose
+                Pose2d poseEstimate = drive.getPoseEstimate();
+                // Print pose to telemetry
+                telemetry.addData("turn counter", turntimer);
+                telemetry.addData("Turn Limiter", drive.turnlimiter.getState());
+                telemetry.addData("Lift", drive.mainLift.getCurrentPosition());
+                telemetry.addData("x", poseEstimate.getX());
+                telemetry.addData("y", poseEstimate.getY());
+                telemetry.addData("heading", poseEstimate.getHeading());
+                telemetry.addData("ConeLevel", ConeLevel() + 1);
+                telemetry.addData("testing isBusy", drive.mainLift.isBusy());
 
 //            if (Level() == 1) {
 //                telemetry.addData("Level:", "Intake");
@@ -242,8 +274,8 @@ public class DriveCode extends LinearOpMode {
 //            } else {
 //                telemetry.addData("Manual", "Control");
 //            }
-            telemetry.update();
+                telemetry.update();
+            }
         }
     }
-}
 
