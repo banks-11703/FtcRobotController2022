@@ -178,7 +178,7 @@ public class Auto extends LinearOpMode {
 
 //        Pose2d movement1 = new Pose2d(36 * xReflect, 60 * yMod, Math.toRadians(-90*yMod));
         Pose2d movement2 = new Pose2d(-34.5 * xReflect, 14 * yMod, Math.toRadians(-90 * yMod));
-        Pose2d scorePos = new Pose2d(-26.5 * xReflect, 14 * yMod, Math.toRadians(180 + headingMod));    //Score Position
+        Pose2d scorePos = new Pose2d(-27.5 * xReflect, 14 * yMod, Math.toRadians(180 + headingMod));    //Score Position
         Pose2d intakeStackPos = new Pose2d(-62.5 * xReflect, 13.5 * yMod, Math.toRadians(180 + headingMod));    //Intake cone stack Position
         Pose2d park1 = new Pose2d(-57.5 * xReflect, 13.5 * yMod, Math.toRadians(180 + headingMod));
         Pose2d park2 = new Pose2d(-34.5 * xReflect, 13.5 * yMod, Math.toRadians(180 + headingMod));
@@ -606,6 +606,8 @@ public class Auto extends LinearOpMode {
 
         }
 
+        telemetry.addData("Robot Pos", drive.getPoseEstimate());
+        telemetry.update();
         PoseStorage.team = team % 2;
         PoseStorage.currentPose = drive.getPoseEstimate();
         sleep(30000);
