@@ -66,17 +66,14 @@ public class Auto extends LinearOpMode {
 
     public static double movement2x =      -34.5;
     public static double scorePosx =       -28.0;
-    public static double intakeStackPosx = -63.5;
-    public static double park1x =          -57.5;
+    public static double intakeStackPosx = -64.5;
+    public static double park1x =          -59.5;
     public static double park2x =          -34.5;
     public static double park3x =          -11.5;
     public static double movement2y =      13;
     public static double scorePosy =       13;
     public static double intakeStackPosy = 13;
     public static double allParky =        13;
-
-
-
 
     OpenCvCamera camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
@@ -263,7 +260,7 @@ public class Auto extends LinearOpMode {
             //drop cone
             sleep(400);
             drive.claw.setPosition(0);
-            sleep(75);
+            sleep(125 );
             //turn table back to home
             if(Side()==0) {
                 boolean magnetWasTouched = false;
@@ -358,9 +355,9 @@ public class Auto extends LinearOpMode {
                 drive.turntable.setPower(0);
             }
             //drop cone
-            sleep(1000);
+            sleep(400);
             drive.claw.setPosition(0);
-            sleep(100);
+            sleep(125 );
             //turn table back to home
             if(Side()==0) {
                 boolean magnetWasTouched = false;
@@ -455,9 +452,9 @@ public class Auto extends LinearOpMode {
                 drive.turntable.setPower(0);
             }
             //drop cone
-            sleep(100);
+            sleep(400);
             drive.claw.setPosition(0);
-            sleep(200);
+            sleep(125 );
             //turn table back to home
             if(Side()==0) {
                 boolean magnetWasTouched = false;
