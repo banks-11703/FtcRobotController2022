@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -23,6 +24,8 @@ import org.openftc.easyopencv.OpenCvPipeline;
 import org.openftc.easyopencv.OpenCvWebcam;
 
 import java.util.ArrayList;
+
+@Config
 
 @Autonomous
 public class Auto extends LinearOpMode {
@@ -61,7 +64,16 @@ public class Auto extends LinearOpMode {
         return Mode % 4;
     }
 
-
+    public static double movement2x =      -34.5;
+    public static double scorePosx =       -28.0;
+    public static double intakeStackPosx = -63.5;
+    public static double park1x =          -57.5;
+    public static double park2x =          -34.5;
+    public static double park3x =          -11.5;
+    public static double movement2y =      13;
+    public static double scorePosy =       13;
+    public static double intakeStackPosy = 13;
+    public static double allParky =        13;
 
 
 
@@ -186,12 +198,12 @@ public class Auto extends LinearOpMode {
         drive.claw.setPosition(0.95);
 
 //        Pose2d movement1 = new Pose2d(36 * xReflect, 60 * yMod, Math.toRadians(-90*yMod));
-        Pose2d movement2 = new Pose2d(-34.5 * xReflect, 13 * yMod, Math.toRadians(-90 * yMod));
-        Pose2d scorePos = new Pose2d(-28 * xReflect, 13 * yMod, Math.toRadians(180 + headingMod));    //Score Position
-        Pose2d intakeStackPos = new Pose2d(-63.5 * xReflect, 13 * yMod, Math.toRadians(180 + headingMod));    //Intake cone stack Position
-        Pose2d park1 = new Pose2d(-57.5 * xReflect, 13 * yMod, Math.toRadians(180 + headingMod));
-        Pose2d park2 = new Pose2d(-34.5 * xReflect, 13 * yMod, Math.toRadians(180 + headingMod));
-        Pose2d park3 = new Pose2d(-11.5 * xReflect, 13 * yMod, Math.toRadians(180 + headingMod));
+        Pose2d movement2 = new Pose2d(movement2x * xReflect, movement2y * yMod, Math.toRadians(-90 * yMod));
+        Pose2d scorePos = new Pose2d(scorePosx * xReflect, scorePosy * yMod, Math.toRadians(180 + headingMod));    //Score Position
+        Pose2d intakeStackPos = new Pose2d(intakeStackPosx * xReflect, intakeStackPosy * yMod, Math.toRadians(180 + headingMod));    //Intake cone stack Position
+        Pose2d park1 = new Pose2d(park1x * xReflect, allParky * yMod, Math.toRadians(180 + headingMod));
+        Pose2d park2 = new Pose2d(park2x * xReflect, allParky * yMod, Math.toRadians(180 + headingMod));
+        Pose2d park3 = new Pose2d(park3x * xReflect, allParky * yMod, Math.toRadians(180 + headingMod));
 
         //Building trajectories
 
@@ -703,12 +715,12 @@ public class Auto extends LinearOpMode {
     }
 
     public void processPosition() {
-        if (team % 2 == 1) {
+        if (team % 2 == BLUE) {
             yMod = 1;
         } else {
             yMod = -1;
         }
-        if ((team % 2 == 0 && side % 2 == 0) || (team % 2 == 1 && side % 2 == 1)) {
+        if ((team % 2 == RED && side % 2 == LEFT) || (team % 2 == BLUE && side % 2 == RIGHT)) {
             xReflect = 1;
             xShift = 0;
             headingMod = 180;
