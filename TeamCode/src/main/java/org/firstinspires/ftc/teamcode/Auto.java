@@ -66,9 +66,9 @@ public class Auto extends LinearOpMode {
 
     public static double movement2x =      -34.5;
     public static double scorePosx =       -28.0;
-    public static double intakeStackPosx = -64.5;
+    public static double intakeStackPosx = -65.0;
     public static double park1x =          -59.5;
-    public static double park2x =          -34.5;
+    public static double park2x =          -36.5;
     public static double park3x =          -11.5;
     public static double movement2y =      13;
     public static double scorePosy =       13;
@@ -226,7 +226,7 @@ public class Auto extends LinearOpMode {
             //raise lift
             drive.mainLift.setTargetPosition(2600);
             drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            drive.mainLift.setPower(0.75);
+            drive.mainLift.setPower(1);
 
             sleep(1200);
             //turn table to junction
@@ -235,7 +235,7 @@ public class Auto extends LinearOpMode {
                 if(!drive.turnlimiter.getState()) {
                     magnetWasTouched = true;
                 }
-                drive.turntable.setPower(-0.75);
+                drive.turntable.setPower(-1);
                 while(!isStopRequested() && opModeIsActive() && magnetWasTouched) {
                     if(magnetWasTouched && drive.turnlimiter.getState()) {
                         magnetWasTouched = false;
@@ -248,7 +248,7 @@ public class Auto extends LinearOpMode {
                 if(!drive.turnlimiter.getState()) {
                     magnetWasTouched = true;
                 }
-                drive.turntable.setPower(0.75);
+                drive.turntable.setPower(1);
                 while(!isStopRequested() && opModeIsActive() &&magnetWasTouched) {
                     if(magnetWasTouched && drive.turnlimiter.getState()) {
                         magnetWasTouched = false;
@@ -257,17 +257,25 @@ public class Auto extends LinearOpMode {
                 while(!isStopRequested() && opModeIsActive() &&drive.turnlimiter.getState()) {}
                 drive.turntable.setPower(0);
             }
-            //drop cone
+
             sleep(400);
+            //lower lift
+            drive.mainLift.setTargetPosition(2400);
+            drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            drive.mainLift.setPower(1);
+            sleep(300);
+
+            //drop cone
             drive.claw.setPosition(0);
-            sleep(125 );
+            sleep(150);
+
             //turn table back to home
             if(Side()==0) {
                 boolean magnetWasTouched = false;
                 if(!drive.turnlimiter.getState()) {
                     magnetWasTouched = true;
                 }
-                drive.turntable.setPower(0.75);
+                drive.turntable.setPower(1);
                 while(!isStopRequested() && opModeIsActive() &&magnetWasTouched) {
                     if(magnetWasTouched && drive.turnlimiter.getState()) {
                         magnetWasTouched = false;
@@ -280,7 +288,7 @@ public class Auto extends LinearOpMode {
                 if(!drive.turnlimiter.getState()) {
                     magnetWasTouched = true;
                 }
-                drive.turntable.setPower(-0.75);
+                drive.turntable.setPower(-1);
                 while(!isStopRequested() && opModeIsActive() && magnetWasTouched) {
                     if(magnetWasTouched && drive.turnlimiter.getState()) {
                         magnetWasTouched = false;
@@ -290,9 +298,9 @@ public class Auto extends LinearOpMode {
                 drive.turntable.setPower(0);
             }
             //lower lift
-            drive.mainLift.setTargetPosition(800);
+            drive.mainLift.setTargetPosition(650);
             drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            drive.mainLift.setPower(0.75);
+            drive.mainLift.setPower(1);
 
 //            sleep(400);
 
@@ -303,36 +311,36 @@ public class Auto extends LinearOpMode {
             //intake
             drive.mainLift.setTargetPosition(318);
             drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            drive.mainLift.setPower(0.75);
+            drive.mainLift.setPower(1);
 
             sleep(300);
             drive.claw.setPosition(0.95);
             sleep(600);
 
             //raise lift
-            drive.mainLift.setTargetPosition(800);
+            drive.mainLift.setTargetPosition(700);
             drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            drive.mainLift.setPower(0.75);
+            drive.mainLift.setPower(1);
 
             sleep(400);
 
             Trajectory Score1 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                    .lineToLinearHeading(scorePos)
+                    .lineToLinearHeading(scorePos.plus(new Pose2d(0,1,Math.toRadians(0))))
                     .build();
             drive.followTrajectory(Score1);
             //raise lift
             drive.mainLift.setTargetPosition(2600);
             drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            drive.mainLift.setPower(0.75);
+            drive.mainLift.setPower(1);
 
-            sleep(600);
+            sleep(700);
             //turn table to junction
             if(Side()==0) {
                 boolean magnetWasTouched = false;
                 if(!drive.turnlimiter.getState()) {
                     magnetWasTouched = true;
                 }
-                drive.turntable.setPower(-0.75);
+                drive.turntable.setPower(-1);
                 while(!isStopRequested() && opModeIsActive() && magnetWasTouched) {
                     if(magnetWasTouched && drive.turnlimiter.getState()) {
                         magnetWasTouched = false;
@@ -345,7 +353,7 @@ public class Auto extends LinearOpMode {
                 if(!drive.turnlimiter.getState()) {
                     magnetWasTouched = true;
                 }
-                drive.turntable.setPower(0.75);
+                drive.turntable.setPower(1);
                 while(!isStopRequested() && opModeIsActive() &&magnetWasTouched) {
                     if(magnetWasTouched && drive.turnlimiter.getState()) {
                         magnetWasTouched = false;
@@ -354,17 +362,25 @@ public class Auto extends LinearOpMode {
                 while(!isStopRequested() && opModeIsActive() &&drive.turnlimiter.getState()) {}
                 drive.turntable.setPower(0);
             }
-            //drop cone
+
             sleep(400);
+            //lower lift
+            drive.mainLift.setTargetPosition(2400);
+            drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            drive.mainLift.setPower(1);
+            sleep(300);
+
+            //drop cone
             drive.claw.setPosition(0);
-            sleep(125 );
+            sleep(150);
+
             //turn table back to home
             if(Side()==0) {
                 boolean magnetWasTouched = false;
                 if(!drive.turnlimiter.getState()) {
                     magnetWasTouched = true;
                 }
-                drive.turntable.setPower(0.75);
+                drive.turntable.setPower(1);
                 while(!isStopRequested() && opModeIsActive() &&magnetWasTouched) {
                     if(magnetWasTouched && drive.turnlimiter.getState()) {
                         magnetWasTouched = false;
@@ -377,7 +393,7 @@ public class Auto extends LinearOpMode {
                 if(!drive.turnlimiter.getState()) {
                     magnetWasTouched = true;
                 }
-                drive.turntable.setPower(-0.75);
+                drive.turntable.setPower(-1);
                 while(!isStopRequested() && opModeIsActive() && magnetWasTouched) {
                     if(magnetWasTouched && drive.turnlimiter.getState()) {
                         magnetWasTouched = false;
@@ -387,9 +403,9 @@ public class Auto extends LinearOpMode {
                 drive.turntable.setPower(0);
             }
             //lower lift
-            drive.mainLift.setTargetPosition(800);
+            drive.mainLift.setTargetPosition(650);
             drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            drive.mainLift.setPower(0.75);
+            drive.mainLift.setPower(1);
 
 //            sleep(400);
 
@@ -400,36 +416,36 @@ public class Auto extends LinearOpMode {
             //intake
             drive.mainLift.setTargetPosition(150);
             drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            drive.mainLift.setPower(0.75);
+            drive.mainLift.setPower(1);
 
             sleep(300);
             drive.claw.setPosition(0.95);
             sleep(600);
 
             //raise lift
-            drive.mainLift.setTargetPosition(800);
+            drive.mainLift.setTargetPosition(700);
             drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            drive.mainLift.setPower(0.75);
+            drive.mainLift.setPower(1);
 
             sleep(400);
 
             Trajectory Score2 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                    .lineToLinearHeading(scorePos)
+                    .lineToLinearHeading(scorePos.plus(new Pose2d(0,1,Math.toRadians(0))))
                     .build();
             drive.followTrajectory(Score2);
             //raise lift
             drive.mainLift.setTargetPosition(2600);
             drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            drive.mainLift.setPower(0.75);
+            drive.mainLift.setPower(1);
 
-            sleep(600);
+            sleep(700);
             //turn table to junction
             if(Side()==0) {
                 boolean magnetWasTouched = false;
                 if(!drive.turnlimiter.getState()) {
                     magnetWasTouched = true;
                 }
-                drive.turntable.setPower(-0.75);
+                drive.turntable.setPower(-1);
                 while(!isStopRequested() && opModeIsActive() && magnetWasTouched) {
                     if(magnetWasTouched && drive.turnlimiter.getState()) {
                         magnetWasTouched = false;
@@ -442,7 +458,7 @@ public class Auto extends LinearOpMode {
                 if(!drive.turnlimiter.getState()) {
                     magnetWasTouched = true;
                 }
-                drive.turntable.setPower(0.75);
+                drive.turntable.setPower(1);
                 while(!isStopRequested() && opModeIsActive() &&magnetWasTouched) {
                     if(magnetWasTouched && drive.turnlimiter.getState()) {
                         magnetWasTouched = false;
@@ -451,17 +467,25 @@ public class Auto extends LinearOpMode {
                 while(!isStopRequested() && opModeIsActive() &&drive.turnlimiter.getState()) {}
                 drive.turntable.setPower(0);
             }
-            //drop cone
+
             sleep(400);
+            //lower lift
+            drive.mainLift.setTargetPosition(2400);
+            drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            drive.mainLift.setPower(1);
+            sleep(300);
+
+            //drop cone
             drive.claw.setPosition(0);
-            sleep(125 );
+            sleep(150);
+
             //turn table back to home
             if(Side()==0) {
                 boolean magnetWasTouched = false;
                 if(!drive.turnlimiter.getState()) {
                     magnetWasTouched = true;
                 }
-                drive.turntable.setPower(0.75);
+                drive.turntable.setPower(1);
                 while(!isStopRequested() && opModeIsActive() &&magnetWasTouched) {
                     if(magnetWasTouched && drive.turnlimiter.getState()) {
                         magnetWasTouched = false;
@@ -474,7 +498,7 @@ public class Auto extends LinearOpMode {
                 if(!drive.turnlimiter.getState()) {
                     magnetWasTouched = true;
                 }
-                drive.turntable.setPower(-0.75);
+                drive.turntable.setPower(-1);
                 while(!isStopRequested() && opModeIsActive() && magnetWasTouched) {
                     if(magnetWasTouched && drive.turnlimiter.getState()) {
                         magnetWasTouched = false;
@@ -486,7 +510,7 @@ public class Auto extends LinearOpMode {
             //lower lift
             drive.mainLift.setTargetPosition(0);
             drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            drive.mainLift.setPower(0.75);
+            drive.mainLift.setPower(1);
 
             switch (autoParkPosition) {
                 case 1:
