@@ -598,7 +598,57 @@ public class Auto extends LinearOpMode {
                     break;
             }
         } else if (Mode() == 3) {//testing
+            drive.followTrajectory(Movement1);
+            if (Side() == LEFT) {
+                drive.turn(Math.toRadians(turnMod * 90));
+            } else {
+                drive.turn(Math.toRadians(turnMod * 90));
+            }
+            Trajectory ScorePreloaded = drive.trajectoryBuilder(drive.getPoseEstimate())
+                    .lineToLinearHeading(scorePos)
+                    .build();
+            drive.followTrajectory(ScorePreloaded);
 
+            sleep(1000);
+
+            switch (autoParkPosition) {
+                case 1:
+                    Trajectory CyclePark2 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                            .lineToLinearHeading(park2)
+                            .build();
+                    drive.followTrajectory(CyclePark2);
+                    if (isStopRequested()) return;
+                    break;
+                case 2:
+                    if (Side() == 0) {
+                        Trajectory CyclePark3 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                                .lineToLinearHeading(park3)
+                                .build();
+                        drive.followTrajectory(CyclePark3);
+                    } else {
+                        Trajectory CyclePark1 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                                .lineToLinearHeading(park1)
+                                .build();
+                        drive.followTrajectory(CyclePark1);
+                    }
+
+                    if (isStopRequested()) return;
+                    break;
+                default:
+                    if (Side() == 0) {
+                        Trajectory CyclePark1 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                                .lineToLinearHeading(park1)
+                                .build();
+                        drive.followTrajectory(CyclePark1);
+                    } else {
+                        Trajectory CyclePark3 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                                .lineToLinearHeading(park3)
+                                .build();
+                        drive.followTrajectory(CyclePark3);
+                    }
+                    if (isStopRequested()) return;
+                    break;
+            }
         }
 
         PoseStorage.team = team % 2;
@@ -647,7 +697,7 @@ public class Auto extends LinearOpMode {
                                 telemetry.addData("Mode", "Park Only");
                                 break;
                             case (3):
-                                telemetry.addData("Mode", "Testing");
+                                telemetry.addData("Mode", "Shootout Cycle");
                                 break;
                         }
                         break;
@@ -664,7 +714,7 @@ public class Auto extends LinearOpMode {
                                 telemetry.addData("Mode", "Park Only");
                                 break;
                             case (3):
-                                telemetry.addData("Mode", "Testing");
+                                telemetry.addData("Mode", "Shootout Cycle");
                                 break;
                         }
                         break;
@@ -686,7 +736,7 @@ public class Auto extends LinearOpMode {
                                 telemetry.addData("Mode", "Park Only");
                                 break;
                             case (3):
-                                telemetry.addData("Mode", "Testing");
+                                telemetry.addData("Mode", "Shootout Cycle");
                                 break;
                         }
                         break;
@@ -703,7 +753,7 @@ public class Auto extends LinearOpMode {
                                 telemetry.addData("Mode", "Park Only");
                                 break;
                             case (3):
-                                telemetry.addData("Mode", "Testing");
+                                telemetry.addData("Mode", "Shootout Cycle");
                                 break;
                         }
                         break;
