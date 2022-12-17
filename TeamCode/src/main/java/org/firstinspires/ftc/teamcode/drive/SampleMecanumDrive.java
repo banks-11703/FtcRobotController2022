@@ -80,7 +80,7 @@ public class SampleMecanumDrive extends MecanumDrive {
     public DigitalChannel turnlimiter;
     public DigitalChannel turnlimiterl;
     public DigitalChannel turnlimiterr;
-    public DcMotor turntable;
+    public DcMotorEx turntable;
     private BNO055IMU imu;
     private VoltageSensor batteryVoltageSensor;
 
@@ -137,7 +137,7 @@ public class SampleMecanumDrive extends MecanumDrive {
         re = hardwareMap.get(DcMotor.class,"re");
         mainLift = hardwareMap.get(DcMotor.class,"l");
         backupLift = hardwareMap.get(DcMotor.class,"sl");
-        turntable = hardwareMap.get(DcMotor.class,"tt");
+        turntable = hardwareMap.get(DcMotorEx.class,"tt");
         claw = hardwareMap.get(Servo.class,"c");
         turnlimiter = hardwareMap.get(DigitalChannel.class, "tl");
 //        turnlimiterl = hardwareMap.get(DigitalChannel.class, "tll");
