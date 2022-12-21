@@ -13,6 +13,8 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 public class DriveCode extends DriveCodeCommon {
     @Override
     public void runOpMode(){
+        waitForStart();
+        if (isStopRequested()) return;
         while (opModeIsActive() && !isStopRequested()) {
         RawDriving();
         Toggles();

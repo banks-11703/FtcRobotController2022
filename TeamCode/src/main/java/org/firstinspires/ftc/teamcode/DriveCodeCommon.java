@@ -17,10 +17,10 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import java.util.List;
 
 @TeleOp(name = "DriveCodeCommon", group = "Linear Opmode")
-
+@Config
 @Disabled
 public class DriveCodeCommon extends LinearOpMode {
-    SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+
     boolean autoHome = false;
     boolean turntoforward = false;
     boolean turntoright = false;
@@ -43,7 +43,7 @@ public class DriveCodeCommon extends LinearOpMode {
     boolean magnetwastouchedduringauto;
     double coneLevel;
     double claw;
-    double turntimer;
+    double turntimer = 0;
     int yMod = 0;
     int xMod = 0;
     int liftpos;
@@ -60,7 +60,7 @@ public class DriveCodeCommon extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         // We want to turn off velocity control for teleop
         // Velocity control per wheel is not necessary outside of motion profiled auto
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -70,13 +70,11 @@ public class DriveCodeCommon extends LinearOpMode {
         // this is what we get from autonomous
         drive.setPoseEstimate(PoseStorage.currentPose);
         waitForStart();
-        if (isStopRequested()) return;
         drive.mainLift.setTargetPosition(drive.mainLift.getCurrentPosition());
-        turntimer = 0;
-
     }
 
     public void OdoDriving() {
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         if (gamepad1.dpad_up) {
             yMod = 1;
         } else if (gamepad1.dpad_down) {
@@ -102,6 +100,7 @@ public class DriveCodeCommon extends LinearOpMode {
     }
 
     public void RawDriving() {
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         drive.leftFront.setPower(-gamepad1.left_stick_y + gamepad1.left_stick_x + (gamepad1.right_stick_x * 0.5));
         drive.rightFront.setPower(-gamepad1.left_stick_y - gamepad1.left_stick_x - (gamepad1.right_stick_x * 0.5));
         drive.rightRear.setPower(-gamepad1.left_stick_y + gamepad1.left_stick_x - (gamepad1.right_stick_x * 0.5));
@@ -110,6 +109,7 @@ public class DriveCodeCommon extends LinearOpMode {
     }
 
     public void Toggles() {
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         if (gamepad2.dpad_down && !button_dpaddown2_was_pressed) {
             claw++;
             button_dpaddown2_was_pressed = true;
@@ -163,6 +163,7 @@ public class DriveCodeCommon extends LinearOpMode {
     }
 
     public void Lift() {
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         if (resettingEncoders) {
             drive.mainLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             drive.mainLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -192,6 +193,7 @@ public class DriveCodeCommon extends LinearOpMode {
     }
 
     public void ConeStackLift() {
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         if ((button_dpadright2_was_pressed) && ConeLevel() == 4) {
             drive.mainLift.setTargetPosition(0);
             drive.mainLift.setPower(1);
@@ -216,6 +218,7 @@ public class DriveCodeCommon extends LinearOpMode {
     }
 
     public void Claw() {
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         if (ClawToggle() == 0) {
             drive.claw.setPosition(0);//0.225
             telemetry.addData("Claw:", "Open");
@@ -226,6 +229,7 @@ public class DriveCodeCommon extends LinearOpMode {
     }
 
     public void TurnTable() {
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         if (gamepad2.back) {
             drive.turntable.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             drive.turntable.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -263,6 +267,7 @@ public class DriveCodeCommon extends LinearOpMode {
     }
 
     public void Telemetry() {
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         // Update everything. Odometry. Etc.
         drive.update();
         // Read pose
