@@ -31,10 +31,10 @@ public class DriveConstants {
      * If using the built-in motor velocity PID, update MOTOR_VELO_PID with the tuned coefficients
      * from DriveVelocityPIDTuner.
      */
-    public static final boolean RUN_USING_ENCODER = true;
+    public static final boolean RUN_USING_ENCODER = false;
     
-    public static PIDFCoefficients MOTOR_VELO_PID = new PIDFCoefficients(20.1, 0, 5,
-            16.718338540432552);
+    public static PIDFCoefficients MOTOR_VELO_PID = new PIDFCoefficients(0, 0, 0,
+            getMotorVelocityF(MAX_RPM / 60 * TICKS_PER_REV));
 
 
     /*
@@ -45,11 +45,11 @@ public class DriveConstants {
      * angular distances although most angular parameters are wrapped in Math.toRadians() for
      * convenience. Make sure to exclude any gear ratio included in MOTOR_CONFIG from GEAR_RATIO.
      */
-    public static double WHEEL_RADIUS = 1.8898; // in
+    public static double WHEEL_RADIUS = 1.889765; // in
 
-    public static double GEAR_RATIO = 1.01721541743; // output (wheel) speed / input (motor) speed
+    public static double GEAR_RATIO = 1; // output (wheel) speed / input (motor) speed
     
-    public static double TRACK_WIDTH = 17.06; // in
+    public static double TRACK_WIDTH = 15.56; // in
 
 
     /*
@@ -58,8 +58,8 @@ public class DriveConstants {
      * motor encoders or have elected not to use them for velocity control, these values should be
      * empirically tuned.
      */
-    public static double kV = 0.0114196645415913;
-    public static double kA = 0;
+    public static double kV = 0.0135;
+    public static double kA = 0.006;
     public static double kStatic = 0;
 
     /*
@@ -69,9 +69,9 @@ public class DriveConstants {
      * small and gradually increase them later after everything is working. All distance units are
      * inches.
      */
-    public static double MAX_VEL = 65;
-    public static double MAX_ACCEL = 30;
-    public static double MAX_ANG_VEL = 4.951902255154361;
+    public static double MAX_VEL = 45;
+    public static double MAX_ACCEL = 45;
+    public static double MAX_ANG_VEL = 5.036821545244245;
     public static double MAX_ANG_ACCEL = Math.toRadians(60);
 
 

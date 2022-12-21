@@ -55,10 +55,10 @@ import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kV;
  */
 @Config
 public class SampleMecanumDrive extends MecanumDrive {
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(4, 0, 0);
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(8, 0, 0);
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(8, 0, 0);
 
-    public static double LATERAL_MULTIPLIER = 1;
+    public static double LATERAL_MULTIPLIER = 1.08122291644;
 
     public static double VX_WEIGHT = 1;
     public static double VY_WEIGHT = 1;
@@ -80,7 +80,7 @@ public class SampleMecanumDrive extends MecanumDrive {
     public DigitalChannel turnlimiter;
     public DigitalChannel turnlimiterl;
     public DigitalChannel turnlimiterr;
-    public DcMotor turntable;
+    public DcMotorEx turntable;
     private BNO055IMU imu;
     private VoltageSensor batteryVoltageSensor;
 
@@ -88,7 +88,7 @@ public class SampleMecanumDrive extends MecanumDrive {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
 
         follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
-                new Pose2d(0.5, 0.5, Math.toRadians(1.0)), 0.5);
+                new Pose2d(0.25, 0.25, Math.toRadians(1.0)), 0.5);
 
         LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
 
@@ -137,7 +137,7 @@ public class SampleMecanumDrive extends MecanumDrive {
         re = hardwareMap.get(DcMotor.class,"re");
         mainLift = hardwareMap.get(DcMotor.class,"l");
         backupLift = hardwareMap.get(DcMotor.class,"sl");
-        turntable = hardwareMap.get(DcMotor.class,"tt");
+        turntable = hardwareMap.get(DcMotorEx.class,"tt");
         claw = hardwareMap.get(Servo.class,"c");
         turnlimiter = hardwareMap.get(DigitalChannel.class, "tl");
 //        turnlimiterl = hardwareMap.get(DigitalChannel.class, "tll");
