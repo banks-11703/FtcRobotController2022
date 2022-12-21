@@ -21,7 +21,6 @@ public class DriveCode extends DriveCodeCommon {
         Lift();
         Claw();
         TurnTable();
-        Lights();
         Telemetry();
             }
         }

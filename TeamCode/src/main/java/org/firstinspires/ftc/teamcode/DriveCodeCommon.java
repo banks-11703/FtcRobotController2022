@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -284,7 +285,14 @@ public class DriveCodeCommon extends LinearOpMode {
         telemetry.update();
     }
 
-    public void Lights(){
-
+    public void Lights() {
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        if(!isStarted()) {
+            drive.lightServo.setPattern(RevBlinkinLedDriver.BlinkinPattern.GREEN);
+        }else if(PoseStorage.team == 0) {
+            drive.lightServo.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
+        } else {
+            drive.lightServo.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
+        }
     }
 }

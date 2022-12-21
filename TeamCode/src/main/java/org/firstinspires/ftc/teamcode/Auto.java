@@ -221,10 +221,10 @@ public class Auto extends LinearOpMode {
             } else {
                 drive.turn(Math.toRadians(turnMod * 90));
             }
-            Trajectory ScorePreloaded = drive.trajectoryBuilder(drive.getPoseEstimate())
+            Trajectory Score0 = drive.trajectoryBuilder(drive.getPoseEstimate())
                     .lineToLinearHeading(scorePos)
                     .build();
-            drive.followTrajectory(ScorePreloaded);
+            drive.followTrajectory(Score0);
             //raise lift
             drive.mainLift.setTargetPosition(2600);
             drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -348,7 +348,7 @@ public class Auto extends LinearOpMode {
             sleep(400);
 
             Trajectory Score2 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                    .lineToLinearHeading(scorePos.plus(new Pose2d(0,1,Math.toRadians(0))))
+                    .lineToLinearHeading(scorePos.plus(new Pose2d(0,2,Math.toRadians(0))))
                     .build();
             drive.followTrajectory(Score2);
             //raise lift

@@ -19,6 +19,7 @@ import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAcceleration
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.lynx.LynxModule;
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -70,6 +71,7 @@ public class SampleMecanumDrive extends MecanumDrive {
     private static final TrajectoryAccelerationConstraint ACCEL_CONSTRAINT = getAccelerationConstraint(MAX_ACCEL);
 
     private TrajectoryFollower follower;
+    public RevBlinkinLedDriver lightServo;
     public DcMotor re;
     public DcMotor mainLift;
     public DcMotor backupLift;
@@ -134,6 +136,7 @@ public class SampleMecanumDrive extends MecanumDrive {
         // TODO: if desired, use setLocalizer() to change the localization method
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
 
+//        lightServo = hardwareMap.get(RevBlinkinLedDriver.class, "blinkin");
         re = hardwareMap.get(DcMotor.class,"re");
         mainLift = hardwareMap.get(DcMotor.class,"l");
         backupLift = hardwareMap.get(DcMotor.class,"sl");
