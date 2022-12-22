@@ -23,14 +23,6 @@ import java.util.List;
 public class DriveCodeCommon extends LinearOpMode {
 
     boolean autoHome = false;
-    boolean turntoforward = false;
-    boolean turntoright = false;
-    boolean turntoleft = false;
-    boolean lastwasforward = false;
-    boolean lastwasright = false;
-    boolean lastwasleft = false;
-    boolean turningtoleft = false;
-    boolean turningtoright = false;
     boolean button_dpaddown2_was_pressed = false;
     boolean button_dpadup2_was_pressed = false;
     boolean button_dpadleft2_was_pressed = false;
@@ -40,15 +32,12 @@ public class DriveCodeCommon extends LinearOpMode {
     boolean button_y2_was_pressed = false;
     boolean button_b2_was_pressed = false;
     boolean resettingEncoders = false;
-    boolean magnetwastouched;
-    boolean magnetwastouchedduringauto;
+    boolean shootout = false;
     double coneLevel;
     double claw;
     double turntimer = 0;
     int yMod = 0;
     int xMod = 0;
-    int liftpos;
-    int turnsensorcounter = 0;
     double autoHomeSpeed;
 
     public double ConeLevel() {
@@ -259,10 +248,18 @@ public class DriveCodeCommon extends LinearOpMode {
             drive.turntable.setPower(0);
             telemetry.addData("TT at ", "Home");
         } else {
-            drive.turntable.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             double tablePower;
-            tablePower = gamepad2.right_trigger - gamepad2.left_trigger;
-
+            if (!autoHome && drive.turntable.getCurrentPosition() > 100 && drive.mainLift.getCurrentPosition() <= 200) {
+                tablePower = -gamepad2.left_trigger;
+            } else if (!autoHome && drive.turntable.getCurrentPosition() < -100 && drive.mainLift.getCurrentPosition() <= 200) {
+                tablePower = gamepad2.right_trigger;
+            } else if (!autoHome && drive.turntable.getCurrentPosition() > 2000) {
+                tablePower = -gamepad2.left_trigger;
+            } else if (!autoHome && drive.turntable.getCurrentPosition() < -2000) {
+                tablePower = gamepad2.right_trigger;
+            } else {
+                tablePower = gamepad2.right_trigger - gamepad2.left_trigger;
+            }
             drive.turntable.setPower(tablePower);
         }
     }
@@ -287,12 +284,54 @@ public class DriveCodeCommon extends LinearOpMode {
 
     public void Lights() {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-        if(!isStarted()) {
+        if (!isStarted()) {
             drive.lightServo.setPattern(RevBlinkinLedDriver.BlinkinPattern.GREEN);
-        }else if(PoseStorage.team == 0) {
+        } else if (PoseStorage.team == 0) {
             drive.lightServo.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
         } else {
             drive.lightServo.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
         }
+    }
+
+    public void ShootOut(boolean testing) {
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        if (testing) {
+            drive.shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            if (gamepad2.left_bumper) {
+                drive.shooter.setPower(-0.1);
+            } else if (gamepad2.right_bumper) {
+                drive.shooter.setPower(0.1);
+            } else {
+                drive.shooter.setPower(0);
+            }
+            telemetry.addData("Shooter Ticks", drive.shooter.getCurrentPosition());
+        } else {
+            drive.shooter.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            drive.shooter.setPower(0.5);
+            if (gamepad2.left_bumper) {
+                shootout = false;
+                drive.shooter.setTargetPosition(0);
+            } else if (gamepad2.right_bumper) {
+                drive.shooter.setTargetPosition(100);
+                OpenSclaws();
+                shootout = true;
+            }
+            if (shootout) {
+                if (gamepad2.right_bumper) {
+                    CloseSclaws();
+                }
+                if ((Math.abs(drive.shooter.getCurrentPosition() - drive.shooter.getTargetPosition())) <= 10) {
+                    CloseSclaws();
+                }
+            }
+        }
+    }
+
+    public void OpenSclaws() {
+
+    }
+
+    public void CloseSclaws() {
+
     }
 }

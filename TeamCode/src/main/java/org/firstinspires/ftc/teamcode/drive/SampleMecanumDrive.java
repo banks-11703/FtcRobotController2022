@@ -71,18 +71,18 @@ public class SampleMecanumDrive extends MecanumDrive {
     private static final TrajectoryAccelerationConstraint ACCEL_CONSTRAINT = getAccelerationConstraint(MAX_ACCEL);
 
     private TrajectoryFollower follower;
-    public RevBlinkinLedDriver lightServo;
     public DcMotor re;
     public DcMotor mainLift;
     public DcMotor backupLift;
     public DcMotorEx leftFront, leftRear, rightRear, rightFront;
     private List<DcMotorEx> motors;
     public Servo claw;
-    public Servo arm;
+    public Servo sclawl;
+    public Servo sclawr;
+    public RevBlinkinLedDriver lightServo;
     public DigitalChannel turnlimiter;
-    public DigitalChannel turnlimiterl;
-    public DigitalChannel turnlimiterr;
     public DcMotorEx turntable;
+    public DcMotor shooter;
     private BNO055IMU imu;
     private VoltageSensor batteryVoltageSensor;
 
@@ -143,8 +143,7 @@ public class SampleMecanumDrive extends MecanumDrive {
         turntable = hardwareMap.get(DcMotorEx.class,"tt");
         claw = hardwareMap.get(Servo.class,"c");
         turnlimiter = hardwareMap.get(DigitalChannel.class, "tl");
-//        turnlimiterl = hardwareMap.get(DigitalChannel.class, "tll");
-//        turnlimiterr = hardwareMap.get(DigitalChannel.class, "tlr");
+//        shooter = hardwareMap.get(DcMotor.class,"s");
         for (DcMotorEx motor : motors) {
             MotorConfigurationType motorConfigurationType = motor.getMotorType().clone();
             motorConfigurationType.setAchieveableMaxRPMFraction(1.0);
