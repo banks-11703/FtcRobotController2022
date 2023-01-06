@@ -7,21 +7,17 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
-import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-
-import java.util.List;
 
 @TeleOp(name = "DriveCodeCommon", group = "Linear Opmode")
 @Config
 @Disabled
 public class DriveCodeCommon extends LinearOpMode {
-
+    public ElapsedTime runtime = new ElapsedTime();
+    double Timestamp = 0;
     boolean autoHome = false;
     boolean button_dpaddown2_was_pressed = false;
     boolean button_dpadup2_was_pressed = false;
@@ -33,13 +29,15 @@ public class DriveCodeCommon extends LinearOpMode {
     boolean button_b2_was_pressed = false;
     boolean resettingEncoders = false;
     boolean shootout = false;
+    boolean readytoclose;
+    boolean clawrunonce = false;
     double coneLevel;
     double claw;
     double turntimer = 0;
     int yMod = 0;
     int xMod = 0;
     double autoHomeSpeed;
-
+    int team;
     public double ConeLevel() {
         return coneLevel % 5;
     }
@@ -47,7 +45,9 @@ public class DriveCodeCommon extends LinearOpMode {
     public double ClawToggle() {
         return claw % 2;
     }
-
+    public double TimeSinceStamp() {
+        return runtime.time() - Timestamp;
+    }
     @Override
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
@@ -160,19 +160,19 @@ public class DriveCodeCommon extends LinearOpMode {
             drive.mainLift.setPower(-0.4);
         } else if (button_a2_was_pressed) { // intake
             drive.mainLift.setTargetPosition(0);
-            drive.mainLift.setPower(1);
+            drive.mainLift.setVelocity(40);
             drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         } else if (button_b2_was_pressed) { // low
             drive.mainLift.setTargetPosition(1050);
-            drive.mainLift.setPower(1);
+            drive.mainLift.setVelocity(40);
             drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         } else if (button_x2_was_pressed) { // mid
             drive.mainLift.setTargetPosition(1800);
-            drive.mainLift.setPower(1);
+            drive.mainLift.setVelocity(40);
             drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         } else if (button_y2_was_pressed) { // high
             drive.mainLift.setTargetPosition(2500);
-            drive.mainLift.setPower(1);
+            drive.mainLift.setVelocity(40);
             drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
 
@@ -210,11 +210,20 @@ public class DriveCodeCommon extends LinearOpMode {
     public void Claw() {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         if (ClawToggle() == 0) {
-            drive.claw.setPosition(0);//0.225
+            if (!clawrunonce){
+                Timestamp = runtime.time();
+                clawrunonce = true;
+            }
+            if (TimeSinceStamp() >= 1000){
+                readytoclose = true;
+            }
+            telemetry.addData("Time Since Opened", TimeSinceStamp());
+            SClaw(true);
             telemetry.addData("Claw:", "Open");
         } else if (ClawToggle() == 1) {
-            drive.claw.setPosition(0.95);//0.150
             telemetry.addData("Claw:", "Closed");
+            readytoclose = false;
+            SClaw(false);
         }
     }
 
@@ -298,9 +307,9 @@ public class DriveCodeCommon extends LinearOpMode {
         if (testing) {
             drive.shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             if (gamepad2.left_bumper) {
-                drive.shooter.setPower(-0.1);
+                drive.shooter.setPower(-1);
             } else if (gamepad2.right_bumper) {
-                drive.shooter.setPower(0.1);
+                drive.shooter.setPower(1);
             } else {
                 drive.shooter.setPower(0);
             }
@@ -313,25 +322,42 @@ public class DriveCodeCommon extends LinearOpMode {
                 drive.shooter.setTargetPosition(0);
             } else if (gamepad2.right_bumper) {
                 drive.shooter.setTargetPosition(100);
-                OpenSclaws();
+                SClaw(true);
                 shootout = true;
             }
             if (shootout) {
                 if (gamepad2.right_bumper) {
-                    CloseSclaws();
+                    SClaw(false);
                 }
                 if ((Math.abs(drive.shooter.getCurrentPosition() - drive.shooter.getTargetPosition())) <= 10) {
-                    CloseSclaws();
+                    SClaw(false);
                 }
             }
         }
     }
-
-    public void OpenSclaws() {
-
+    public void SClaw(boolean open) {
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        if (open){
+            drive.claw.setPosition(0);//0.225
+        }else{
+            drive.claw.setPosition(0.95);//0.150
+        }
     }
-
-    public void CloseSclaws() {
-
+    public void ColorSensor(){
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        telemetry.addData("red", drive.csensor.red());
+        telemetry.addData("blue", drive.csensor.blue());
+        telemetry.addData("distance", drive.csensor.getDistance(DistanceUnit.INCH));
+        if(readytoclose) {
+            if (PoseStorage.team == 0) {
+                if (drive.csensor.blue() <= 200 && drive.csensor.red() >= 200 && drive.csensor.getDistance(DistanceUnit.INCH) <= 0.25) {
+                    claw = 0;
+                }
+            } else {
+                if (drive.csensor.blue() >= 200 && drive.csensor.red() <= 200 && drive.csensor.getDistance(DistanceUnit.INCH) <= 0.25) {
+                    claw = 0;
+                }
+            }
+        }
     }
 }

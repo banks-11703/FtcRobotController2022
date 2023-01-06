@@ -14,6 +14,7 @@ public class DriveCode extends DriveCodeCommon {
             TurnTable();
             ShootOut(true);
             Telemetry();
+//            ColorSensor();
         }
     }
 }

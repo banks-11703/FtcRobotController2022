@@ -20,6 +20,7 @@ import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityCons
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
+import com.qualcomm.robotcore.hardware.ColorRangeSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -71,9 +72,7 @@ public class SampleMecanumDrive extends MecanumDrive {
     private static final TrajectoryAccelerationConstraint ACCEL_CONSTRAINT = getAccelerationConstraint(MAX_ACCEL);
 
     private TrajectoryFollower follower;
-    public DcMotor re;
-    public DcMotor mainLift;
-    public DcMotor backupLift;
+    public DcMotorEx mainLift;
     public DcMotorEx leftFront, leftRear, rightRear, rightFront;
     private List<DcMotorEx> motors;
     public Servo claw;
@@ -83,6 +82,7 @@ public class SampleMecanumDrive extends MecanumDrive {
     public DigitalChannel turnlimiter;
     public DcMotorEx turntable;
     public DcMotor shooter;
+    public ColorRangeSensor csensor;
     private BNO055IMU imu;
     private VoltageSensor batteryVoltageSensor;
 
@@ -137,13 +137,13 @@ public class SampleMecanumDrive extends MecanumDrive {
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
 
 //        lightServo = hardwareMap.get(RevBlinkinLedDriver.class, "blinkin");
-        re = hardwareMap.get(DcMotor.class,"re");
-        mainLift = hardwareMap.get(DcMotor.class,"l");
-        backupLift = hardwareMap.get(DcMotor.class,"sl");
+        mainLift = hardwareMap.get(DcMotorEx.class,"l");
+
         turntable = hardwareMap.get(DcMotorEx.class,"tt");
         claw = hardwareMap.get(Servo.class,"c");
         turnlimiter = hardwareMap.get(DigitalChannel.class, "tl");
-//        shooter = hardwareMap.get(DcMotor.class,"s");
+        shooter = hardwareMap.get(DcMotor.class,"s");
+//        csensor = hardwareMap.get(ColorRangeSensor.class,"cs");
         for (DcMotorEx motor : motors) {
             MotorConfigurationType motorConfigurationType = motor.getMotorType().clone();
             motorConfigurationType.setAchieveableMaxRPMFraction(1.0);
