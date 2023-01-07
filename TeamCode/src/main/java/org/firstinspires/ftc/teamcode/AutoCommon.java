@@ -46,6 +46,7 @@ public class AutoCommon extends LinearOpMode {
     int headingMod = 0;
     int turnMod = 1;
     double tileWidth = 23.5;
+    boolean lazy = false;
 
     public double TimeSinceStampLift() {
         return runtime.time() - timeStampLift;
@@ -334,6 +335,10 @@ public class AutoCommon extends LinearOpMode {
             case 32://Turn table back to center and lower lift
                 if(TimeSinceStampLift() >= 150) {
                     turnTable(0);
+                    lazy = true;
+                    timeStampLift = runtime.time();
+                }
+                if(lazy && TimeSinceStampLift() >= 100) {
                     moveLift(650);
                     armTaskNum++;
                 }
