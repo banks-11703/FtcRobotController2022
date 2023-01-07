@@ -45,6 +45,7 @@ public class DriveCodeCommon extends LinearOpMode {
     public double ClawToggle() {
         return claw % 2;
     }
+
     public double TimeSinceStamp() {
         return runtime.time() - Timestamp;
     }

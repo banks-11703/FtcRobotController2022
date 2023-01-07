@@ -6,7 +6,6 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -24,8 +23,14 @@ import java.util.ArrayList;
 @Disabled
 public class AutoCommon extends LinearOpMode {
     public ElapsedTime runtime = new ElapsedTime();
-    double timeStampScore = 0;
+    double timeStampLift = 0;
     double timeStampShootout = 0;
+    double timeStampStart = 0;
+    int armTaskNum = 0;
+    int shootOutTaskNum = 0;
+    int turntableMod;
+    boolean armDone = false;
+    boolean shootoutDone = false;
 
     boolean button_b_was_pressed = false;
     boolean button_a_was_pressed = false;
@@ -42,12 +47,16 @@ public class AutoCommon extends LinearOpMode {
     int turnMod = 1;
     double tileWidth = 23.5;
 
-    public double TimeSinceStampScore() {
-        return runtime.time() - timeStampScore;
+    public double TimeSinceStampLift() {
+        return runtime.time() - timeStampLift;
     }
     public double TimeSinceStampShootout() {
         return runtime.time() - timeStampShootout;
     }
+    public double TimeSinceStart() {
+        return runtime.time() - timeStampStart;
+    }
+
 
     double bugMultiplier = (30/29);
 
@@ -212,7 +221,7 @@ public class AutoCommon extends LinearOpMode {
         drive.claw.setPosition(0.95);
     }
 
-    public void movetoscore(){
+    public void moveToScore(){
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         Trajectory Movement1 = drive.trajectoryBuilder(drive.getPoseEstimate())
                 .lineToLinearHeading(movement2)
@@ -259,12 +268,266 @@ public class AutoCommon extends LinearOpMode {
         drive.claw.setPosition(0.95);
     }
 
-    public void extendShootout() {
+    public void moveShootout(int pos) {
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+
+        drive.shooter.setTargetPosition(pos);
+        drive.shooter.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        drive.shooter.setPower(1);
+    }
+
+    public void moveShooterClaw(int pos) {
 
     }
 
-    public void retractShootout() {
+    public void openShooterClaw() {
 
+    }
+
+    public void closeShooterClaw() {
+
+    }
+
+    public void doLiftTasks() {
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        switch(armTaskNum) {
+            case 0://Lift arm to top
+                moveLift(2600);
+                armTaskNum++;
+                timeStampLift = runtime.time();
+                break;
+            case 1://Turn table to junction
+                if(TimeSinceStampLift() >= 1200) {
+                    turnTable(turntableMod*735);
+                    timeStampLift = runtime.time();
+                    armTaskNum++;
+                }
+                break;
+            case 2:
+            case 9:
+            case 16:
+            case 23:
+            case 30:
+            case 37://Go down slightly
+                if(TimeSinceStampLift() >= 400) {
+                    moveLift(2400);
+                    timeStampLift = runtime.time();
+                    armTaskNum++;
+                }
+                break;
+            case 3:
+            case 10:
+            case 17:
+            case 24:
+            case 31:
+            case 38://Drop cone
+                if(TimeSinceStampLift() >= 300) {
+                    openClaw();
+                    timeStampLift = runtime.time();
+                    armTaskNum++;
+                }
+                break;
+            case 4:
+            case 11:
+            case 18:
+            case 25:
+            case 32://Turn table back to center and lower lift
+                if(TimeSinceStampLift() >= 150) {
+                    turnTable(0);
+                    moveLift(650);
+                    armTaskNum++;
+                }
+                break;
+            case 6:
+            case 13:
+            case 20:
+            case 27:
+            case 34://Grab cone
+                if(!drive.mainLift.isBusy()) {
+                    closeClaw();
+                    timeStampLift = runtime.time();
+                    armTaskNum++;
+                }
+                break;
+            case 7:
+            case 14:
+            case 21:
+            case 28:
+            case 35://Lift arm to top
+                if(TimeSinceStampLift() >= 600) {
+                    moveLift(2600);
+                    timeStampLift = runtime.time();
+                    armTaskNum++;
+                }
+                break;
+            case 8:
+            case 15:
+            case 22:
+            case 29:
+            case 36://Turn table to junction
+                if(TimeSinceStampLift() >= 1100) {
+                    turnTable(turntableMod*735);
+                    armTaskNum++;
+                }
+                break;
+            case 5://Lower arm to 5th cone on stack
+                if(!drive.mainLift.isBusy()) {
+                    moveLift(318);
+                    armTaskNum++;
+                }
+                break;
+            case 12://Lower arm to 4th cone on stack
+                if(!drive.mainLift.isBusy()) {
+                    moveLift(223);
+                    armTaskNum++;
+                }
+                break;
+            case 19://Lower arm to 3rd cone on stack
+                if(!drive.mainLift.isBusy()) {
+                    moveLift(122);
+                    armTaskNum++;
+                }
+                break;
+            case 26://Lower arm to 2nd cone on stack
+                if(!drive.mainLift.isBusy()) {
+                    moveLift(38);
+                    armTaskNum++;
+                }
+                break;
+            case 33://Lower arm to 1st cone on stack
+                if(!drive.mainLift.isBusy()) {
+                    moveLift(0);
+                    armTaskNum++;
+                }
+                break;
+            case 39://Turn table back to center and lower arm
+                if(TimeSinceStampLift() >= 150) {
+                    turnTable(0);
+                    moveLift(0);
+                    armTaskNum++;
+                }
+                break;
+            case 40://End loop and park
+                armDone=true;
+                break;
+        }
+    }
+
+    public void doShootoutTasks() {
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        switch(shootOutTaskNum) {
+            case 0:
+                    moveShootout(1000);//unsure of number
+                    shootOutTaskNum++;
+                break;
+            case 1:
+            case 11:
+            case 21:
+            case 31:
+            case 41:
+                moveShooterClaw(100);//unsure of number
+                timeStampShootout = runtime.time();
+                shootOutTaskNum++;
+                break;
+            case 2:
+            case 12:
+            case 22:
+            case 32:
+            case 42:
+                if(TimeSinceStampShootout() >= 100) {
+                    moveShootout(1100);//unsure of number
+                    shootOutTaskNum++;
+                }
+                break;
+            case 3:
+            case 13:
+            case 23:
+            case 33:
+            case 43:
+                if(!drive.shooter.isBusy()) {
+                    closeShooterClaw();
+                    timeStampShootout = runtime.time();
+                    shootOutTaskNum++;
+                }
+                break;
+            case 4:
+            case 14:
+            case 24:
+            case 34:
+            case 44:
+                if(TimeSinceStampShootout() >= 100) {
+                    moveShootout(1000);//unsure of number
+                    shootOutTaskNum++;
+                }
+                break;
+            case 5:
+            case 15:
+            case 25:
+            case 35:
+            case 45:
+                if(!drive.shooter.isBusy()) {
+                    moveShooterClaw(0);
+                    shootOutTaskNum++;
+                }
+                break;
+            case 6:
+            case 16:
+            case 26:
+            case 36:
+            case 46:
+                moveShootout(0);
+                shootOutTaskNum++;
+                break;
+            case 7:
+            case 17:
+            case 27:
+            case 37:
+            case 47:
+                if(!drive.shooter.isBusy()) {
+                    openShooterClaw();
+                    shootOutTaskNum++;
+                }
+                break;
+            case 8://extra in case we need more
+            case 18:
+            case 28:
+            case 38:
+            case 48:
+                shootOutTaskNum++;
+                break;
+            case 9://extra in case we need more
+            case 19:
+            case 29:
+            case 39:
+            case 49:
+            case 59:
+                shootOutTaskNum++;
+                break;
+            case 10:
+                if(!drive.shooter.isBusy() && armTaskNum >= 7) {
+                    moveShootout(1000);//unsure of number
+                    shootOutTaskNum++;
+                }
+                break;
+            case 20:
+                if(!drive.shooter.isBusy() && armTaskNum >= 14) {
+                    moveShootout(1000);//unsure of number
+                    shootOutTaskNum++;
+                }
+                break;
+            case 30:
+                if(!drive.shooter.isBusy() && armTaskNum >= 21) {
+                    moveShootout(1000);//unsure of number
+                    shootOutTaskNum++;
+                }
+                break;
+            case 40:
+                if(!drive.shooter.isBusy() && armTaskNum >= 28) {
+                    moveShootout(1000);//unsure of number
+                    shootOutTaskNum++;
+                }
+                break;
+        }
     }
 
 
