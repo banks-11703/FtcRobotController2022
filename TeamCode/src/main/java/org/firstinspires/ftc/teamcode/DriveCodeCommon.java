@@ -293,6 +293,7 @@ public class DriveCodeCommon extends LinearOpMode {
     }
 
     public void Lights() {
+        //check if you can just set cp1 and cp2 in code
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         if (!isStarted()) {
             drive.lightServo.setPattern(RevBlinkinLedDriver.BlinkinPattern.GREEN);

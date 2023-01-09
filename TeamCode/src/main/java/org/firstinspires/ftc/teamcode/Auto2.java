@@ -24,7 +24,7 @@ public class Auto2 extends AutoCommon {
         }
 
         starting();
-        
+
         if (Mode() == 1) {//doing nothing
 
         } else if (Mode() == 1) {//cycling
@@ -72,52 +72,59 @@ public class Auto2 extends AutoCommon {
 
             while(opModeIsActive() && !isStopRequested() && !armDone && TimeSinceStart() <= 27000){
                 doLiftTasks();
-                doShootoutTasks();
+//                doShootoutTasks();
             }
+            if(Math.abs(drive.turntable.getCurrentPosition())>=10) {
+                turnTable(0);
+            } else {
+                moveLift(0);
+            }
+            moveShootout(0);
+3000);
+    }
 
-            //Park
+    //Park
             switch (autoParkPosition) {
-                case 1:
-                    Trajectory CyclePark2 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                            .lineToLinearHeading(park2)
-                            .build();
-                    drive.followTrajectory(CyclePark2);
-                    if (isStopRequested()) return;
-                    break;
-                case 2:
-                    if (Side() == 0) {
-                        Trajectory CyclePark3 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                                .lineToLinearHeading(park3)
-                                .build();
-                        drive.followTrajectory(CyclePark3);
-                    } else {
-                        Trajectory CyclePark1 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                                .lineToLinearHeading(park1)
-                                .build();
-                        drive.followTrajectory(CyclePark1);
-                    }
-
-                    if (isStopRequested()) return;
-                    break;
-                default:
-                    if (Side() == 0) {
-                        Trajectory CyclePark1 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                                .lineToLinearHeading(park1)
-                                .build();
-                        drive.followTrajectory(CyclePark1);
-                    } else {
-                        Trajectory CyclePark3 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                                .lineToLinearHeading(park3)
-                                .build();
-                        drive.followTrajectory(CyclePark3);
-                    }
-                    if (isStopRequested()) return;
-                    break;
+        case 1:
+            Trajectory CyclePark2 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                    .lineToLinearHeading(park2)
+                    .build();
+            drive.followTrajectory(CyclePark2);
+            if (isStopRequested()) return;
+            break;
+        case 2:
+            if (Side() == 0) {
+                Trajectory CyclePark3 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                        .lineToLinearHeading(park3)
+                        .build();
+                drive.followTrajectory(CyclePark3);
+            } else {
+                Trajectory CyclePark1 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                        .lineToLinearHeading(park1)
+                        .build();
+                drive.followTrajectory(CyclePark1);
             }
-        }
+
+            if (isStopRequested()) return;
+            break;
+        default:
+            if (Side() == 0) {
+                Trajectory CyclePark1 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                        .lineToLinearHeading(park1)
+                        .build();
+                drive.followTrajectory(CyclePark1);
+            } else {
+                Trajectory CyclePark3 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                        .lineToLinearHeading(park3)
+                        .build();
+                drive.followTrajectory(CyclePark3);
+            }
+            if (isStopRequested()) return;
+            break;
+    }
+}
 
         PoseStorage.team = team % 2;
-        PoseStorage.currentPose = drive.getPoseEstimate();
-        sleep(3000);
-    }
+                PoseStorage.currentPose = drive.getPoseEstimate();
+                sleep(
 }
