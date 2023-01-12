@@ -16,6 +16,7 @@ import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 @Autonomous(name = "AutoCommon", group = "Linear Opmode")
@@ -31,6 +32,8 @@ public class AutoCommon extends LinearOpMode {
     int turntableMod;
     boolean armDone = false;
     boolean shootoutDone = false;
+    double coneHeights[] = {0.56,0.45,0.27,0.12,0.01};
+    double coneHeightsClear[] = {1,0.92,0.72,0.55,0.15};
 
     boolean button_b_was_pressed = false;
     boolean button_a_was_pressed = false;
@@ -122,6 +125,7 @@ public class AutoCommon extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
 
     }
+
     public void initialization(){
         // Declare your drive class
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
@@ -277,8 +281,11 @@ public class AutoCommon extends LinearOpMode {
         drive.shooter.setPower(1);
     }
 
-    public void moveShooterClaw(int pos) {
+    public void liftShooterClaw(boolean clearing,int coneNum) {
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        if(clearing) {
 
+        }
     }
 
     public void openShooterClaw() {
@@ -422,7 +429,7 @@ public class AutoCommon extends LinearOpMode {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         switch(shootOutTaskNum) {
             case 0:
-                    moveShootout(1000);//unsure of number
+                    moveShootout();
                     shootOutTaskNum++;
                 break;
             case 1:
@@ -430,7 +437,7 @@ public class AutoCommon extends LinearOpMode {
             case 21:
             case 31:
             case 41:
-                moveShooterClaw(100);//unsure of number
+                liftShooterClaw();
                 timeStampShootout = runtime.time();
                 shootOutTaskNum++;
                 break;
@@ -440,7 +447,7 @@ public class AutoCommon extends LinearOpMode {
             case 32:
             case 42:
                 if(TimeSinceStampShootout() >= 100) {
-                    moveShootout(1100);//unsure of number
+                    moveShootout();
                     shootOutTaskNum++;
                 }
                 break;
@@ -461,7 +468,7 @@ public class AutoCommon extends LinearOpMode {
             case 34:
             case 44:
                 if(TimeSinceStampShootout() >= 100) {
-                    moveShootout(1000);//unsure of number
+                    moveShootout();
                     shootOutTaskNum++;
                 }
                 break;
@@ -471,7 +478,7 @@ public class AutoCommon extends LinearOpMode {
             case 35:
             case 45:
                 if(!drive.shooter.isBusy()) {
-                    moveShooterClaw(0);
+                    liftShooterClaw();
                     shootOutTaskNum++;
                 }
                 break;
@@ -510,25 +517,25 @@ public class AutoCommon extends LinearOpMode {
                 break;
             case 10:
                 if(!drive.shooter.isBusy() && armTaskNum >= 7) {
-                    moveShootout(1000);//unsure of number
+                    moveShootout();
                     shootOutTaskNum++;
                 }
                 break;
             case 20:
                 if(!drive.shooter.isBusy() && armTaskNum >= 14) {
-                    moveShootout(1000);//unsure of number
+                    moveShootout();
                     shootOutTaskNum++;
                 }
                 break;
             case 30:
                 if(!drive.shooter.isBusy() && armTaskNum >= 21) {
-                    moveShootout(1000);//unsure of number
+                    moveShootout();
                     shootOutTaskNum++;
                 }
                 break;
             case 40:
                 if(!drive.shooter.isBusy() && armTaskNum >= 28) {
-                    moveShootout(1000);//unsure of number
+                    moveShootout();
                     shootOutTaskNum++;
                 }
                 break;
@@ -687,14 +694,8 @@ public class AutoCommon extends LinearOpMode {
         }
     }
 
-    double calculateSmoothishness(int currentPos, int targetPose){
-        if(Math.abs(currentPos - targetPose) > 200) {
-            return 1;
-        } else if(Math.abs(currentPos - targetPose) > 100) {
-            return 0.75;
-        } else {
-            return 0.50;
-        }
+    public void doNothing() {
+
     }
 
     void tagToTelemetry(AprilTagDetection detection) {
