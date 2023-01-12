@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 public class DriveCode extends DriveCodeCommon {
     @Override
     public void runOpMode() {
-        waitForStart();
+        Initialization();
         if (isStopRequested()) return;
         while (opModeIsActive() && !isStopRequested()) {
             RawDriving();
