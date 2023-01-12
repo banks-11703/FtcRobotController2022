@@ -32,8 +32,8 @@ public class AutoCommon extends LinearOpMode {
     int turntableMod;
     boolean armDone = false;
     boolean shootoutDone = false;
-    double coneHeights[] = {0.56,0.45,0.27,0.12,0.01};
-    double coneHeightsClear[] = {1,0.92,0.72,0.55,0.15};
+    double[] coneHeights = {0,0.01,0.12,0.27,0.45,0.56};
+    double[] coneHeightsClear = {0,0.15,0.55,0.72,0.91,0.1};
 
     boolean button_b_was_pressed = false;
     boolean button_a_was_pressed = false;
@@ -276,7 +276,7 @@ public class AutoCommon extends LinearOpMode {
     public void moveShootout(int pos) {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
-        drive.shooter.setTargetPosition(pos);
+        drive.shooter.setTargetPosition(pos);//1786 is full extension
         drive.shooter.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         drive.shooter.setPower(1);
     }
@@ -284,16 +284,20 @@ public class AutoCommon extends LinearOpMode {
     public void liftShooterClaw(boolean clearing,int coneNum) {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         if(clearing) {
-
+            drive.slift.setPosition(coneHeightsClear[coneNum]);
+        } else {
+            drive.slift.setPosition(coneHeights[coneNum]);
         }
     }
 
     public void openShooterClaw() {
-
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        drive.sclaw.setPosition(0.05);
     }
 
     public void closeShooterClaw() {
-
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        drive.sclaw.setPosition(0.29);
     }
 
     public void doLiftTasks() {
@@ -382,32 +386,32 @@ public class AutoCommon extends LinearOpMode {
                     armTaskNum++;
                 }
                 break;
-            case 5://Lower arm to 5th cone on stack
-                if(!drive.mainLift.isBusy()) {
-                    moveLift(318);
+            case 5:
+                if(!drive.mainLift.isBusy() && shootOutTaskNum >7) {
+                    moveLift(0);
                     armTaskNum++;
                 }
                 break;
-            case 12://Lower arm to 4th cone on stack
-                if(!drive.mainLift.isBusy()) {
-                    moveLift(223);
+            case 12:
+                if(!drive.mainLift.isBusy() && shootOutTaskNum >17) {
+                    moveLift(0);
                     armTaskNum++;
                 }
                 break;
-            case 19://Lower arm to 3rd cone on stack
-                if(!drive.mainLift.isBusy()) {
-                    moveLift(122);
+            case 19:
+                if(!drive.mainLift.isBusy() && shootOutTaskNum >27) {
+                    moveLift(0);
                     armTaskNum++;
                 }
                 break;
-            case 26://Lower arm to 2nd cone on stack
-                if(!drive.mainLift.isBusy()) {
-                    moveLift(38);
+            case 26:
+                if(!drive.mainLift.isBusy() && shootOutTaskNum >37) {
+                    moveLift(0);
                     armTaskNum++;
                 }
                 break;
-            case 33://Lower arm to 1st cone on stack
-                if(!drive.mainLift.isBusy()) {
+            case 33://move lift to bottom
+                if(!drive.mainLift.isBusy() && shootOutTaskNum >47) {
                     moveLift(0);
                     armTaskNum++;
                 }
@@ -429,15 +433,31 @@ public class AutoCommon extends LinearOpMode {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         switch(shootOutTaskNum) {
             case 0:
-                    moveShootout();
+                    moveShootout(1786);
                     shootOutTaskNum++;
                 break;
             case 1:
+                liftShooterClaw(false,5);
+                timeStampShootout = runtime.time();
+                shootOutTaskNum++;
+                break;
             case 11:
+                liftShooterClaw(false,4);
+                timeStampShootout = runtime.time();
+                shootOutTaskNum++;
+                break;
             case 21:
+                liftShooterClaw(false,3);
+                timeStampShootout = runtime.time();
+                shootOutTaskNum++;
+                break;
             case 31:
+                liftShooterClaw(false,2);
+                timeStampShootout = runtime.time();
+                shootOutTaskNum++;
+                break;
             case 41:
-                liftShooterClaw();
+                liftShooterClaw(false,1);
                 timeStampShootout = runtime.time();
                 shootOutTaskNum++;
                 break;
@@ -447,7 +467,7 @@ public class AutoCommon extends LinearOpMode {
             case 32:
             case 42:
                 if(TimeSinceStampShootout() >= 100) {
-                    moveShootout();
+                    moveShootout(1786);
                     shootOutTaskNum++;
                 }
                 break;
@@ -467,18 +487,43 @@ public class AutoCommon extends LinearOpMode {
             case 24:
             case 34:
             case 44:
-                if(TimeSinceStampShootout() >= 100) {
-                    moveShootout();
+                if(TimeSinceStampShootout() >= 50) {
+                    moveShootout(1786);
                     shootOutTaskNum++;
                 }
                 break;
             case 5:
+                if(!drive.shooter.isBusy()) {
+                    liftShooterClaw(true,5);
+                    timeStampShootout = runtime.time();
+                    shootOutTaskNum++;
+                }
+                break;
             case 15:
+                if(!drive.shooter.isBusy()) {
+                    liftShooterClaw(true,4);
+                    timeStampShootout = runtime.time();
+                    shootOutTaskNum++;
+                }
+                break;
             case 25:
+                if(!drive.shooter.isBusy()) {
+                    liftShooterClaw(true,3);
+                    timeStampShootout = runtime.time();
+                    shootOutTaskNum++;
+                }
+                break;
             case 35:
+                if(!drive.shooter.isBusy()) {
+                    liftShooterClaw(true,2);
+                    timeStampShootout = runtime.time();
+                    shootOutTaskNum++;
+                }
+                break;
             case 45:
                 if(!drive.shooter.isBusy()) {
-                    liftShooterClaw();
+                    liftShooterClaw(true,1);
+                    timeStampShootout = runtime.time();
                     shootOutTaskNum++;
                 }
                 break;
@@ -487,8 +532,10 @@ public class AutoCommon extends LinearOpMode {
             case 26:
             case 36:
             case 46:
-                moveShootout(0);
-                shootOutTaskNum++;
+                if(TimeSinceStampShootout() >= 50) {
+                    moveShootout(0);
+                    shootOutTaskNum++;
+                }
                 break;
             case 7:
             case 17:
@@ -512,32 +559,34 @@ public class AutoCommon extends LinearOpMode {
             case 29:
             case 39:
             case 49:
-            case 59:
                 shootOutTaskNum++;
                 break;
             case 10:
                 if(!drive.shooter.isBusy() && armTaskNum >= 7) {
-                    moveShootout();
+                    moveShootout(1786);
                     shootOutTaskNum++;
                 }
                 break;
             case 20:
                 if(!drive.shooter.isBusy() && armTaskNum >= 14) {
-                    moveShootout();
+                    moveShootout(1786);
                     shootOutTaskNum++;
                 }
                 break;
             case 30:
                 if(!drive.shooter.isBusy() && armTaskNum >= 21) {
-                    moveShootout();
+                    moveShootout(1786);
                     shootOutTaskNum++;
                 }
                 break;
             case 40:
                 if(!drive.shooter.isBusy() && armTaskNum >= 28) {
-                    moveShootout();
+                    moveShootout(1786);
                     shootOutTaskNum++;
                 }
+                break;
+            case 50:
+                shootoutDone = true;
                 break;
         }
     }
