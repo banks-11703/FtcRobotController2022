@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -35,6 +36,13 @@ public class DriveCodeCommon extends LinearOpMode {
     boolean shootout = false;
     boolean readytoclose;
     boolean clawrunonce = false;
+    boolean turntoleft = false;
+    boolean lastwasleft = false;
+    boolean turningtoleft = false;
+    boolean lastwasforward = false;
+    boolean turntoright = false;
+    boolean lastwasright = true;
+    boolean turningtoright = false;
     double coneLevel;
     double claw;
     double turntimer = 0;
@@ -170,11 +178,11 @@ public class DriveCodeCommon extends LinearOpMode {
             drive.mainLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             drive.mainLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             drive.mainLift.setPower(-0.4);
-        } else if (button_a2_was_pressed) { // intake
+        } else if (button_a2_was_pressed && (!drive.turnlimiter.getState() || Math.abs(drive.turntable.getCurrentPosition()) <= 25)) { // intake
             drive.mainLift.setTargetPosition(0);
             drive.mainLift.setPower(0.5);
             drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        } else if (button_b2_was_pressed) { // low
+        } else if (button_b2_was_pressed && (!drive.turnlimiter.getState() || drive.turntable.getCurrentPosition() >= 100 || drive.turntable.getCurrentPosition() <= -840) ) { // low
             drive.mainLift.setTargetPosition(1050);
             drive.mainLift.setPower(1);
             drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -220,8 +228,8 @@ public class DriveCodeCommon extends LinearOpMode {
     }
 
     public void Claw() {
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         if (ClawToggle() == 0) {
+            MClaw(true);
             if (!clawrunonce){
                 Timestamp = runtime.time();
                 clawrunonce = true;
@@ -230,7 +238,7 @@ public class DriveCodeCommon extends LinearOpMode {
                 readytoclose = true;
             }
             telemetry.addData("Time Since Opened", TimeSinceStamp());
-            MClaw(true);
+
             telemetry.addData("Claw:", "Open");
         } else if (ClawToggle() == 1) {
             telemetry.addData("Claw:", "Closed");
@@ -245,45 +253,26 @@ public class DriveCodeCommon extends LinearOpMode {
             drive.turntable.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             drive.turntable.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
+        if(autoHome && drive.turnlimiter.getState()){
 
-        if (autoHome && Math.abs(drive.turntable.getCurrentPosition()) > 5) {
-            telemetry.addData("TT is ", "Trying to go Home");
-            drive.turntable.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            if (Math.abs(drive.turntable.getCurrentPosition()) > 200) {
-                autoHomeSpeed = 1;
-            } else if (Math.abs(drive.turntable.getCurrentPosition()) > 100) {
-                autoHomeSpeed = 0.75;
-            } else if (Math.abs(drive.turntable.getCurrentPosition()) > 5) {
-                autoHomeSpeed = 0.50;
-            } else {
-                autoHomeSpeed = 0.25;
-            }
-            if (drive.turntable.getCurrentPosition() > 0) {
-                drive.turntable.setPower(-autoHomeSpeed);
-            } else {
-                drive.turntable.setPower(autoHomeSpeed);
-            }
-
-        } else if (autoHome && Math.abs(drive.turntable.getCurrentPosition()) < 5) {
-            autoHome = false;
-            drive.turntable.setPower(0);
-            telemetry.addData("TT at ", "Home");
-        } else {
-            double tablePower;
-            if (!autoHome && drive.turntable.getCurrentPosition() > 100 && drive.mainLift.getCurrentPosition() <= 200) {
-                tablePower = -gamepad2.left_trigger;
-            } else if (!autoHome && drive.turntable.getCurrentPosition() < -50 && drive.mainLift.getCurrentPosition() <= 1400) { //turn towards shootout
-                tablePower = gamepad2.right_trigger;
-            } else if (!autoHome && drive.turntable.getCurrentPosition() > 2000) {
-                tablePower = -gamepad2.left_trigger;
-            } else if (!autoHome && drive.turntable.getCurrentPosition() < -2000) {
-                tablePower = gamepad2.right_trigger;
-            } else {
-                tablePower = gamepad2.right_trigger - gamepad2.left_trigger;
-            }
-            drive.turntable.setPower(tablePower);
-            // 90 degrees for tt is 500
         }
+//   else {
+//                drive.turntable.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//            double tablePower;
+//            if (!autoHome && drive.turntable.getCurrentPosition() > 10 && drive.mainLift.getCurrentPosition() <= 200) {
+//                tablePower = -gamepad2.left_trigger;
+//            } else if (!autoHome && drive.turntable.getCurrentPosition() < -10 && drive.mainLift.getCurrentPosition() <= 1400) { //turn towards shootout
+//                tablePower = gamepad2.right_trigger;
+//            } else if (!autoHome && drive.turntable.getCurrentPosition() > -875 && drive.turntable.getCurrentPosition() < 10) { // shootout clearance
+//                tablePower = -gamepad2.left_trigger;
+//            } else if (!autoHome && drive.turntable.getCurrentPosition() < -2000) {
+//                tablePower = gamepad2.right_trigger;
+//            } else {
+//                tablePower = gamepad2.right_trigger - gamepad2.left_trigger;
+//            }
+//            drive.turntable.setPower(tablePower);
+//            // 90 degrees for tt is 875 (less likely)
+//        }
     }
 
     public void Telemetry() {
@@ -316,11 +305,13 @@ public class DriveCodeCommon extends LinearOpMode {
         }
     }
 
-    public void ShootOut(boolean testing) {
+    public void ShootOut(boolean engaged) {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-        if (testing) {
+        if (!engaged) {
 
+            drive.shooter.setPower(0);
             drive.shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            Latch(false);
             if (gamepad1.left_bumper) {
                 drive.shooter.setPower(-1);
             } else if (gamepad1.right_bumper) {
@@ -339,22 +330,23 @@ public class DriveCodeCommon extends LinearOpMode {
                 Latch(false);
             }
             if (gamepad1.dpad_up){
-                sliftheight += 0.03;
+                sliftheight += 0.1;
             }
             if (gamepad1.dpad_down){
-                sliftheight -= 0.03;
+                sliftheight -= 0.1;
             }
             drive.slift.setPosition(sliftheight);
             telemetry.addData("slift",drive.slift.getPosition());
             telemetry.addData("Shooter Ticks", drive.shooter.getCurrentPosition());
         } else {
+            Latch(true);
             drive.shooter.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            drive.shooter.setPower(0.5);
+            drive.shooter.setPower(1);
             if (gamepad2.left_bumper) {
                 shootout = false;
                 drive.shooter.setTargetPosition(0);
             } else if (gamepad2.right_bumper) {
-                drive.shooter.setTargetPosition(100);
+                drive.shooter.setTargetPosition(1800);
                 MClaw(true);
                 shootout = true;
             }
@@ -373,7 +365,8 @@ public class DriveCodeCommon extends LinearOpMode {
         if (open){
             drive.claw.setPosition(0);//0.225
         }else{
-            drive.claw.setPosition(0.80);//0.95
+            SClaw(true);
+            drive.claw.setPosition(0.05);//0.95
         }
     }
     public void SClaw(boolean open){
@@ -408,5 +401,10 @@ public class DriveCodeCommon extends LinearOpMode {
                 }
             }
         }
+    }
+    public int motorOffset(DcMotorEx motor){
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+
+        return  0;//need to be changed
     }
 }
