@@ -16,7 +16,6 @@ import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 @Autonomous(name = "AutoCommon", group = "Linear Opmode")
@@ -49,7 +48,8 @@ public class AutoCommon extends LinearOpMode {
     int headingMod = 0;
     int turnMod = 1;
     double tileWidth = 23.5;
-    boolean lazy = false;
+    boolean lazyLift = false;
+    boolean lazyShootout = false;
 
     public double TimeSinceStampLift() {
         return runtime.time() - timeStampLift;
@@ -83,7 +83,7 @@ public class AutoCommon extends LinearOpMode {
     }
 
     public static double movement2x =      -34.5;
-    public static double scorePosx =       -28.0;
+    public static double scorePosx =       -27.0;
     public static double intakeStackPosx = -65.0;
     public static double park1x =          -59.5;
     public static double park2x =          -36.5;
@@ -116,11 +116,11 @@ public class AutoCommon extends LinearOpMode {
 
     AprilTagDetection tagOfInterest = null;
     Pose2d movement2 = new Pose2d(movement2x * xReflect, movement2y * yMod, Math.toRadians(-90 * yMod));
-    Pose2d scorePos = new Pose2d(scorePosx * xReflect, scorePosy * yMod, Math.toRadians(180 + headingMod));
-    Pose2d intakeStackPos = new Pose2d(intakeStackPosx * xReflect, intakeStackPosy * yMod, Math.toRadians(180 + headingMod));    //Intake cone stack Position
-    Pose2d park1 = new Pose2d(park1x * xReflect, allParky * yMod, Math.toRadians(180 + headingMod));
-    Pose2d park2 = new Pose2d(park2x * xReflect, allParky * yMod, Math.toRadians(180 + headingMod));
-    Pose2d park3 = new Pose2d(park3x * xReflect, allParky * yMod, Math.toRadians(180 + headingMod));
+    Pose2d scorePos = new Pose2d(scorePosx * xReflect, scorePosy * yMod, Math.toRadians(0 + headingMod));
+    Pose2d intakeStackPos = new Pose2d(intakeStackPosx * xReflect, intakeStackPosy * yMod, Math.toRadians(0 + headingMod));    //Intake cone stack Position
+    Pose2d park1 = new Pose2d(park1x * xReflect, allParky * yMod, Math.toRadians(0 + headingMod));
+    Pose2d park2 = new Pose2d(park2x * xReflect, allParky * yMod, Math.toRadians(0 + headingMod));
+    Pose2d park3 = new Pose2d(park3x * xReflect, allParky * yMod, Math.toRadians(0 + headingMod));
     @Override
     public void runOpMode() throws InterruptedException {
 
@@ -133,9 +133,6 @@ public class AutoCommon extends LinearOpMode {
         // Set the pose estimate to where you know the bot will start in autonomous
         // Refer to https://www.learnroadrunner.com/trajectories.html#coordinate-system for a map
         // of the field
-
-        drive.setPoseEstimate(StartingPos());
-
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
@@ -196,7 +193,6 @@ public class AutoCommon extends LinearOpMode {
                     }
                 }
             }
-            drive.setPoseEstimate(StartingPos());
             //Gets inputs before init for gui
             initInputs();
             telemetry.addData("Pose", drive.getPoseEstimate());
@@ -214,7 +210,8 @@ public class AutoCommon extends LinearOpMode {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
         if (isStopRequested()) return;
-        drive.setPoseEstimate(StartingPos());
+        PoseStorage.currentPose = StartingPos();
+        drive.setPoseEstimate(PoseStorage.currentPose);
         camera.stopStreaming();
         sleep(100);
         telemetry.update();
@@ -223,11 +220,13 @@ public class AutoCommon extends LinearOpMode {
         drive.mainLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         drive.turntable.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         drive.turntable.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        drive.claw.setPosition(0.95);
+        closeClaw();
+        PoseStorage.currentPose = drive.getPoseEstimate();
     }
 
     public void moveToScore(){
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        drive.setPoseEstimate(PoseStorage.currentPose);
         Trajectory Movement1 = drive.trajectoryBuilder(drive.getPoseEstimate())
                 .lineToLinearHeading(movement2)
                 .build();
@@ -241,6 +240,7 @@ public class AutoCommon extends LinearOpMode {
                 .lineToLinearHeading(scorePos)
                 .build();
         drive.followTrajectory(ScorePreloaded);
+        PoseStorage.currentPose = drive.getPoseEstimate();
     }
 
 
@@ -250,27 +250,33 @@ public class AutoCommon extends LinearOpMode {
         //raise lift
         drive.mainLift.setTargetPosition(pos);
         drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        drive.mainLift.setPower(1);
+
+
+        if(pos == 0) {
+            drive.mainLift.setPower(0.75);
+        } else {
+            drive.mainLift.setPower(1.00);
+        }
     }
 
     public void turnTable(int pos) {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
         drive.turntable.setTargetPosition(pos);
-        drive.turntable.setPower(1);
         drive.turntable.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        drive.turntable.setPower(1);
     }
 
     public void openClaw() {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
-        drive.claw.setPosition(0);
+        drive.claw.setPosition(0.07);//0.225
     }
 
     public void closeClaw() {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
-        drive.claw.setPosition(0.95);
+        drive.claw.setPosition(0.15);//0.95
     }
 
     public void moveShootout(int pos) {
@@ -300,29 +306,45 @@ public class AutoCommon extends LinearOpMode {
         drive.sclaw.setPosition(0.29);
     }
 
+    public void openLatch() {
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        drive.latch.setPosition(0);
+    }
+
+    public void closeLatch() {
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        drive.latch.setPosition(1);
+    }
+
     public void doLiftTasks() {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         switch(armTaskNum) {
             case 0://Lift arm to top
-                moveLift(2600);
+                moveLift(2625);
                 armTaskNum++;
                 timeStampLift = runtime.time();
                 break;
             case 1://Turn table to junction
-                if(TimeSinceStampLift() >= 1200) {
-                    turnTable(turntableMod*735);
+                if(TimeSinceStampLift() >= 1.200) {
+                    turnTable(turntableMod*875);
                     timeStampLift = runtime.time();
                     armTaskNum++;
                 }
                 break;
-            case 2:
+            case 2://Go down slightly
+                if(TimeSinceStampLift() >= .600) {
+                    moveLift(2300);
+                    timeStampLift = runtime.time();
+                    armTaskNum++;
+                }
+                break;
             case 9:
             case 16:
             case 23:
             case 30:
-            case 37://Go down slightly
-                if(TimeSinceStampLift() >= 400) {
-                    moveLift(2400);
+            case 37:
+                if(TimeSinceStampLift() >= .600) {
+                    moveLift(2600);
                     timeStampLift = runtime.time();
                     armTaskNum++;
                 }
@@ -333,7 +355,7 @@ public class AutoCommon extends LinearOpMode {
             case 24:
             case 31:
             case 38://Drop cone
-                if(TimeSinceStampLift() >= 300) {
+                if(TimeSinceStampLift() >= .400) {
                     openClaw();
                     timeStampLift = runtime.time();
                     armTaskNum++;
@@ -344,14 +366,17 @@ public class AutoCommon extends LinearOpMode {
             case 18:
             case 25:
             case 32://Turn table back to center and lower lift
-                if(TimeSinceStampLift() >= 150) {
-                    turnTable(0);
-                    lazy = true;
+                if(!lazyLift && TimeSinceStampLift() >= .350) {
+                    turnTable(5);
+                    closeClaw();
                     timeStampLift = runtime.time();
+                    lazyLift = true;
                 }
-                if(lazy && TimeSinceStampLift() >= 100) {
+                if(lazyLift && TimeSinceStampLift() >= .650) {
                     moveLift(650);
+                    timeStampLift = runtime.time();
                     armTaskNum++;
+                    lazyLift = false;
                 }
                 break;
             case 6:
@@ -359,10 +384,16 @@ public class AutoCommon extends LinearOpMode {
             case 20:
             case 27:
             case 34://Grab cone
-                if(!drive.mainLift.isBusy()) {
+                if(!lazyLift && TimeSinceStampLift() >= .45) {
+//                    openShooterClaw();
+                    openClaw();
+                    timeStampLift = runtime.time();
+                    lazyLift = true;
+                } else if(lazyLift && TimeSinceStampLift() >= 0.15) {
                     closeClaw();
                     timeStampLift = runtime.time();
                     armTaskNum++;
+                    lazyLift = false;
                 }
                 break;
             case 7:
@@ -370,7 +401,7 @@ public class AutoCommon extends LinearOpMode {
             case 21:
             case 28:
             case 35://Lift arm to top
-                if(TimeSinceStampLift() >= 600) {
+                if(TimeSinceStampLift() >= .400) {
                     moveLift(2600);
                     timeStampLift = runtime.time();
                     armTaskNum++;
@@ -381,43 +412,52 @@ public class AutoCommon extends LinearOpMode {
             case 22:
             case 29:
             case 36://Turn table to junction
-                if(TimeSinceStampLift() >= 1100) {
-                    turnTable(turntableMod*735);
+                if(TimeSinceStampLift() >= 1.300) {
+                    turnTable(turntableMod*900);
                     armTaskNum++;
                 }
                 break;
             case 5:
-                if(!drive.mainLift.isBusy() && shootOutTaskNum >7) {
+                if(TimeSinceStampLift() >= .5/* && shootOutTaskNum >7*/) {
                     moveLift(0);
+                    timeStampLift = runtime.time();
                     armTaskNum++;
                 }
                 break;
             case 12:
-                if(!drive.mainLift.isBusy() && shootOutTaskNum >17) {
+                if(TimeSinceStampLift() >= .5/* && shootOutTaskNum >17*/) {
                     moveLift(0);
+                    closeClaw();
+                    timeStampLift = runtime.time();
                     armTaskNum++;
                 }
                 break;
             case 19:
-                if(!drive.mainLift.isBusy() && shootOutTaskNum >27) {
+                if(TimeSinceStampLift() >= .5/* && shootOutTaskNum >27*/) {
                     moveLift(0);
+                    closeClaw();
+                    timeStampLift = runtime.time();
                     armTaskNum++;
                 }
                 break;
             case 26:
-                if(!drive.mainLift.isBusy() && shootOutTaskNum >37) {
+                if(TimeSinceStampLift() >= .5/* && shootOutTaskNum >37*/) {
                     moveLift(0);
+                    closeClaw();
+                    timeStampLift = runtime.time();
                     armTaskNum++;
                 }
                 break;
             case 33://move lift to bottom
-                if(!drive.mainLift.isBusy() && shootOutTaskNum >47) {
+                if(TimeSinceStampLift() >= .5/* && shootOutTaskNum >47*/) {
                     moveLift(0);
+                    closeClaw();
+                    timeStampLift = runtime.time();
                     armTaskNum++;
                 }
                 break;
             case 39://Turn table back to center and lower arm
-                if(TimeSinceStampLift() >= 150) {
+                if(TimeSinceStampLift() >= .150) {
                     turnTable(0);
                     moveLift(0);
                     armTaskNum++;
@@ -433,8 +473,16 @@ public class AutoCommon extends LinearOpMode {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         switch(shootOutTaskNum) {
             case 0:
+                if(!lazyShootout) {
+                    openLatch();
+                    timeStampShootout = runtime.time();
+                    lazyShootout = true;
+                }
+                if(lazyShootout && TimeSinceStampLift() >= .2) {
                     moveShootout(1786);
                     shootOutTaskNum++;
+                    lazyShootout = false;
+                }
                 break;
             case 1:
                 liftShooterClaw(false,5);
@@ -562,25 +610,25 @@ public class AutoCommon extends LinearOpMode {
                 shootOutTaskNum++;
                 break;
             case 10:
-                if(!drive.shooter.isBusy() && armTaskNum >= 7) {
+                if(!drive.shooter.isBusy()/* && armTaskNum >= 7*/) {
                     moveShootout(1786);
                     shootOutTaskNum++;
                 }
                 break;
             case 20:
-                if(!drive.shooter.isBusy() && armTaskNum >= 14) {
+                if(!drive.shooter.isBusy()/* && armTaskNum >= 14*/) {
                     moveShootout(1786);
                     shootOutTaskNum++;
                 }
                 break;
             case 30:
-                if(!drive.shooter.isBusy() && armTaskNum >= 21) {
+                if(!drive.shooter.isBusy()/* && armTaskNum >= 21*/) {
                     moveShootout(1786);
                     shootOutTaskNum++;
                 }
                 break;
             case 40:
-                if(!drive.shooter.isBusy() && armTaskNum >= 28) {
+                if(!drive.shooter.isBusy()/* && armTaskNum >= 28*/) {
                     moveShootout(1786);
                     shootOutTaskNum++;
                 }

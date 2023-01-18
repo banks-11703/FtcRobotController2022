@@ -210,19 +210,31 @@ public class Auto2 extends AutoCommon {
             }
         }
         else if(Mode() == 3) {//shootout
+            drive.setPoseEstimate(PoseStorage.currentPose);
+            telemetry.addData("position",drive.getPoseEstimate());
+            telemetry.update();
             moveToScore();
+//            Trajectory testing = drive.trajectoryBuilder(drive.getPoseEstimate())
+//                    .forward(25)
+//                    .build();
+//            drive.followTrajectory(testing);
+            telemetry.addData("position",drive.getPoseEstimate());
+            telemetry.addData("start pos",StartingPos());
+            telemetry.addData("PoseStorage",PoseStorage.currentPose);
+            telemetry.update();
 
-            while (opModeIsActive() && !isStopRequested() && !armDone && TimeSinceStart() <= 27000) {
-                doLiftTasks();
-//                doShootoutTasks();
+            while (opModeIsActive() && !isStopRequested() && !armDone && TimeSinceStart() <= 27) {
+//                doLiftTasks();
+                doShootoutTasks();
             }
-            if (Math.abs(drive.turntable.getCurrentPosition()) >= 10) {
+            if (Math.abs(drive.turntable.getCurrentPosition()) >= 25) {
                 turnTable(0);
             } else {
                 moveLift(0);
             }
             moveShootout(0);
             //Park
+            drive.setPoseEstimate(PoseStorage.currentPose);
             switch (autoParkPosition) {
                 case 1:
                     Trajectory CyclePark2 = drive.trajectoryBuilder(drive.getPoseEstimate())
