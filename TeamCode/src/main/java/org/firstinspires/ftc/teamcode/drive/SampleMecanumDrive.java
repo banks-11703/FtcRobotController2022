@@ -82,7 +82,7 @@ public class SampleMecanumDrive extends MecanumDrive {
     public RevBlinkinLedDriver lightServo;
     public DigitalChannel turnlimiter;
     public DcMotorEx turntable;
-    public DcMotor shooter;
+    public DcMotorEx shooter;
     public ColorRangeSensor csensor;
     private BNO055IMU imu;
     private VoltageSensor batteryVoltageSensor;
@@ -146,7 +146,7 @@ public class SampleMecanumDrive extends MecanumDrive {
         slift = hardwareMap.get(Servo.class,"sl");
         latch = hardwareMap.get(Servo.class,"ls");
         turnlimiter = hardwareMap.get(DigitalChannel.class, "tl");
-        shooter = hardwareMap.get(DcMotor.class,"s");
+        shooter = hardwareMap.get(DcMotorEx.class,"s");
 //        csensor = hardwareMap.get(ColorRangeSensor.class,"cs");
         for (DcMotorEx motor : motors) {
             MotorConfigurationType motorConfigurationType = motor.getMotorType().clone();

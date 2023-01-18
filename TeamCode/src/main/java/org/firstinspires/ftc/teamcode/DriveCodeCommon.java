@@ -13,9 +13,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
-import java.sql.Array;
-import java.util.Arrays;
-
 @TeleOp(name = "DriveCodeCommon", group = "Linear Opmode")
 @Config
 @Disabled
@@ -24,6 +21,7 @@ public class DriveCodeCommon extends LinearOpMode {
     double maxvel = 2787.625;
     double Timestamp = 0;
     boolean autoHome = false;
+    boolean atHome = false;
     boolean button_dpaddown2_was_pressed = false;
     boolean button_dpadup2_was_pressed = false;
     boolean button_dpadleft2_was_pressed = false;
@@ -43,8 +41,9 @@ public class DriveCodeCommon extends LinearOpMode {
     boolean turntoright = false;
     boolean lastwasright = true;
     boolean turningtoright = false;
-    double coneLevel;
-    double claw;
+    int liftLevel = 1;
+    int hclaw = 1;
+    int lclaw;
     double turntimer = 0;
     int yMod = 0;
     int xMod = 0;
@@ -52,14 +51,16 @@ public class DriveCodeCommon extends LinearOpMode {
     double sliftheight = 0;
     int team;
     public double sclawh [] = {1,0.072,0.27,0.45 ,0.56};
-    public double ConeLevel() {
-        return coneLevel % 5;
+    public double liftLevel() {
+        return liftLevel % 5;
     }
 
-    public double ClawToggle() {
-        return claw % 2;
+    public double hClawToggle() {
+        return hclaw % 2;
     }
-
+    public double lClawToggle() {
+        return lclaw % 2;
+    }
     public double TimeSinceStamp() {
         return runtime.time() - Timestamp;
     }
@@ -78,6 +79,8 @@ public class DriveCodeCommon extends LinearOpMode {
         // this is what we get from autonomous
         drive.setPoseEstimate(PoseStorage.currentPose);
         drive.slift.scaleRange(0.01,0.32);
+        drive.turntable.setTargetPosition(drive.turntable.getCurrentPosition());
+        drive.turntable.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         telemetry.addData("Initialization", "Complete");
         telemetry.update();
         waitForStart();
@@ -121,45 +124,37 @@ public class DriveCodeCommon extends LinearOpMode {
     public void Toggles() {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         if (gamepad2.dpad_down && !button_dpaddown2_was_pressed) {
-            claw++;
+            autoHome = true;
             button_dpaddown2_was_pressed = true;
         } else if (!gamepad2.dpad_down && button_dpaddown2_was_pressed) {
             button_dpaddown2_was_pressed = false;
         }
         if (gamepad2.dpad_up && !button_dpadup2_was_pressed) {
-            autoHome = true;
+
             button_dpadup2_was_pressed = true;
         } else if (!gamepad2.dpad_up && button_dpadup2_was_pressed) {
             button_dpadup2_was_pressed = false;
         }
-        if (gamepad2.dpad_left && !button_dpadleft2_was_pressed) {
-            button_dpadleft2_was_pressed = true;
-        } else if (!gamepad2.dpad_left && button_dpadleft2_was_pressed) {
-            button_dpadleft2_was_pressed = false;
-        }
-        if (gamepad2.dpad_right && !button_dpadright2_was_pressed) {
-            coneLevel++;
-            button_dpadright2_was_pressed = true;
-        } else if (!gamepad2.dpad_right && button_dpadright2_was_pressed) {
-            button_dpadright2_was_pressed = false;
-        }
-
         if (gamepad2.x && !button_x2_was_pressed) {
+            hclaw++;
             button_x2_was_pressed = true;
         } else if (!gamepad2.x && button_x2_was_pressed) {
             button_x2_was_pressed = false;
         }
-        if (gamepad2.a && !button_a2_was_pressed) {
+        if (gamepad2.a && !button_a2_was_pressed && liftLevel > 2) {
+            liftLevel--;
             button_a2_was_pressed = true;
         } else if (!gamepad2.a && button_a2_was_pressed) {
             button_a2_was_pressed = false;
         }
         if (gamepad2.y && !button_y2_was_pressed) {
+            lclaw++;
             button_y2_was_pressed = true;
         } else if (!gamepad2.y && button_y2_was_pressed) {
             button_y2_was_pressed = false;
         }
-        if (gamepad2.b && !button_b2_was_pressed) {
+        if (gamepad2.b && !button_b2_was_pressed && liftLevel < 4) {
+            liftLevel++;
             button_b2_was_pressed = true;
         } else if (!gamepad2.b && button_b2_was_pressed) {
             button_b2_was_pressed = false;
@@ -178,57 +173,57 @@ public class DriveCodeCommon extends LinearOpMode {
             drive.mainLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             drive.mainLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             drive.mainLift.setPower(-0.4);
-        } else if (button_a2_was_pressed && (!drive.turnlimiter.getState() || Math.abs(drive.turntable.getCurrentPosition()) <= 25)) { // intake
+        } else if (liftLevel() == 1) { // intake
             drive.mainLift.setTargetPosition(0);
             drive.mainLift.setPower(0.5);
             drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        } else if (button_b2_was_pressed && (!drive.turnlimiter.getState() || drive.turntable.getCurrentPosition() >= 100 || drive.turntable.getCurrentPosition() <= -840) ) { // low
-            drive.mainLift.setTargetPosition(1050);
+        } else if (liftLevel() == 2  ) { // low 1050
+            drive.mainLift.setTargetPosition(625);
             drive.mainLift.setPower(1);
             drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        } else if (button_x2_was_pressed) { // mid
-            drive.mainLift.setTargetPosition(1800);
+        } else if (liftLevel() == 3) { // mid 1800
+            drive.mainLift.setTargetPosition(1150);
             drive.mainLift.setPower(1);
             drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        } else if (button_y2_was_pressed) { // high
-            drive.mainLift.setTargetPosition(2500);
+        } else if (liftLevel() == 4) { // high
+            drive.mainLift.setTargetPosition(1600);
             drive.mainLift.setPower(1);
             drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
 
-        if (button_dpadleft2_was_pressed) {
-            drive.mainLift.setTargetPosition(drive.mainLift.getTargetPosition() + 25);
-        }
-        ConeStackLift();
+//        if (button_dpadleft2_was_pressed) {
+//            drive.mainLift.setTargetPosition(drive.mainLift.getTargetPosition() + 25);
+//        }
+//        ConeStackLift();
     }
 
-    public void ConeStackLift() {
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-        if ((button_dpadright2_was_pressed) && ConeLevel() == 4) {
-            drive.mainLift.setTargetPosition(0);
-            drive.mainLift.setPower(1);
-            drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        } else if ((button_dpadright2_was_pressed) && ConeLevel() == 3) {
-            drive.mainLift.setTargetPosition(38);
-            drive.mainLift.setPower(1);
-            drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        } else if ((button_dpadright2_was_pressed) && ConeLevel() == 2) {
-            drive.mainLift.setTargetPosition(122);
-            drive.mainLift.setPower(1);
-            drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        } else if ((button_dpadright2_was_pressed) && ConeLevel() == 1) {
-            drive.mainLift.setTargetPosition(223);
-            drive.mainLift.setPower(1);
-            drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        } else if ((button_dpadright2_was_pressed) && ConeLevel() == 0) {
-            drive.mainLift.setTargetPosition(318);
-            drive.mainLift.setPower(1);
-            drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        }
-    }
+//    public void ConeStackLift() {
+//        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+//        if ((button_dpadright2_was_pressed) && ConeLevel() == 4) {
+//            drive.mainLift.setTargetPosition(0);
+//            drive.mainLift.setPower(1);
+//            drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        } else if ((button_dpadright2_was_pressed) && ConeLevel() == 3) {
+//            drive.mainLift.setTargetPosition(10);
+//            drive.mainLift.setPower(1);
+//            drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        } else if ((button_dpadright2_was_pressed) && ConeLevel() == 2) {
+//            drive.mainLift.setTargetPosition(82);
+//            drive.mainLift.setPower(1);
+//            drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        } else if ((button_dpadright2_was_pressed) && ConeLevel() == 1) {
+//            drive.mainLift.setTargetPosition(165);
+//            drive.mainLift.setPower(1);
+//            drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        } else if ((button_dpadright2_was_pressed) && ConeLevel() == 0) {
+//            drive.mainLift.setTargetPosition(175);
+//            drive.mainLift.setPower(1);
+//            drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        }
+//    }
 
     public void Claw() {
-        if (ClawToggle() == 0) {
+        if (hClawToggle() == 0) {
             MClaw(true);
             if (!clawrunonce){
                 Timestamp = runtime.time();
@@ -240,7 +235,7 @@ public class DriveCodeCommon extends LinearOpMode {
             telemetry.addData("Time Since Opened", TimeSinceStamp());
 
             telemetry.addData("Claw:", "Open");
-        } else if (ClawToggle() == 1) {
+        } else if (hClawToggle() == 1) {
             telemetry.addData("Claw:", "Closed");
             readytoclose = false;
             MClaw(false);
@@ -253,9 +248,44 @@ public class DriveCodeCommon extends LinearOpMode {
             drive.turntable.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             drive.turntable.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
-        if(autoHome && drive.turnlimiter.getState()){
-
+        if(autoHome && motorOffset(drive.turntable) > 15 ){
+            drive.turntable.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            drive.turntable.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            drive.turntable.setTargetPosition(0);
+            drive.turntable.setPower(0.6);
+            liftLevel = 3;
+        } else if (autoHome && motorOffset(drive.turntable) <= 15){
+            atHome = true;
+            liftLevel = 1;
+            autoHome = false;
         }
+        if (atHome && gamepad2.right_trigger > 0){
+            liftLevel = 3;
+            atHome = false;
+        }else if (atHome && gamepad2.left_trigger > 0){
+            liftLevel = 3;
+            atHome = false;
+        }
+        else if (!atHome && !autoHome && !drive.turntable.isBusy()){
+            drive.turntable.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            double tablePower;
+//            if (!autoHome && drive.turntable.getCurrentPosition() > 10 && drive.mainLift.getCurrentPosition() <= 200) {
+//                tablePower = -gamepad2.left_trigger;
+//            } else if (!autoHome && drive.turntable.getCurrentPosition() < -10 && drive.mainLift.getCurrentPosition() <= 1400) { //turn towards shootout
+//                tablePower = gamepad2.right_trigger;
+//            } else if (!autoHome && drive.turntable.getCurrentPosition() > -875 && drive.turntable.getCurrentPosition() < 10) { // shootout clearance
+//                tablePower = -gamepad2.left_trigger;
+//            } else if (!autoHome && drive.turntable.getCurrentPosition() < -2000) {
+//                tablePower = gamepad2.right_trigger;
+//            } else {
+//                tablePower = gamepad2.right_trigger - gamepad2.left_trigger;
+//            }
+
+            tablePower = gamepad2.right_trigger - gamepad2.left_trigger;
+
+            drive.turntable.setPower(tablePower);
+        }
+
 //   else {
 //                drive.turntable.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 //            double tablePower;
@@ -282,13 +312,10 @@ public class DriveCodeCommon extends LinearOpMode {
         // Read pose
         Pose2d poseEstimate = drive.getPoseEstimate();
         // Print pose to telemetry
-        telemetry.addData("turn counter", turntimer);
+        telemetry.addData("Trying to go home", autoHome);
         telemetry.addData("Turn Limiter", drive.turnlimiter.getState());
         telemetry.addData("Lift", drive.mainLift.getCurrentPosition());
-        telemetry.addData("x", poseEstimate.getX());
-        telemetry.addData("y", poseEstimate.getY());
-        telemetry.addData("heading", poseEstimate.getHeading());
-        telemetry.addData("ConeLevel", ConeLevel() + 1);
+        telemetry.addData("ConeLevel", liftLevel());
         telemetry.addData("Turntable Position", drive.turntable.getCurrentPosition());
         telemetry.update();
     }
@@ -363,10 +390,10 @@ public class DriveCodeCommon extends LinearOpMode {
     public void MClaw(boolean open) {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         if (open){
-            drive.claw.setPosition(0);//0.225
+            drive.claw.setPosition(0.07);//0.225
         }else{
             SClaw(true);
-            drive.claw.setPosition(0.05);//0.95
+            drive.claw.setPosition(0.17);//0.95
         }
     }
     public void SClaw(boolean open){
@@ -393,18 +420,17 @@ public class DriveCodeCommon extends LinearOpMode {
         if(readytoclose) {
             if (PoseStorage.team == 0) {
                 if (drive.csensor.blue() <= 200 && drive.csensor.red() >= 200 && drive.csensor.getDistance(DistanceUnit.INCH) <= 0.25) {
-                    claw = 0;
+                    hclaw = 0;
                 }
             } else {
                 if (drive.csensor.blue() >= 200 && drive.csensor.red() <= 200 && drive.csensor.getDistance(DistanceUnit.INCH) <= 0.25) {
-                    claw = 0;
+                    hclaw = 0;
                 }
             }
         }
     }
     public int motorOffset(DcMotorEx motor){
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        return (Math.abs(motor.getTargetPosition())- Math.abs(motor.getCurrentPosition()));
 
-        return  0;//need to be changed
     }
 }
