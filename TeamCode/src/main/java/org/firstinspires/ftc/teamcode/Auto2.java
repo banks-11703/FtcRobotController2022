@@ -37,7 +37,7 @@ public class Auto2 extends AutoCommon {
                     .lineToLinearHeading(scorePos)
                     .build();
             drive.followTrajectory(Score0);
-            moveLift(2600);
+            moveLift(1600);
             sleep(1200);
 
             if(Side() == LEFT) {
@@ -50,7 +50,7 @@ public class Auto2 extends AutoCommon {
             moveLift(2400);
             sleep(300);
 
-            openClaw();
+            openClaw(false);
             sleep(150);
 
             turnTable(0);
@@ -75,7 +75,7 @@ public class Auto2 extends AutoCommon {
                     .build();
             drive.followTrajectory(Score1);
 
-            moveLift(2600);
+            moveLift(1600);
             sleep(700);
 
             if(Side() == LEFT) {
@@ -88,7 +88,7 @@ public class Auto2 extends AutoCommon {
             moveLift(2400);
             sleep(300);
 
-            openClaw();
+            openClaw(false);
             sleep(150);
 
             turnTable(0);
@@ -113,7 +113,7 @@ public class Auto2 extends AutoCommon {
                     .build();
             drive.followTrajectory(Score2);
 
-            moveLift(2600);
+            moveLift(1600);
             sleep(700);
 
             if(Side() == LEFT) {
@@ -126,7 +126,7 @@ public class Auto2 extends AutoCommon {
             moveLift(2400);
             sleep(300);
 
-            openClaw();
+            openClaw(false);
             sleep(150);
 
             turnTable(0);
@@ -224,15 +224,18 @@ public class Auto2 extends AutoCommon {
             telemetry.update();
 
             while (opModeIsActive() && !isStopRequested() && !armDone && TimeSinceStart() <= 27) {
-//                doLiftTasks();
+                doLiftTasks();
                 doShootoutTasks();
+                telemetry.addData("TimeSinceStampShootout",TimeSinceStampShootout());
+                telemetry.addData("LiftTaskNum",armTaskNum);
+                telemetry.addData("ShootoutTaskNum",shootOutTaskNum);
+                telemetry.update();
             }
-            if (Math.abs(drive.turntable.getCurrentPosition()) >= 25) {
-                turnTable(0);
-            } else {
-                moveLift(0);
-            }
+            closeClaw();
             moveShootout(0);
+            openShooterClaw();
+            liftShooterClaw(false,0);
+
             //Park
             drive.setPoseEstimate(PoseStorage.currentPose);
             switch (autoParkPosition) {
@@ -273,6 +276,7 @@ public class Auto2 extends AutoCommon {
                     if (isStopRequested()) return;
                     break;
             }
+            closeLatch();
         }
         PoseStorage.team = Team();
         PoseStorage.currentPose = drive.getPoseEstimate();
