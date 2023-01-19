@@ -268,20 +268,16 @@ public class AutoCommon extends LinearOpMode {
         drive.turntable.setPower(1);
     }
 
-    public void openClaw(boolean wide) {
+    public void openClaw() {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
-        if(wide) {
-            drive.claw.setPosition(0.07);
-        } else {
-            drive.claw.setPosition(0.07);//0.225
-        }
+            drive.claw.setPosition(0);//0.225
     }
 
     public void closeClaw() {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
-        drive.claw.setPosition(0.15);//0.95
+        drive.claw.setPosition(0.6);//0.95
     }
 
     public void moveShootout(int pos) {
@@ -361,7 +357,7 @@ public class AutoCommon extends LinearOpMode {
             case 31:
             case 38://Drop cone
                 if(TimeSinceStampLift() >= .400) {
-                    openClaw(false);
+                    openClaw();
                     timeStampLift = runtime.time();
                     timeStampShootout = runtime.time();
                     armTaskNum++;
@@ -374,7 +370,7 @@ public class AutoCommon extends LinearOpMode {
             case 32://Turn table back to center and lower lift
                 if(!liftWait && TimeSinceStampLift() >= .350) {
                     turnTable(0);
-                    openClaw(true);
+                    openClaw();
                     timeStampLift = runtime.time();
                     liftWait = true;
                 }

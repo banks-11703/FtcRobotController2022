@@ -274,23 +274,23 @@ public class DriveCodeCommon extends LinearOpMode {
             drive.turntable.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             drive.turntable.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             drive.turntable.setTargetPosition(0);
-            drive.turntable.setPower(1);
+            drive.turntable.setVelocity(2784 * 0.8); // 80% of max velo
             liftLevel = 3;
         } else if (autoHome && motorOffset(drive.turntable) <= 15){
             atHome = true;
             liftLevel = 1;
             autoHome = false;
         }else if (atHome && gamepad2.right_trigger > 0){
-            drive.turntable.setPower(0);
+            drive.turntable.setVelocity(0);
             liftLevel = 3;
             atHome = false;
         }else if (atHome && gamepad2.left_trigger > 0){
-            drive.turntable.setPower(0);
+            drive.turntable.setVelocity(0);
             liftLevel = 3;
             atHome = false;
         } else{
             drive.turntable.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            double tablePower = 0;
+            double tablePower;
 //            if (!autoHome && drive.turntable.getCurrentPosition() > 10 && drive.mainLift.getCurrentPosition() <= 200) {
 //                tablePower = -gamepad2.left_trigger;
 //            } else if (!autoHome && drive.turntable.getCurrentPosition() < -10 && drive.mainLift.getCurrentPosition() <= 1400) { //turn towards shootout
