@@ -12,7 +12,7 @@ public class DriveCode extends DriveCodeCommon {
             Lift();
             Claw();
             TurnTable();
-            ShootOut(false);
+            ShootOut();
             Telemetry();
 //            ColorSensor();
         }
