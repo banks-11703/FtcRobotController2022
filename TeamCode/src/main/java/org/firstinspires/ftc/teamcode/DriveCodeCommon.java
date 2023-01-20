@@ -281,11 +281,8 @@ public class DriveCodeCommon extends LinearOpMode {
             if (liftLevel != 4) {
                 liftLevel = 3;
             }
-        }else if(autoHome && drive.turntable.getCurrentPosition() < 0 && motorOffset(drive.turntable) > 15 ){
+        }else if(autoHome && drive.turntable.getCurrentPosition() > 0 && motorOffset(drive.turntable) > 15 ){
             drive.turntable.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            if (liftLevel != 4) {
-                liftLevel = 3;
-            }
 
             drive.turntable.setPower(1);
             if (liftLevel != 4) {
@@ -306,10 +303,11 @@ public class DriveCodeCommon extends LinearOpMode {
             if (liftLevel != 4) {
                 liftLevel = 3;
             }
+
             atHome = false;
-        } else{
+        }else{
             drive.turntable.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            double tablePower = 0;
+            double tablePower;
 //            if (!autoHome && drive.turntable.getCurrentPosition() > 10 && drive.mainLift.getCurrentPosition() <= 200) {
 //                tablePower = -gamepad2.left_trigger;
 //            } else if (!autoHome && drive.turntable.getCurrentPosition() < -10 && drive.mainLift.getCurrentPosition() <= 1400) { //turn towards shootout

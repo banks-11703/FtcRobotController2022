@@ -50,7 +50,7 @@ public class Auto2 extends AutoCommon {
             moveLift(2400);
             sleep(300);
 
-            openClaw(false);
+            openClaw();
             sleep(150);
 
             turnTable(0);
@@ -88,7 +88,7 @@ public class Auto2 extends AutoCommon {
             moveLift(2400);
             sleep(300);
 
-            openClaw(false);
+            openClaw();
             sleep(150);
 
             turnTable(0);
@@ -126,7 +126,7 @@ public class Auto2 extends AutoCommon {
             moveLift(2400);
             sleep(300);
 
-            openClaw(false);
+            openClaw();
             sleep(150);
 
             turnTable(0);
