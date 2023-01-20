@@ -353,9 +353,10 @@ public class Auto2 extends AutoCommon {
                             drive.followTrajectory(CyclePark3);
                         } else if(Side() == LEFT && Team() == BLUE) {
                             Trajectory CyclePark3 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                                    .lineToLinearHeading(new Pose2d(11.5,13,Math.toRadians(0)))
+                                    .lineToLinearHeading(new Pose2d(11.5, 13, Math.toRadians(0)))
                                     .build();
                             drive.followTrajectory(CyclePark3);
+                        }
                     }
                     if (isStopRequested()) return;
                     break;
