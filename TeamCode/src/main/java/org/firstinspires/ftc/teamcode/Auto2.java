@@ -218,18 +218,18 @@ public class Auto2 extends AutoCommon {
 //                    .forward(25)
 //                    .build();
 //            drive.followTrajectory(testing);
-            telemetry.addData("position",drive.getPoseEstimate());
-            telemetry.addData("start pos",StartingPos());
-            telemetry.addData("PoseStorage",PoseStorage.currentPose);
-            telemetry.update();
+//            telemetry.addData("position",drive.getPoseEstimate());
+//            telemetry.addData("start pos",StartingPos());
+//            telemetry.addData("PoseStorage",PoseStorage.currentPose);
+//            telemetry.update();
 
             while (opModeIsActive() && !isStopRequested() && !armDone && TimeSinceStart() <= 27) {
                 doLiftTasks();
                 doShootoutTasks();
-                telemetry.addData("TimeSinceStampShootout",TimeSinceStampShootout());
-                telemetry.addData("LiftTaskNum",armTaskNum);
-                telemetry.addData("ShootoutTaskNum",shootOutTaskNum);
-                telemetry.update();
+//                telemetry.addData("TimeSinceStampShootout",TimeSinceStampShootout());
+//                telemetry.addData("LiftTaskNum",armTaskNum);
+//                telemetry.addData("ShootoutTaskNum",shootOutTaskNum);
+//                telemetry.update();
             }
             closeClaw();
             moveShootout(0);
@@ -240,38 +240,122 @@ public class Auto2 extends AutoCommon {
             drive.setPoseEstimate(PoseStorage.currentPose);
             switch (autoParkPosition) {
                 case 1:
-                    Trajectory CyclePark2 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                            .lineToLinearHeading(park2)
-                            .build();
-                    drive.followTrajectory(CyclePark2);
+                    if (Side() == RIGHT && Team() == BLUE) {
+                        Trajectory CyclePark2 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                                .lineToLinearHeading(park2)
+                                .build();
+                        drive.followTrajectory(CyclePark2);
+                    } else if(Side() == LEFT && Team() == RED) {
+                        Trajectory CyclePark2 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                                .lineToLinearHeading(new Pose2d(-36.5,-13,Math.toRadians(0)))
+                                .build();
+                        drive.followTrajectory(CyclePark2);
+                    } else if(Side() == RIGHT && Team() == RED) {
+                        Trajectory CyclePark2 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                                .lineToLinearHeading(new Pose2d(36.5,-13,Math.toRadians(180)))
+                                .build();
+                        drive.followTrajectory(CyclePark2);
+                    } else if(Side() == LEFT && Team() == BLUE) {
+                        Trajectory CyclePark2 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                                .lineToLinearHeading(new Pose2d(36.5,13,Math.toRadians(0)))
+                                .build();
+                        drive.followTrajectory(CyclePark2);
+                    }
                     if (isStopRequested()) return;
                     break;
                 case 2:
                     if (Side() == 0) {
-                        Trajectory CyclePark3 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                                .lineToLinearHeading(park3)
-                                .build();
-                        drive.followTrajectory(CyclePark3);
+                        if (Side() == RIGHT && Team() == BLUE) {
+                            Trajectory CyclePark3 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                                    .lineToLinearHeading(park3)
+                                    .build();
+                            drive.followTrajectory(CyclePark3);
+                        } else if(Side() == LEFT && Team() == RED) {
+                            Trajectory CyclePark3 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                                    .lineToLinearHeading(new Pose2d(-11.5,-13,Math.toRadians(0)))
+                                    .build();
+                            drive.followTrajectory(CyclePark3);
+                        } else if(Side() == RIGHT && Team() == RED) {
+                            Trajectory CyclePark3 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                                    .lineToLinearHeading(new Pose2d(11.5,-13,Math.toRadians(180)))
+                                    .build();
+                            drive.followTrajectory(CyclePark3);
+                        } else if(Side() == LEFT && Team() == BLUE) {
+                            Trajectory CyclePark3 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                                    .lineToLinearHeading(new Pose2d(11.5,13,Math.toRadians(0)))
+                                    .build();
+                            drive.followTrajectory(CyclePark3);
+                        }
                     } else {
-                        Trajectory CyclePark1 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                                .lineToLinearHeading(park1)
-                                .build();
-                        drive.followTrajectory(CyclePark1);
+                        if (Side() == RIGHT && Team() == BLUE) {
+                            Trajectory CyclePark1 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                                    .lineToLinearHeading(park1)
+                                    .build();
+                            drive.followTrajectory(CyclePark1);
+                        } else if(Side() == LEFT && Team() == RED) {
+                            Trajectory CyclePark1 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                                    .lineToLinearHeading(new Pose2d(-59.5,-13,Math.toRadians(0)))
+                                    .build();
+                            drive.followTrajectory(CyclePark1);
+                        } else if(Side() == RIGHT && Team() == RED) {
+                            Trajectory CyclePark1 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                                    .lineToLinearHeading(new Pose2d(59.5,-13,Math.toRadians(180)))
+                                    .build();
+                            drive.followTrajectory(CyclePark1);
+                        } else if(Side() == LEFT && Team() == BLUE) {
+                            Trajectory CyclePark1 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                                    .lineToLinearHeading(new Pose2d(59.5,13,Math.toRadians(0)))
+                                    .build();
+                            drive.followTrajectory(CyclePark1);
+                        }
                     }
 
                     if (isStopRequested()) return;
                     break;
                 default:
                     if (Side() == 0) {
-                        Trajectory CyclePark1 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                                .lineToLinearHeading(park1)
-                                .build();
-                        drive.followTrajectory(CyclePark1);
+                        if (Side() == RIGHT && Team() == BLUE) {
+                            Trajectory CyclePark1 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                                    .lineToLinearHeading(park1)
+                                    .build();
+                            drive.followTrajectory(CyclePark1);
+                        } else if(Side() == LEFT && Team() == RED) {
+                            Trajectory CyclePark1 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                                    .lineToLinearHeading(new Pose2d(-59.5,-13,Math.toRadians(0)))
+                                    .build();
+                            drive.followTrajectory(CyclePark1);
+                        } else if(Side() == RIGHT && Team() == RED) {
+                            Trajectory CyclePark1 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                                    .lineToLinearHeading(new Pose2d(59.5,-13,Math.toRadians(180)))
+                                    .build();
+                            drive.followTrajectory(CyclePark1);
+                        } else if(Side() == LEFT && Team() == BLUE) {
+                            Trajectory CyclePark1 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                                    .lineToLinearHeading(new Pose2d(59.5,13,Math.toRadians(0)))
+                                    .build();
+                            drive.followTrajectory(CyclePark1);
+                        }
                     } else {
-                        Trajectory CyclePark3 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                                .lineToLinearHeading(park3)
-                                .build();
-                        drive.followTrajectory(CyclePark3);
+                        if (Side() == RIGHT && Team() == BLUE) {
+                            Trajectory CyclePark3 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                                    .lineToLinearHeading(park3)
+                                    .build();
+                            drive.followTrajectory(CyclePark3);
+                        } else if(Side() == LEFT && Team() == RED) {
+                            Trajectory CyclePark3 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                                    .lineToLinearHeading(new Pose2d(-11.5,-13,Math.toRadians(0)))
+                                    .build();
+                            drive.followTrajectory(CyclePark3);
+                        } else if(Side() == RIGHT && Team() == RED) {
+                            Trajectory CyclePark3 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                                    .lineToLinearHeading(new Pose2d(11.5,-13,Math.toRadians(180)))
+                                    .build();
+                            drive.followTrajectory(CyclePark3);
+                        } else if(Side() == LEFT && Team() == BLUE) {
+                            Trajectory CyclePark3 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                                    .lineToLinearHeading(new Pose2d(11.5,13,Math.toRadians(0)))
+                                    .build();
+                            drive.followTrajectory(CyclePark3);
                     }
                     if (isStopRequested()) return;
                     break;

@@ -31,7 +31,7 @@ public class AutoCommon extends LinearOpMode {
     int turntableMod;
     boolean armDone = false;
     boolean shootoutDone = false;
-    double[] coneHeights = {0,0.00,0.10,0.22,0.32,0.46};
+    double[] coneHeights = {0,0.00,0.10,0.22,0.32,0.47};
     double[] coneHeightsClear = {0,0.15,0.55,0.72,0.91,1.0};
 
     boolean button_b_was_pressed = false;
@@ -225,22 +225,56 @@ public class AutoCommon extends LinearOpMode {
         PoseStorage.currentPose = drive.getPoseEstimate();
     }
 
-    public void moveToScore(){
+    public void moveToScore() {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         drive.setPoseEstimate(PoseStorage.currentPose);
-        Trajectory Movement1 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                .lineToLinearHeading(movement2)
-                .build();
-        drive.followTrajectory(Movement1);
+        if (Side() == RIGHT && Team() == BLUE) {
+            Trajectory Movement1 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                    .lineToLinearHeading(movement2)
+                    .build();
+            drive.followTrajectory(Movement1);
+        } else if (Side() == LEFT && Team() == RED) {
+            Trajectory Movement1 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                    .lineToLinearHeading(new Pose2d(-34.5, -13, Math.toRadians(90)))
+                    .build();
+            drive.followTrajectory(Movement1);
+        } else if (Side() == RIGHT && Team() == RED) {
+            Trajectory Movement1 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                    .lineToLinearHeading(new Pose2d(34.5, -13, Math.toRadians(90)))
+                    .build();
+            drive.followTrajectory(Movement1);
+        } else if (Side() == LEFT && Team() == BLUE) {
+            Trajectory Movement1 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                    .lineToLinearHeading(new Pose2d(34.5, 13, Math.toRadians(-90)))
+                    .build();
+            drive.followTrajectory(Movement1);
+        }
         if (Side() == LEFT) {
             drive.turn(Math.toRadians(turnMod * 90));
         } else {
             drive.turn(Math.toRadians(turnMod * 90));
         }
-        Trajectory ScorePreloaded = drive.trajectoryBuilder(drive.getPoseEstimate())
-                .lineToLinearHeading(scorePos)
-                .build();
-        drive.followTrajectory(ScorePreloaded);
+        if (Side() == RIGHT && Team() == BLUE) {
+            Trajectory ScorePreloaded = drive.trajectoryBuilder(drive.getPoseEstimate())
+                    .lineToLinearHeading(scorePos)
+                    .build();
+            drive.followTrajectory(ScorePreloaded);
+        } else if(Side() == LEFT && Team() == RED) {
+            Trajectory ScorePreloaded = drive.trajectoryBuilder(drive.getPoseEstimate())
+                    .lineToLinearHeading(new Pose2d(-27,-13,Math.toRadians(0)))
+                    .build();
+            drive.followTrajectory(ScorePreloaded);
+        } else if(Side() == RIGHT && Team() == RED) {
+            Trajectory ScorePreloaded = drive.trajectoryBuilder(drive.getPoseEstimate())
+                    .lineToLinearHeading(new Pose2d(27,-13,Math.toRadians(180)))
+                    .build();
+            drive.followTrajectory(ScorePreloaded);
+        } else if(Side() == LEFT && Team() == BLUE) {
+            Trajectory ScorePreloaded = drive.trajectoryBuilder(drive.getPoseEstimate())
+                    .lineToLinearHeading(new Pose2d(27,13,Math.toRadians(0)))
+                    .build();
+            drive.followTrajectory(ScorePreloaded);
+        }
         PoseStorage.currentPose = drive.getPoseEstimate();
     }
 
