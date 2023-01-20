@@ -191,7 +191,7 @@ public class DriveCodeCommon extends LinearOpMode {
     public void Lift() {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
-         if (liftLevel() == 1  && (atHome || !drive.turnlimiter.getState() ) && drive.slift.getPosition() <0.05) { // intake
+         if (liftLevel() == 1  && motorOffset(drive.turntable) < 200) { // intake
             drive.mainLift.setTargetPosition(10);
             drive.mainLift.setPower(0.5);
             drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -271,12 +271,14 @@ public class DriveCodeCommon extends LinearOpMode {
 //            drive.turntable.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 //            drive.turntable.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 //        }
-        if(autoHome && drive.turntable.getCurrentPosition() < 0 && motorOffset(drive.turntable) > 15 ){
+        if(autoHome && drive.turntable.getCurrentPosition() < 0 && motorOffset(drive.turntable) > 30 ){
             drive.turntable.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             if (liftLevel != 4) {
                 liftLevel = 3;
             }
-            if( motorOffset(drive.turntable) < 100){
+            if (motorOffset(drive.turntable) < 50){
+                drive.turntable.setPower(0.2);
+            }else if( motorOffset(drive.turntable) < 100){
                 drive.turntable.setPower(0.4);
             }else {
                 drive.turntable.setPower(1);
@@ -284,10 +286,11 @@ public class DriveCodeCommon extends LinearOpMode {
             if (liftLevel != 4) {
                 liftLevel = 3;
             }
-        }else if(autoHome && drive.turntable.getCurrentPosition() > 0 && motorOffset(drive.turntable) > 15 ){
+        }else if(autoHome && drive.turntable.getCurrentPosition() > 0 && motorOffset(drive.turntable) > 30 ) {
             drive.turntable.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-            if( motorOffset(drive.turntable) < 100){
+        if (motorOffset(drive.turntable) < 50){
+            drive.turntable.setPower(-0.2);
+        }else if( motorOffset(drive.turntable) < 100){
                 drive.turntable.setPower(-0.4);
             }else {
                 drive.turntable.setPower(-1);
@@ -295,7 +298,7 @@ public class DriveCodeCommon extends LinearOpMode {
             if (liftLevel != 4) {
                 liftLevel = 3;
             }
-        } else if (autoHome && motorOffset(drive.turntable) <= 15){
+        } else if (autoHome && motorOffset(drive.turntable) <= 30){
             drive.turntable.setPower(0);
             atHome = true;
 //            liftLevel = 1;
