@@ -190,6 +190,7 @@ public class DriveCodeCommon extends LinearOpMode {
 
     public void Lift() {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+
          if (liftLevel() == 1  && (atHome || !drive.turnlimiter.getState() )) { // intake
             drive.mainLift.setTargetPosition(10);
             drive.mainLift.setPower(0.5);
@@ -270,23 +271,41 @@ public class DriveCodeCommon extends LinearOpMode {
 //            drive.turntable.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 //            drive.turntable.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 //        }
-        if(autoHome && motorOffset(drive.turntable) > 15 ){
+        if(autoHome && drive.turntable.getCurrentPosition() < 0 && motorOffset(drive.turntable) > 15 ){
             drive.turntable.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            drive.turntable.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            drive.turntable.setTargetPosition(0);
+            if (liftLevel != 4) {
+                liftLevel = 3;
+            }
+
+            drive.turntable.setPower(-1);
+            if (liftLevel != 4) {
+                liftLevel = 3;
+            }
+        }else if(autoHome && drive.turntable.getCurrentPosition() < 0 && motorOffset(drive.turntable) > 15 ){
+            drive.turntable.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            if (liftLevel != 4) {
+                liftLevel = 3;
+            }
+
             drive.turntable.setPower(1);
-            liftLevel = 3;
+            if (liftLevel != 4) {
+                liftLevel = 3;
+            }
         } else if (autoHome && motorOffset(drive.turntable) <= 15){
             atHome = true;
-            liftLevel = 1;
+//            liftLevel = 1;
             autoHome = false;
         }else if (atHome && gamepad2.right_trigger > 0){
             drive.turntable.setPower(0);
-            liftLevel = 3;
+            if (liftLevel != 4) {
+                liftLevel = 3;
+            }
             atHome = false;
         }else if (atHome && gamepad2.left_trigger > 0){
             drive.turntable.setPower(0);
-            liftLevel = 3;
+            if (liftLevel != 4) {
+                liftLevel = 3;
+            }
             atHome = false;
         } else{
             drive.turntable.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
