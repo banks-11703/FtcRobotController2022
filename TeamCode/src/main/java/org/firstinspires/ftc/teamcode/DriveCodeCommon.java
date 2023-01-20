@@ -47,7 +47,7 @@ public class DriveCodeCommon extends LinearOpMode {
     boolean firstrun = true;
     int liftLevel = 1;
     int hclaw = 1;
-    int lclaw;
+    int lclaw = 1;
     int latch;
     double turntimer = 0;
     int yMod = 0;
@@ -191,7 +191,7 @@ public class DriveCodeCommon extends LinearOpMode {
     public void Lift() {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
-         if (liftLevel() == 1  && (atHome || !drive.turnlimiter.getState() )) { // intake
+         if (liftLevel() == 1  && (atHome || !drive.turnlimiter.getState() ) && drive.slift.getPosition() <0.05) { // intake
             drive.mainLift.setTargetPosition(10);
             drive.mainLift.setPower(0.5);
             drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -277,14 +277,14 @@ public class DriveCodeCommon extends LinearOpMode {
                 liftLevel = 3;
             }
 
-            drive.turntable.setPower(-1);
+            drive.turntable.setPower(1);
             if (liftLevel != 4) {
                 liftLevel = 3;
             }
         }else if(autoHome && drive.turntable.getCurrentPosition() > 0 && motorOffset(drive.turntable) > 15 ){
             drive.turntable.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-            drive.turntable.setPower(1);
+            drive.turntable.setPower(-1);
             if (liftLevel != 4) {
                 liftLevel = 3;
             }
@@ -355,7 +355,6 @@ public class DriveCodeCommon extends LinearOpMode {
         telemetry.addData("Lift", drive.mainLift.getCurrentPosition());
         telemetry.addData("LiftLevel", liftLevel());
         telemetry.addData("Turntable Position", drive.turntable.getCurrentPosition());
-        telemetry.addData("First Run?", firstrun);
         telemetry.addData("TT Offset", motorOffset(drive.turntable));
         telemetry.update();
     }

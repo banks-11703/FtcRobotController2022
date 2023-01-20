@@ -38,6 +38,8 @@ public class ResetEncoders extends LinearOpMode {
                 drive.turntable.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 drive.mainLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 drive.mainLift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                drive.shooter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            drive.shooter.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 // Read pose
                 Pose2d poseEstimate = drive.getPoseEstimate();
                 // Print pose to telemetry
