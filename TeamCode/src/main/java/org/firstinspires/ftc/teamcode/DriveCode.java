@@ -9,7 +9,9 @@ public class DriveCode extends DriveCodeCommon {
         while (opModeIsActive() && !isStopRequested()) {
             RawDriving();
             Toggles();
-            Lift();
+            if (gamepad2.a||gamepad2.b){
+                Lift();
+            }
             Claw();
             TurnTable();
             ShootOut();
