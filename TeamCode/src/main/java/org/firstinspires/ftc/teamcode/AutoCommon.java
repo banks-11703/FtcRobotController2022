@@ -539,37 +539,47 @@ public class AutoCommon extends LinearOpMode {
                 break;
             case 2:
                 if(TimeSinceStampShootout() >= 1.0 && armTaskNum > 3) {
-                    moveShootout(1786);
+                    moveShootout(1700);
                     timeStampShootout = runtime.time();
                     shootOutTaskNum++;
+                } else if(Math.abs(drive.shooter.getTargetPosition()-drive.shooter.getCurrentPosition()) <= 500) {
+                    drive.shooter.setPower(0.5);
                 }
                 break;
             case 12:
                 if(TimeSinceStampShootout() >= 1.0 && armTaskNum > 10) {
-                    moveShootout(1786);
+                    moveShootout(1700);
                     timeStampShootout = runtime.time();
                     shootOutTaskNum++;
+                } else if(Math.abs(drive.shooter.getTargetPosition()-drive.shooter.getCurrentPosition()) <= 500) {
+                    drive.shooter.setPower(0.5);
                 }
                 break;
             case 22:
                 if(TimeSinceStampShootout() >= 1.0 && armTaskNum > 17) {
-                    moveShootout(1786);
+                    moveShootout(1700);
                     timeStampShootout = runtime.time();
                     shootOutTaskNum++;
+                } else if(Math.abs(drive.shooter.getTargetPosition()-drive.shooter.getCurrentPosition()) <= 500) {
+                    drive.shooter.setPower(0.5);
                 }
                 break;
             case 32:
                 if(TimeSinceStampShootout() >= 1.0 && armTaskNum > 24) {
-                    moveShootout(1786);
+                    moveShootout(1700);
                     timeStampShootout = runtime.time();
                     shootOutTaskNum++;
+                } else if(Math.abs(drive.shooter.getTargetPosition()-drive.shooter.getCurrentPosition()) <= 500) {
+                    drive.shooter.setPower(0.5);
                 }
                 break;
             case 42:
                 if(TimeSinceStampShootout() >= 1.0 && armTaskNum > 31) {
-                    moveShootout(1786);
+                    moveShootout(1700);
                     timeStampShootout = runtime.time();
                     shootOutTaskNum++;
+                } else if(Math.abs(drive.shooter.getTargetPosition()-drive.shooter.getCurrentPosition()) <= 500) {
+                    drive.shooter.setPower(0.5);
                 }
                 break;
             case 3:
@@ -621,7 +631,7 @@ public class AutoCommon extends LinearOpMode {
             case 36:
             case 46:
                 if(!lazyShootout && TimeSinceStampShootout() >= 1.50) {
-                    moveShootout(05);
+                    moveShootout(15);
                     timeStampShootout = runtime.time();
                     lazyShootout = true;
                 }
@@ -657,24 +667,32 @@ public class AutoCommon extends LinearOpMode {
                 if(!drive.shooter.isBusy() && armTaskNum > 7) {
                     moveShootout(1900);
                     shootOutTaskNum++;
+                } else if(Math.abs(drive.shooter.getTargetPosition()-drive.shooter.getCurrentPosition()) <= 500) {
+                    drive.shooter.setPower(0.5);
                 }
                 break;
             case 20:
                 if(!drive.shooter.isBusy() && armTaskNum > 14) {
                     moveShootout(1900);
                     shootOutTaskNum++;
+                } else if(Math.abs(drive.shooter.getTargetPosition()-drive.shooter.getCurrentPosition()) <= 500) {
+                    drive.shooter.setPower(0.5);
                 }
                 break;
             case 30:
                 if(!drive.shooter.isBusy() && armTaskNum > 21) {
                     moveShootout(1900);
                     shootOutTaskNum++;
+                } else if(Math.abs(drive.shooter.getTargetPosition()-drive.shooter.getCurrentPosition()) <= 500) {
+                    drive.shooter.setPower(0.5);
                 }
                 break;
             case 40:
                 if(!drive.shooter.isBusy() && armTaskNum > 28) {
                     moveShootout(1900);
                     shootOutTaskNum++;
+                } else if(Math.abs(drive.shooter.getTargetPosition()-drive.shooter.getCurrentPosition()) <= 500) {
+                    drive.shooter.setPower(0.5);
                 }
                 break;
             case 50:
