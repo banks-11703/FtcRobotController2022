@@ -247,17 +247,17 @@ public class Auto2 extends AutoCommon {
                         drive.followTrajectory(CyclePark2);
                     } else if(Side() == LEFT && Team() == RED) {
                         Trajectory CyclePark2 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                                .lineToLinearHeading(new Pose2d(-36.5,-13,Math.toRadians(0)))
+                                .lineToLinearHeading(new Pose2d(-36.5,-13.5,Math.toRadians(0)))
                                 .build();
                         drive.followTrajectory(CyclePark2);
                     } else if(Side() == RIGHT && Team() == RED) {
                         Trajectory CyclePark2 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                                .lineToLinearHeading(new Pose2d(36.5,-13,Math.toRadians(180)))
+                                .lineToLinearHeading(new Pose2d(36.5,-13.5,Math.toRadians(180)))
                                 .build();
                         drive.followTrajectory(CyclePark2);
                     } else if(Side() == LEFT && Team() == BLUE) {
                         Trajectory CyclePark2 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                                .lineToLinearHeading(new Pose2d(36.5,13,Math.toRadians(0)))
+                                .lineToLinearHeading(new Pose2d(36.5,13.5,Math.toRadians(0)))
                                 .build();
                         drive.followTrajectory(CyclePark2);
                     }
@@ -272,17 +272,17 @@ public class Auto2 extends AutoCommon {
                             drive.followTrajectory(CyclePark3);
                         } else if(Side() == LEFT && Team() == RED) {
                             Trajectory CyclePark3 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                                    .lineToLinearHeading(new Pose2d(-11.5,-13,Math.toRadians(0)))
+                                    .lineToLinearHeading(new Pose2d(-11.5,-13.5,Math.toRadians(0)))
                                     .build();
                             drive.followTrajectory(CyclePark3);
                         } else if(Side() == RIGHT && Team() == RED) {
                             Trajectory CyclePark3 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                                    .lineToLinearHeading(new Pose2d(11.5,-13,Math.toRadians(180)))
+                                    .lineToLinearHeading(new Pose2d(11.5,-13.5,Math.toRadians(180)))
                                     .build();
                             drive.followTrajectory(CyclePark3);
                         } else if(Side() == LEFT && Team() == BLUE) {
                             Trajectory CyclePark3 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                                    .lineToLinearHeading(new Pose2d(11.5,13,Math.toRadians(0)))
+                                    .lineToLinearHeading(new Pose2d(11.5,13.5,Math.toRadians(0)))
                                     .build();
                             drive.followTrajectory(CyclePark3);
                         }
@@ -294,17 +294,17 @@ public class Auto2 extends AutoCommon {
                             drive.followTrajectory(CyclePark1);
                         } else if(Side() == LEFT && Team() == RED) {
                             Trajectory CyclePark1 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                                    .lineToLinearHeading(new Pose2d(-59.5,-13,Math.toRadians(0)))
+                                    .lineToLinearHeading(new Pose2d(-59.5,-13.5,Math.toRadians(0)))
                                     .build();
                             drive.followTrajectory(CyclePark1);
                         } else if(Side() == RIGHT && Team() == RED) {
                             Trajectory CyclePark1 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                                    .lineToLinearHeading(new Pose2d(59.5,-13,Math.toRadians(180)))
+                                    .lineToLinearHeading(new Pose2d(59.5,-13.5,Math.toRadians(180)))
                                     .build();
                             drive.followTrajectory(CyclePark1);
                         } else if(Side() == LEFT && Team() == BLUE) {
                             Trajectory CyclePark1 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                                    .lineToLinearHeading(new Pose2d(59.5,13,Math.toRadians(0)))
+                                    .lineToLinearHeading(new Pose2d(59.5,13.5,Math.toRadians(0)))
                                     .build();
                             drive.followTrajectory(CyclePark1);
                         }
@@ -321,17 +321,17 @@ public class Auto2 extends AutoCommon {
                             drive.followTrajectory(CyclePark1);
                         } else if(Side() == LEFT && Team() == RED) {
                             Trajectory CyclePark1 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                                    .lineToLinearHeading(new Pose2d(-59.5,-13,Math.toRadians(0)))
+                                    .lineToLinearHeading(new Pose2d(-59.5,-13.5,Math.toRadians(0)))
                                     .build();
                             drive.followTrajectory(CyclePark1);
                         } else if(Side() == RIGHT && Team() == RED) {
                             Trajectory CyclePark1 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                                    .lineToLinearHeading(new Pose2d(59.5,-13,Math.toRadians(180)))
+                                    .lineToLinearHeading(new Pose2d(59.5,-13.5,Math.toRadians(180)))
                                     .build();
                             drive.followTrajectory(CyclePark1);
                         } else if(Side() == LEFT && Team() == BLUE) {
                             Trajectory CyclePark1 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                                    .lineToLinearHeading(new Pose2d(59.5,13,Math.toRadians(0)))
+                                    .lineToLinearHeading(new Pose2d(59.5,13.5,Math.toRadians(0)))
                                     .build();
                             drive.followTrajectory(CyclePark1);
                         }
@@ -343,17 +343,17 @@ public class Auto2 extends AutoCommon {
                             drive.followTrajectory(CyclePark3);
                         } else if(Side() == LEFT && Team() == RED) {
                             Trajectory CyclePark3 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                                    .lineToLinearHeading(new Pose2d(-11.5,-13,Math.toRadians(0)))
+                                    .lineToLinearHeading(new Pose2d(-11.5,-13.5,Math.toRadians(0)))
                                     .build();
                             drive.followTrajectory(CyclePark3);
                         } else if(Side() == RIGHT && Team() == RED) {
                             Trajectory CyclePark3 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                                    .lineToLinearHeading(new Pose2d(11.5,-13,Math.toRadians(180)))
+                                    .lineToLinearHeading(new Pose2d(11.5,-13.5,Math.toRadians(180)))
                                     .build();
                             drive.followTrajectory(CyclePark3);
                         } else if(Side() == LEFT && Team() == BLUE) {
                             Trajectory CyclePark3 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                                    .lineToLinearHeading(new Pose2d(11.5, 13, Math.toRadians(0)))
+                                    .lineToLinearHeading(new Pose2d(11.5, 13.5, Math.toRadians(0)))
                                     .build();
                             drive.followTrajectory(CyclePark3);
                         }
