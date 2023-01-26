@@ -375,10 +375,10 @@ public class DriveCodeCommonNoAutoHome extends LinearOpMode {
     public void MClaw(boolean open) {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         if (open){
-            drive.claw.setPosition(0);//0.225
+            drive.claw.setPosition(0.55);//0
         }else{
             SClaw(true);
-            drive.claw.setPosition(0.6);//0.95
+            drive.claw.setPosition(0.69);//0.6
         }
     }
     public void SClaw(boolean open){
