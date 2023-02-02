@@ -46,7 +46,7 @@ public class DriveCodeCommonNoAutoHome extends LinearOpMode {
     boolean button_x_was_pressed;
     boolean firstrun = true;
     int liftLevel = 1;
-    int hclaw = 1;
+    int hclaw = 0;
     int lclaw;
     int latch;
     double turntimer = 0;
@@ -375,10 +375,10 @@ public class DriveCodeCommonNoAutoHome extends LinearOpMode {
     public void MClaw(boolean open) {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         if (open){
-            drive.claw.setPosition(0.55);//0
+            drive.claw.setPosition(0.76);//0
         }else{
             SClaw(true);
-            drive.claw.setPosition(0.69);//0.6
+            drive.claw.setPosition(0.67);//0.6
         }
     }
     public void SClaw(boolean open){
