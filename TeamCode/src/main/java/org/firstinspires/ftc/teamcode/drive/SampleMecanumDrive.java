@@ -147,7 +147,7 @@ public class SampleMecanumDrive extends MecanumDrive {
         latch = hardwareMap.get(Servo.class,"ls");
         turnlimiter = hardwareMap.get(DigitalChannel.class, "tl");
         shooter = hardwareMap.get(DcMotorEx.class,"s");
-//        csensor = hardwareMap.get(ColorRangeSensor.class,"cs");
+        csensor = hardwareMap.get(ColorRangeSensor.class,"cs");
         for (DcMotorEx motor : motors) {
             MotorConfigurationType motorConfigurationType = motor.getMotorType().clone();
             motorConfigurationType.setAchieveableMaxRPMFraction(1.0);
