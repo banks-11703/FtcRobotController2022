@@ -61,6 +61,9 @@ public class DriveCodeCommonNoAutoHome extends LinearOpMode {
     double autoHomeSpeed;
     double sliftheight = 0;
     int team;
+    boolean coneinhand;
+    int conelevel;
+
     public double sclawh[] = {1, 0.072, 0.27, 0.45, 0.56};
 
     public double liftLevel() {
@@ -208,20 +211,44 @@ public class DriveCodeCommonNoAutoHome extends LinearOpMode {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
 
-        if (liftLevel() == 1) { // intake 10
-            liftPreciseLocation = 10;
+        if (liftLevel() == 1) { // intake
+            if (coneinhand) {
+                if (conelevel == 4) {
+                    liftPreciseLocation = 10;
+                } else if (conelevel == 3) {
+                    liftPreciseLocation = 10;
+                } else if (conelevel == 2) {
+                    liftPreciseLocation = 10;
+                } else if (conelevel == 1) {
+                    liftPreciseLocation = 10;
+                } else {
+                    liftPreciseLocation = 10;
+                }
+            }else {
+                if (conelevel == 4) {
+                    liftPreciseLocation = 10;
+                } else if (conelevel == 3) {
+                    liftPreciseLocation = 10;
+                } else if (conelevel == 2) {
+                    liftPreciseLocation = 10;
+                } else if (conelevel == 1) {
+                    liftPreciseLocation = 10;
+                } else {
+                    liftPreciseLocation = 10;
+                }
+            }
+
             liftPrecisePower = 0.5;
-        } else if (liftLevel() == 2) { // low 625
+        } else if (liftLevel() == 2) { // low 1050
             liftPreciseLocation = 625;
             liftPrecisePower = 1;
-        } else if (liftLevel() == 3) { // mid 1150
+        } else if (liftLevel() == 3) { // mid 1800
             liftPreciseLocation = 1150;
             liftPrecisePower = 1;
-        } else if (liftLevel() == 4) { // high 1600
+        } else if (liftLevel() == 4) { // high
             liftPreciseLocation = 1600;
             liftPrecisePower = 1;
         }
-
 
         if (gamepad1.a && liftLevel() != 1) {
             drive.mainLift.setTargetPosition(liftPreciseLocation - 20);
@@ -230,12 +257,6 @@ public class DriveCodeCommonNoAutoHome extends LinearOpMode {
         }
         drive.mainLift.setPower(liftPrecisePower);
         drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-
-//        if (button_dpadleft2_was_pressed) {
-//            drive.mainLift.setTargetPosition(drive.mainLift.getTargetPosition() + 25);
-//        }
-//        ConeStackLift();
     }
 
 //    public void ConeStackLift() {
