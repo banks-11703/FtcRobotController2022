@@ -35,29 +35,14 @@ public class ResetEncoders extends LinearOpMode {
         while (opModeIsActive() && !isStopRequested()) {
 
                 drive.turntable.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                drive.turntable.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 drive.mainLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                drive.mainLift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 drive.shooter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            drive.shooter.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 // Read pose
                 Pose2d poseEstimate = drive.getPoseEstimate();
                 // Print pose to telemetry
                 telemetry.addData("Turn Limiter", drive.turnlimiter.getState());
                 telemetry.addData("Lift", drive.mainLift.getCurrentPosition());
                 telemetry.addData("Turntable Position", drive.turntable.getCurrentPosition());
-
-//            if (Level() == 1) {
-//                telemetry.addData("Level:", "Intake");
-//            } else if (Level() == 2) {
-//                telemetry.addData("Level:", "Low");
-//            } else if (Level() == 3) {
-//                telemetry.addData("Level:", "Mid (like you)");
-//            } else if (Level() == 4) {
-//                telemetry.addData("Level:", "High (as a kite)");
-//            } else {
-//                telemetry.addData("Manual", "Control");
-//            }
                 telemetry.update();
             }
         }
