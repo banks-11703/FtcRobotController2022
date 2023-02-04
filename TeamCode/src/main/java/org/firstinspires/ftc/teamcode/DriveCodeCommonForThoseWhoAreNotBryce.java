@@ -306,32 +306,36 @@ public class DriveCodeCommonForThoseWhoAreNotBryce extends LinearOpMode {
 
     public void TurnTable() {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-        if(Math.abs(gamepad2.right_trigger - gamepad2.left_trigger) < 0.05){
-            ttrue = 0;
-            if (gamepad2.left_bumper && liftLevel > 2) {
-                drive.turntable.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                ttpos = -825;
-            }
-            else if (gamepad2.right_bumper && liftLevel > 2) {
-                drive.turntable.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                ttpos = 825;
-            }
-            else if (autoHome) {
-                drive.turntable.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                ttpos = 0;
-                drive.turntable.setPower(0.6);
-                if (!drive.turntable.isBusy()) {
-                    atHome = true;
-                    autoHome = false;
-                }
+        if (Math.abs(gamepad2.right_trigger - gamepad2.left_trigger) > 0.05) {//manual turntable control
+            drive.turntable.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            drive.turntable.setPower(150 * (gamepad2.right_trigger - gamepad2.left_trigger));
+            autoHome = false;
+        } else if (gamepad2.left_bumper && liftLevel > 2) {//snap left
+            drive.turntable.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            ttpos = -825;
+            drive.turntable.setTargetPosition(ttpos);
+            drive.turntable.setPower(0.5);
+            autoHome = false;
+        } else if (gamepad2.right_bumper && liftLevel > 2) {//snap right
+            drive.turntable.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            ttpos = 825;
+            drive.turntable.setTargetPosition(ttpos);
+            drive.turntable.setPower(0.5);
+            autoHome = false;
+        } else if (autoHome) {//automatically centering on intake
+            drive.turntable.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            ttpos = 0;
+            drive.turntable.setPower(0.6);
+            if (!drive.turntable.isBusy()) {//when finished
+                atHome = true;
+                autoHome = false;
             }
             drive.turntable.setTargetPosition(ttpos);
             drive.turntable.setPower(0.5);
-        }else{
-            drive.turntable.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            ttrue = 150 * (gamepad2.right_trigger - gamepad2.left_trigger);
-            drive.turntable.setPower(ttrue);
+        } else {//turntable not moving
+            drive.turntable.setPower(0);
         }
+
 
 
 
