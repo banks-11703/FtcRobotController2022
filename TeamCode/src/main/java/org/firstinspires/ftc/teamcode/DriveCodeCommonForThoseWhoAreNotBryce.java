@@ -56,6 +56,7 @@ public class DriveCodeCommonForThoseWhoAreNotBryce extends LinearOpMode {
     boolean button_x_was_pressed;
     boolean firstrun = true;
     boolean coneinhand;
+    double ttrue;
     int liftLevel = 1;
     int hclaw = 0;
     int lclaw = 0;
@@ -323,22 +324,40 @@ public class DriveCodeCommonForThoseWhoAreNotBryce extends LinearOpMode {
 
     public void TurnTable() {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-        if (autoHome) {
+        if (Math.abs(gamepad2.right_trigger - gamepad2.left_trigger) > 0.05) {//manual turntable control
+            drive.turntable.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            drive.turntable.setPower(150 * (gamepad2.right_trigger - gamepad2.left_trigger));
+            autoHome = false;
+        } else if (gamepad2.left_bumper && liftLevel > 2) {//snap left
+            drive.turntable.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            ttpos = -825;
+            drive.turntable.setTargetPosition(ttpos);
+            drive.turntable.setPower(0.5);
+            autoHome = false;
+        } else if (gamepad2.right_bumper && liftLevel > 2) {//snap right
+            drive.turntable.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            ttpos = 825;
+            drive.turntable.setTargetPosition(ttpos);
+            drive.turntable.setPower(0.5);
+            autoHome = false;
+        } else if (autoHome) {//automatically centering on intake
+            drive.turntable.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             ttpos = 0;
             drive.turntable.setPower(0.6);
-            if (!drive.turntable.isBusy()) {
+            if (!drive.turntable.isBusy()) {//when finished
                 atHome = true;
                 autoHome = false;
             }
-        } else if (gamepad2.left_bumper && liftLevel > 2) {
-            ttpos = -825;
-        } else if (gamepad2.right_bumper && liftLevel > 2) {
-            ttpos = 825;
-        } else {
-            ttpos += Math.round(150 * (gamepad2.right_trigger - gamepad2.left_trigger));
+            drive.turntable.setTargetPosition(ttpos);
+            drive.turntable.setPower(0.5);
+        } else {//turntable not moving
+            drive.turntable.setPower(0);
         }
-        drive.turntable.setTargetPosition(ttpos);
-        drive.turntable.setPower(0.5);
+
+
+
+
+
 //            drive.turntable.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 //            double tablePower;
 //            tablePower = gamepad2.right_trigger - gamepad2.left_trigger;
