@@ -22,7 +22,8 @@ public class DriveCodeCommonForThoseWhoAreNotBryce extends LinearOpMode {
     public ElapsedTime runtime = new ElapsedTime();
     double maxvel = 2787.625;
     double Timestamp = 0;
-    double latchTimestamp = 0;
+    double latchTimeStamp = 0;
+    double latchTimeStamp2 = 0;
     double TimestampSclaw = 0;
     boolean autoHome = false;
     boolean atHome = false;
@@ -30,6 +31,8 @@ public class DriveCodeCommonForThoseWhoAreNotBryce extends LinearOpMode {
     boolean button_dpadup2_was_pressed = false;
     boolean button_dpadup1_was_pressed = false;
     boolean button_dpaddown1_was_pressed = false;
+    boolean button_dpadright1_was_pressed = false;
+    boolean button_dpadleft1_was_pressed = false;
     boolean button_dpadleft2_was_pressed = false;
     boolean button_dpadright2_was_pressed = false;
     boolean button_x2_was_pressed = false;
@@ -52,7 +55,6 @@ public class DriveCodeCommonForThoseWhoAreNotBryce extends LinearOpMode {
     boolean button_a_was_pressed;
     boolean button_x_was_pressed;
     boolean firstrun = true;
-    boolean timestamponce;
     boolean coneinhand;
     int liftLevel = 1;
     int hclaw = 0;
@@ -71,10 +73,12 @@ public class DriveCodeCommonForThoseWhoAreNotBryce extends LinearOpMode {
     double[] coneHeights = {0.00, 0.10, 0.22, 0.3225, 0.47};
     double[] coneHeightsClear = {0.00, 0.55, 0.72, 0.91, 1.0};
 
+    boolean readyToAutoClose = true;
+    boolean tryingToResetShooterEncoder = false;
     final int CLOSED = 0;
     final int OPENING = 1;
     final int OPENED = 2;
-    int latchState = 0;
+    int latchState = CLOSED;
 
     public double liftLevel() {
         return liftLevel % 5;
@@ -97,7 +101,11 @@ public class DriveCodeCommonForThoseWhoAreNotBryce extends LinearOpMode {
     }
 
     public double latchTimeSinceStamp() {
-        return runtime.time() - latchTimestamp;
+        return runtime.time() - latchTimeStamp;
+    }
+
+    public double latchTimeSinceStamp2() {
+        return runtime.time() - latchTimeStamp2;
     }
 
     public double sclawTimeSinceStamp() {
@@ -114,7 +122,7 @@ public class DriveCodeCommonForThoseWhoAreNotBryce extends LinearOpMode {
         // We want to turn off velocity control for teleop
         // Velocity control per wheel is not necessary outside of motion profiled auto
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        drive.mainLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        drive.mainLift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         drive.mainLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         drive.slift.scaleRange(0.01, 0.32);
         // Retrieve our pose from the PoseStorage.currentPose static field
@@ -174,6 +182,16 @@ public class DriveCodeCommonForThoseWhoAreNotBryce extends LinearOpMode {
             button_dpadup1_was_pressed = true;
         } else if (!gamepad1.dpad_up && button_dpadup1_was_pressed) {
             button_dpadup1_was_pressed = false;
+        }
+        if (gamepad1.dpad_right && !button_dpadright1_was_pressed) {
+            button_dpadright1_was_pressed = true;
+        } else if (!gamepad1.dpad_right && button_dpadright1_was_pressed) {
+            button_dpadright1_was_pressed = false;
+        }
+        if (gamepad1.dpad_left && !button_dpadleft1_was_pressed) {
+            button_dpadleft1_was_pressed = true;
+        } else if (!gamepad1.dpad_left && button_dpadleft1_was_pressed) {
+            button_dpadleft1_was_pressed = false;
         }
         if (gamepad2.x && !button_x2_was_pressed) {
             hclaw++;
@@ -342,6 +360,8 @@ public class DriveCodeCommonForThoseWhoAreNotBryce extends LinearOpMode {
         telemetry.addData("Turntable Position", drive.turntable.getCurrentPosition());
         telemetry.addData("TT Offset", motorOffset(drive.turntable));
         telemetry.addData("s claw timer", sclawTimeSinceStamp());
+        telemetry.addData("slift", drive.slift.getPosition());
+        telemetry.addData("Shooter Ticks", drive.shooter.getCurrentPosition());
         telemetry.update();
     }
 
@@ -364,10 +384,51 @@ public class DriveCodeCommonForThoseWhoAreNotBryce extends LinearOpMode {
             switch(latchState) {
                 case CLOSED:
                     Latch(true);
+                    latchTimeStamp = runtime.time(TimeUnit.SECONDS);
+                    latchState = OPENING;
                 case OPENING:
-
+                    if(latchTimeSinceStamp() >= 0.6) {
+                        latchState = OPENED;
+                    }
                 case OPENED:
+                    if (gamepad1.left_bumper) {
+                        drive.shooter.setPower(-1);
+                    } else if (gamepad1.right_bumper) {
+                        drive.shooter.setPower(1);
+                    } else {
+                        drive.shooter.setPower(0);
+                    }
+            }
+        } else if(button_dpadleft1_was_pressed) {
+            Latch(false);
+            latchState = CLOSED;
+        } else if(button_dpadright1_was_pressed) {
+            Latch(true);
+            latchState = OPENED;
+        } else if(latchState == OPENED && drive.shooter.getCurrentPosition() <= 10 && readyToAutoClose) {
+            Latch(false);
+            latchTimeStamp = runtime.time(TimeUnit.SECONDS);
+            readyToAutoClose = false;
+        } else if(latchTimeSinceStamp() >= 0.6 && !readyToAutoClose) {
+            if(!drive.turnlimiter.getState()) {
+                latchState = CLOSED;
+            } else {
+                Latch(true);
+            }
+        } else if(latchState == OPENED && drive.shooter.getCurrentPosition() >= 200) {
+            readyToAutoClose = true;
+        }
 
+        if(!tryingToResetShooterEncoder) {
+            if(!drive.turnlimiter.getState()) {
+                latchTimeStamp2 = runtime.time(TimeUnit.SECONDS);
+                tryingToResetShooterEncoder = true;
+            }
+        } else {
+            if(latchTimeSinceStamp2() >= 1 && latchState == CLOSED) {
+                drive.shooter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                drive.shooter.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                tryingToResetShooterEncoder = false;
             }
         }
 
@@ -385,13 +446,7 @@ public class DriveCodeCommonForThoseWhoAreNotBryce extends LinearOpMode {
 //                timestamponce = true;
 //            }
 //            if (latchTimeSinceStamp() >= 0.6) {
-//                if (gamepad1.left_bumper) {
-//                    drive.shooter.setPower(-1);
-//                } else if (gamepad1.right_bumper) {
-//                    drive.shooter.setPower(1);
-//                } else {
-//                    drive.shooter.setPower(0);
-//                }
+//
 //            }
 //        } else {
 //            drive.shooter.setPower(0);
