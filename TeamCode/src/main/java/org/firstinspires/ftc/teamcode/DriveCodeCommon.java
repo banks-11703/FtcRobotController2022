@@ -307,14 +307,16 @@ public class DriveCodeCommon extends LinearOpMode {
                 autoHome = false;
             }
         } else if (gamepad2.left_bumper && liftLevel > 2) {
+            atHome = false;
             ttpos = -825;
         } else if (gamepad2.right_bumper && liftLevel > 2) {
+            atHome = false;
             ttpos = 825;
         } else {
-            ttpos += Math.round(150 * (gamepad2.right_trigger - gamepad2.left_trigger));
+            ttpos += Math.round(75 * (gamepad2.right_trigger - gamepad2.left_trigger));
         }
         drive.turntable.setTargetPosition(ttpos);
-        drive.turntable.setPower(0.5);
+        drive.turntable.setPower(0.75);
 //            drive.turntable.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 //            double tablePower;
 //            tablePower = gamepad2.right_trigger - gamepad2.left_trigger;
