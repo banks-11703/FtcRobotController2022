@@ -49,12 +49,14 @@ public class DriveCodeCommonForThoseWhoAreNotBryce extends LinearOpMode {
     boolean lastwasright = true;
     boolean turningtoright = false;
     boolean shooterEngaged;
+    boolean button_back2_was_pressed = false;
     boolean button_a_was_pressed;
     boolean button_x_was_pressed;
     boolean firstrun = true;
     boolean timestamponce;
     boolean coneinhand;
     double ttrue;
+    boolean resettingAutoHome = false;
     int liftLevel = 1;
     int hclaw = 0;
     int lclaw = 0;
@@ -152,6 +154,13 @@ public class DriveCodeCommonForThoseWhoAreNotBryce extends LinearOpMode {
 
     public void Toggles() {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+
+        if (gamepad2.back && !button_back2_was_pressed) {
+            resettingAutoHome = true;
+            button_back2_was_pressed = true;
+        } else if (!gamepad2.back && button_back2_was_pressed) {
+            button_back2_was_pressed = false;
+        }
         if (gamepad2.dpad_down && !button_dpaddown2_was_pressed) {
 
             button_dpaddown2_was_pressed = true;
@@ -336,6 +345,10 @@ public class DriveCodeCommonForThoseWhoAreNotBryce extends LinearOpMode {
             drive.turntable.setPower(0);
         }
 
+        if(resettingAutoHome){
+            drive.turntable.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            resettingAutoHome = false;
+        }
 
 
 
