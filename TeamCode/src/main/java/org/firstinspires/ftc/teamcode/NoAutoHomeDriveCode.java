@@ -10,14 +10,12 @@ public class NoAutoHomeDriveCode extends DriveCodeCommonForThoseWhoAreNotBryce {
         while (opModeIsActive() && !isStopRequested()) {
             RawDriving();
             Toggles();
-            if(button_a2_was_pressed || button_b2_was_pressed) {
-                Lift();
-            }
+            Lift();
             Claw();
             TurnTable();
             ShootOut();
             Telemetry();
-//            ColorSensor();
+            ColorSensor();
         }
     }
 }
