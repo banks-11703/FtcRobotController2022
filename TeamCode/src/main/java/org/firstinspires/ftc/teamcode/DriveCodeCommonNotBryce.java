@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -18,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 @TeleOp(name = "DriveCodeCommonNoAutoHome", group = "Linear Opmode")
 @Config
 @Disabled
-public class DriveCodeCommonForThoseWhoAreNotBryce extends LinearOpMode {
+public class DriveCodeCommonNotBryce extends LinearOpMode {
     public ElapsedTime runtime = new ElapsedTime();
     double maxvel = 2787.625;
     double Timestamp = 0;
@@ -426,15 +425,29 @@ public class DriveCodeCommonForThoseWhoAreNotBryce extends LinearOpMode {
     }
 
     public void Lights() {
-        //check if you can just set cp1 and cp2 in code
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-        if (!isStarted()) {
-            drive.lightServo.setPattern(RevBlinkinLedDriver.BlinkinPattern.GREEN);
-        } else if (PoseStorage.team == 0) {
-            drive.lightServo.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
-        } else {
-            drive.lightServo.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
+
+        if(drive.claw.getPosition() > 0.73){
+            drive.intakeRedLED.setState(false);
+            drive.intakeGreenLED.setState(true);
+        }else{
+            drive.intakeRedLED.setState(true);
+            drive.intakeGreenLED.setState(false);
         }
+
+
+
+
+
+        //check if you can just set cp1 and cp2 in code
+//        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+//        if (!isStarted()) {
+//            drive.lightServo.setPattern(RevBlinkinLedDriver.BlinkinPattern.GREEN);
+//        } else if (PoseStorage.team == 0) {
+//            drive.lightServo.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
+//        } else {
+//            drive.lightServo.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
+//        }
     }
 
     public void ShootOut() {

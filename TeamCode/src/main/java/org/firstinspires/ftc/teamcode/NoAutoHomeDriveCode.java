@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 @TeleOp
-public class NoAutoHomeDriveCode extends DriveCodeCommonForThoseWhoAreNotBryce {
+public class NoAutoHomeDriveCode extends DriveCodeCommonNotBryce {
     @Override
     public void runOpMode() {
         Initialization();
@@ -16,6 +16,7 @@ public class NoAutoHomeDriveCode extends DriveCodeCommonForThoseWhoAreNotBryce {
             ShootOut();
             Telemetry();
             ColorSensor();
+            Lights();
         }
     }
 }
