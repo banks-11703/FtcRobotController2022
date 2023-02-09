@@ -3,7 +3,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 @TeleOp(name = "DriveCodeNotBryce", group = "Linear Opmode")
 public class DriveCodeNotBryce extends DriveCodeCommonNotBryce {
-    @Override
     public void runOpMode() {
         Initialization();
         if (isStopRequested()) return;
@@ -16,6 +15,7 @@ public class DriveCodeNotBryce extends DriveCodeCommonNotBryce {
             ShootOut();
             Telemetry();
             ColorSensor();
+            Lights();
         }
     }
 }

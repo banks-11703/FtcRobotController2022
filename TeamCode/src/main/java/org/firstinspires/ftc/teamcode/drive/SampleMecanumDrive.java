@@ -76,6 +76,8 @@ public class SampleMecanumDrive extends MecanumDrive {
     public DcMotorEx leftFront, leftRear, rightRear, rightFront;
     private List<DcMotorEx> motors;
     public Servo claw;
+    public DigitalChannel intakeRedLED;
+    public DigitalChannel intakeGreenLED;
     public Servo sclaw;
     public Servo latch;
     public Servo slift;
@@ -139,6 +141,13 @@ public class SampleMecanumDrive extends MecanumDrive {
 
 //        lightServo = hardwareMap.get(RevBlinkinLedDriver.class, "blinkin");
         mainLift = hardwareMap.get(DcMotorEx.class,"l");
+
+        //LED stuff
+
+        intakeRedLED.setMode(DigitalChannel.Mode.OUTPUT);
+        intakeGreenLED.setMode(DigitalChannel.Mode.OUTPUT);
+        intakeRedLED = hardwareMap.get(DigitalChannel.class, "crled");
+        intakeGreenLED = hardwareMap.get(DigitalChannel.class, "cgled");
 
         turntable = hardwareMap.get(DcMotorEx.class,"tt");
         claw = hardwareMap.get(Servo.class,"c");
