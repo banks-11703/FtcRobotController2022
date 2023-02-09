@@ -427,10 +427,10 @@ public class DriveCodeCommonNotBryce extends LinearOpMode {
     public void Lights() {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
-        if(drive.claw.getPosition() > 0.73){
+        if(drive.claw.getPosition() > 0.73){//if open
             drive.intakeRedLED.setState(false);
             drive.intakeGreenLED.setState(true);
-        }else{
+        }else{//if closed
             drive.intakeRedLED.setState(true);
             drive.intakeGreenLED.setState(false);
         }
