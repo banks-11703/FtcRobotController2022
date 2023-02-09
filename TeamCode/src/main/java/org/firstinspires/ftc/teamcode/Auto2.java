@@ -214,22 +214,10 @@ public class Auto2 extends AutoCommon {
             telemetry.addData("position",drive.getPoseEstimate());
             telemetry.update();
             moveToScore();
-//            Trajectory testing = drive.trajectoryBuilder(drive.getPoseEstimate())
-//                    .forward(25)
-//                    .build();
-//            drive.followTrajectory(testing);
-//            telemetry.addData("position",drive.getPoseEstimate());
-//            telemetry.addData("start pos",StartingPos());
-//            telemetry.addData("PoseStorage",PoseStorage.currentPose);
-//            telemetry.update();
 
             while (opModeIsActive() && !isStopRequested() && !armDone && TimeSinceStart() <= 27) {
                 doLiftTasks();
                 doShootoutTasks();
-//                telemetry.addData("TimeSinceStampShootout",TimeSinceStampShootout());
-//                telemetry.addData("LiftTaskNum",armTaskNum);
-//                telemetry.addData("ShootoutTaskNum",shootOutTaskNum);
-//                telemetry.update();
             }
             closeClaw();
             moveShootout(0);

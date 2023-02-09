@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 @TeleOp(name = "DriveCodeCommonNoAutoHome", group = "Linear Opmode")
 @Config
 @Disabled
-public class DriveCodeCommonForThoseWhoAreNotBryce extends LinearOpMode {
+public class DriveCodeCommonNotBryce extends LinearOpMode {
     public ElapsedTime runtime = new ElapsedTime();
     double maxvel = 2787.625;
     double Timestamp = 0;
