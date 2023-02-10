@@ -144,8 +144,8 @@ public class SampleMecanumDrive extends MecanumDrive {
 
         //LED stuff
 
-        intakeRedLED.setMode(DigitalChannel.Mode.OUTPUT);
-        intakeGreenLED.setMode(DigitalChannel.Mode.OUTPUT);
+//        intakeRedLED.setMode(DigitalChannel.Mode.OUTPUT);
+//        intakeGreenLED.setMode(DigitalChannel.Mode.OUTPUT);
         intakeRedLED = hardwareMap.get(DigitalChannel.class, "crled");
         intakeGreenLED = hardwareMap.get(DigitalChannel.class, "cgled");
 

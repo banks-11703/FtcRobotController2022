@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -356,7 +357,9 @@ public class DriveCodeCommonNotBryce extends LinearOpMode {
                 readytocloseSCLAW = true;
             }
             if(liftLevel() == 1) {
-                lclaw++;
+                if(lClawToggle() == 1) {
+                    lclaw++;
+                }
             }
             MClaw(false);
         }
@@ -431,6 +434,9 @@ public class DriveCodeCommonNotBryce extends LinearOpMode {
 
     public void Lights() {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        telemetry.addData("clawPos",drive.claw.getPosition());
+        drive.intakeRedLED.setMode(DigitalChannel.Mode.OUTPUT);
+        drive.intakeGreenLED.setMode(DigitalChannel.Mode.OUTPUT);
 
         if(drive.claw.getPosition() > 0.73){//if open
             drive.intakeRedLED.setState(false);
