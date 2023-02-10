@@ -304,13 +304,13 @@ public class AutoCommon extends LinearOpMode {
     public void openClaw() {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
-            drive.claw.setPosition(0);//0.225
+            drive.claw.setPosition(0.76);//0.225
     }
 
     public void closeClaw() {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
-        drive.claw.setPosition(0.6);//0.95
+        drive.claw.setPosition(0.66);//0.95
     }
 
     public void moveShootout(int pos) {
