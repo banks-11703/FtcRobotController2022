@@ -337,8 +337,10 @@ public class DriveCodeCommonNotBryce extends LinearOpMode {
         if(autoHome) {
             liftLevel = 1;
             if(drive.mainLift.getCurrentPosition() >= 750 || Math.abs(drive.turntable.getCurrentPosition()) <= 25) {
+                drive.mainLift.setTargetPosition(liftPreciseLocation);
                 drive.mainLift.setPower(1);
             } else {
+                drive.mainLift.setTargetPosition(liftPreciseLocation);
                 drive.mainLift.setPower(0);
             }
         } else {
