@@ -447,7 +447,7 @@ public class AutoCommon extends LinearOpMode {
                     timeStampLift = runtime.time();
                     liftWait = true;
                 }
-                if(liftWait && TimeSinceStampLift() >= .8) {
+                if(liftWait && TimeSinceStampLift() >= 1.0) {
                     moveLift(0);
 //                    closeClaw();
                     timeStampLift = runtime.time();
@@ -460,7 +460,7 @@ public class AutoCommon extends LinearOpMode {
                     timeStampLift = runtime.time();
                     liftWait = true;
                 }
-                if(liftWait && TimeSinceStampLift() >= .8) {
+                if(liftWait && TimeSinceStampLift() >= 1.0) {
                     moveLift(0);
 //                    closeClaw();
                     timeStampLift = runtime.time();
@@ -473,7 +473,7 @@ public class AutoCommon extends LinearOpMode {
                     timeStampLift = runtime.time();
                     liftWait = true;
                 }
-                if(liftWait && TimeSinceStampLift() >= .8) {
+                if(liftWait && TimeSinceStampLift() >= 1.0) {
                     moveLift(0);
 //                    closeClaw();
                     timeStampLift = runtime.time();
@@ -486,7 +486,7 @@ public class AutoCommon extends LinearOpMode {
                     timeStampLift = runtime.time();
                     liftWait = true;
                 }
-                if(liftWait && TimeSinceStampLift() >= .8) {
+                if(liftWait && TimeSinceStampLift() >= 1.0) {
                     moveLift(0);
 //                    closeClaw();
                     timeStampLift = runtime.time();
