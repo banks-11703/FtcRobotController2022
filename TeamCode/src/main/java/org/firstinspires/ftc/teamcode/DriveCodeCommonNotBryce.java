@@ -445,6 +445,9 @@ public class DriveCodeCommonNotBryce extends LinearOpMode {
             if(Math.abs(drive.turntable.getCurrentPosition() - ttpos) < 10 && liftLevel() == 2){
                 autoHome = false;
             }
+            if(drive.mainLift.getCurrentPosition()<=175) {
+                autoHome = false;
+            }
         } else {//turntable not moving
             drive.turntable.setPower(0);
         }
