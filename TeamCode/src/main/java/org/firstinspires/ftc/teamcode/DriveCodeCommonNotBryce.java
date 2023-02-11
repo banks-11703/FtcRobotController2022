@@ -335,7 +335,7 @@ public class DriveCodeCommonNotBryce extends LinearOpMode {
         }
 
 
-        if(ttInDangerZone && (autoHome || autoClockwise || autoCounterClockwise)){//Im not optimizing this -Owen (lifts lift above danger zone)
+        if(ttInDangerZone){//Im not optimizing this -Owen (lifts lift above danger zone)
             drive.mainLift.setTargetPosition(925);
         }else if (gamepad2.dpad_down) {
             drive.mainLift.setTargetPosition(liftPreciseLocation - 100);
@@ -383,7 +383,7 @@ public class DriveCodeCommonNotBryce extends LinearOpMode {
     public void TurnTable() {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
-        if(liftLevel() == 2 && !(Math.abs(gamepad2.right_trigger - gamepad2.left_trigger) > 0.05)){//if in danger zone for cone
+        if(liftLevel() == 2 && !(Math.abs(gamepad2.right_trigger - gamepad2.left_trigger) > 0.05) && (autoHome || autoClockwise || autoCounterClockwise)){//if in danger zone for cone
             ttInDangerZone = true;
         }else{//normal manual controls
             ttInDangerZone = false;
@@ -405,7 +405,7 @@ public class DriveCodeCommonNotBryce extends LinearOpMode {
             if(liftLevel() == 2 && drive.mainLift.getCurrentPosition() < 900){
                 drive.turntable.setPower(0);
             }
-            if(drive.turntable.getCurrentPosition() == ttpos && liftLevel() == 2){
+            if(Math.abs(drive.turntable.getCurrentPosition() - ttpos) < 10 && liftLevel() == 2){
                 autoClockwise = false;
             }
         } else if (autoCounterClockwise && !autoHome && !autoClockwise && liftLevel > 1) {//snap right
@@ -418,7 +418,7 @@ public class DriveCodeCommonNotBryce extends LinearOpMode {
             if(liftLevel() == 2 && drive.mainLift.getCurrentPosition() < 900){
                 drive.turntable.setPower(0);
             }
-            if(drive.turntable.getCurrentPosition() == ttpos && liftLevel() == 2){
+            if(Math.abs(drive.turntable.getCurrentPosition() - ttpos) < 10 && liftLevel() == 2){
                 autoCounterClockwise = false;
             }
         } else if (autoHome && !autoCounterClockwise && !autoClockwise) {//automatically centering on intake
@@ -431,7 +431,7 @@ public class DriveCodeCommonNotBryce extends LinearOpMode {
             if(liftLevel() == 2 && drive.mainLift.getCurrentPosition() < 900){
                 drive.turntable.setPower(0);
             }
-            if(drive.turntable.getCurrentPosition() == ttpos && liftLevel() == 2){
+            if(Math.abs(drive.turntable.getCurrentPosition() - ttpos) < 10 && liftLevel() == 2){
                 autoHome = false;
             }
         } else {//turntable not moving
