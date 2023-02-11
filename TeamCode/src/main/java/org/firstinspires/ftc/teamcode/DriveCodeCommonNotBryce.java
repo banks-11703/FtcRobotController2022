@@ -27,8 +27,8 @@ public class DriveCodeCommonNotBryce extends LinearOpMode {
     double latchTimeStamp3 = 0;
     double TimestampSclaw = 0;
     boolean autoHome = false;
-    boolean autoRight = false;
-    boolean autoLeft = false;
+    boolean autoCounterClockwise = false;
+    boolean autoClockwise = false;
     boolean atHome = false;
     boolean button_dpaddown2_was_pressed = false;
     boolean button_dpadup2_was_pressed = false;
@@ -78,6 +78,7 @@ public class DriveCodeCommonNotBryce extends LinearOpMode {
     double liftPrecisePower;
     int conelevel;
     int team;
+    boolean ttInDangerZone;
     double[] coneHeights = {0.00, 0.10, 0.22, 0.3225, 0.47};
     double[] coneHeightsClear = {0.00, 0.55, 0.72, 0.91, 1.0};
 
@@ -219,17 +220,17 @@ public class DriveCodeCommonNotBryce extends LinearOpMode {
         }
         if (gamepad2.dpad_left && !button_dpadleft2_was_pressed) {
             button_dpadleft2_was_pressed = true;
-            autoLeft = true;
+            autoClockwise = true;
             autoHome = false;
-            autoRight = false;
+            autoCounterClockwise = false;
         } else if (!gamepad2.dpad_left && button_dpadleft2_was_pressed) {
             button_dpadleft2_was_pressed = false;
         }
         if (gamepad2.dpad_right && !button_dpadright2_was_pressed) {
             button_dpadright2_was_pressed = true;
-            autoRight = true;
+            autoCounterClockwise = true;
             autoHome = false;
-            autoLeft = false;
+            autoClockwise = false;
         } else if (!gamepad2.dpad_right && button_dpadright2_was_pressed) {
             button_dpadright2_was_pressed = false;
         }
@@ -270,8 +271,8 @@ public class DriveCodeCommonNotBryce extends LinearOpMode {
         }
         if (gamepad2.y && !button_y2_was_pressed) {
             autoHome = true;
-            autoLeft = false;
-            autoRight = false;
+            autoClockwise = false;
+            autoCounterClockwise = false;
             button_y2_was_pressed = true;
         } else if (!gamepad2.y && button_y2_was_pressed) {
             button_y2_was_pressed = false;
@@ -295,7 +296,7 @@ public class DriveCodeCommonNotBryce extends LinearOpMode {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
         if (liftLevel() == 1) { // intake
-            if (coneinhand) {
+            if (coneinhand) {//whats up with all the if else statements that do the same thing? -Owen
                 if (conelevel == 4) {
                     liftPreciseLocation = 10;
                 } else if (conelevel == 3) {
@@ -333,7 +334,10 @@ public class DriveCodeCommonNotBryce extends LinearOpMode {
             liftPrecisePower = 1;
         }
 
-        if (gamepad2.dpad_down) {
+
+        if(ttInDangerZone){//Im not optimizing this -Owen (lifts lift above danger zone)
+            drive.mainLift.setTargetPosition(925);
+        }else if (gamepad2.dpad_down) {
             drive.mainLift.setTargetPosition(liftPreciseLocation - 100);
         } else {
             drive.mainLift.setTargetPosition(liftPreciseLocation);
@@ -379,32 +383,41 @@ public class DriveCodeCommonNotBryce extends LinearOpMode {
     public void TurnTable() {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         if (Math.abs(gamepad2.right_trigger - gamepad2.left_trigger) > 0.05) {//manual turntable control
-            drive.turntable.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            drive.turntable.setPower((gamepad2.right_trigger - gamepad2.left_trigger));
             autoHome = false;
-            autoRight = false;
-            autoLeft = false;
-        } else if (autoLeft && !autoHome && !autoRight && liftLevel > 2) {//snap left
+            autoCounterClockwise = false;
+            autoClockwise = false;
+            if(drive.turntable.getCurrentPosition() > -810 && drive.turntable.getCurrentPosition() < -15 && liftLevel() == 1){//if in danger zone for cone
+                drive.turntable.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                ttInDangerZone = true;
+                if(drive.mainLift.getCurrentPosition() > 900){//if lift is give or take above danger zone
+                    drive.turntable.setPower((gamepad2.right_trigger - gamepad2.left_trigger));
+                }
+            }else{//normal manual controls
+                drive.turntable.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                drive.turntable.setPower((gamepad2.right_trigger - gamepad2.left_trigger));
+                ttInDangerZone = false;
+            }
+        } else if (autoClockwise && !autoHome && !autoCounterClockwise && liftLevel > 2) {//snap left
             drive.turntable.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             ttpos = -825;
             drive.turntable.setTargetPosition(ttpos);
             drive.turntable.setPower(1);
             autoHome = false;
-            autoRight = false;
-        } else if (autoRight && !autoHome && !autoLeft && liftLevel > 2) {//snap right
+            autoCounterClockwise = false;
+        } else if (autoCounterClockwise && !autoHome && !autoClockwise && liftLevel > 2) {//snap right
             drive.turntable.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             ttpos = 825;
             drive.turntable.setTargetPosition(ttpos);
             drive.turntable.setPower(1);
             autoHome = false;
-            autoLeft = false;
-        } else if (autoHome && !autoRight && !autoLeft) {//automatically centering on intake
+            autoClockwise = false;
+        } else if (autoHome && !autoCounterClockwise && !autoClockwise) {//automatically centering on intake
             drive.turntable.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             ttpos = 0;
             drive.turntable.setTargetPosition(ttpos);
             drive.turntable.setPower(1);
-            autoRight = false;
-            autoLeft = false;
+            autoCounterClockwise = false;
+            autoClockwise = false;
         } else {//turntable not moving
             drive.turntable.setPower(0);
         }
