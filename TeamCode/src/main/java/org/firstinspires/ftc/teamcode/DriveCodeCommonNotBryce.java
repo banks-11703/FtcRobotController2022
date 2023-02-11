@@ -322,7 +322,7 @@ public class DriveCodeCommonNotBryce extends LinearOpMode {
                 }
             }
 
-            liftPrecisePower = 0.5;
+            liftPrecisePower = 1;
         } else if (liftLevel() == 2) { // low 1050
             liftPreciseLocation = 625;
             liftPrecisePower = 1;
@@ -334,16 +334,25 @@ public class DriveCodeCommonNotBryce extends LinearOpMode {
             liftPrecisePower = 1;
         }
 
-
-        if(ttInDangerZone){//Im not optimizing this -Owen (lifts lift above danger zone)
-            drive.mainLift.setTargetPosition(925);
-        }else if (gamepad2.dpad_down) {
-            drive.mainLift.setTargetPosition(liftPreciseLocation - 100);
+        if(autoHome) {
+            liftLevel = 1;
+            if(drive.mainLift.getCurrentPosition() >= 750 || Math.abs(drive.turntable.getCurrentPosition()) <= 25) {
+                drive.mainLift.setPower(1);
+            } else {
+                drive.mainLift.setPower(0);
+            }
         } else {
-            drive.mainLift.setTargetPosition(liftPreciseLocation);
+            if(ttInDangerZone){//Im not optimizing this -Owen (lifts lift above danger zone)
+                drive.mainLift.setTargetPosition(925);
+            }else if (gamepad2.dpad_down) {
+                drive.mainLift.setTargetPosition(liftPreciseLocation - 100);
+            } else {
+                drive.mainLift.setTargetPosition(liftPreciseLocation);
+            }
+            drive.mainLift.setPower(liftPrecisePower);
+            drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
-        drive.mainLift.setPower(liftPrecisePower);
-        drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
     }
 
     public void Claw() {
