@@ -383,7 +383,7 @@ public class DriveCodeCommonNotBryce extends LinearOpMode {
     public void TurnTable() {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
-        if(drive.turntable.getCurrentPosition() > -700 && drive.turntable.getCurrentPosition() < -200 && liftLevel() == 2){//if in danger zone for cone
+        if(liftLevel() == 2 && !(Math.abs(gamepad2.right_trigger - gamepad2.left_trigger) > 0.05)){//if in danger zone for cone
             ttInDangerZone = true;
         }else{//normal manual controls
             ttInDangerZone = false;
@@ -402,8 +402,11 @@ public class DriveCodeCommonNotBryce extends LinearOpMode {
             drive.turntable.setPower(1);
             autoHome = false;
             autoCounterClockwise = false;
-            if(ttInDangerZone){
+            if(liftLevel() == 2 && drive.mainLift.getCurrentPosition() < 900){
                 drive.turntable.setPower(0);
+            }
+            if(drive.turntable.getTargetPosition() == ttpos && liftLevel() == 2){
+                autoClockwise = false;
             }
         } else if (autoCounterClockwise && !autoHome && !autoClockwise && liftLevel > 1) {//snap right
             drive.turntable.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -412,8 +415,11 @@ public class DriveCodeCommonNotBryce extends LinearOpMode {
             drive.turntable.setPower(1);
             autoHome = false;
             autoClockwise = false;
-            if(ttInDangerZone){
+            if(liftLevel() == 2 && drive.mainLift.getCurrentPosition() < 900){
                 drive.turntable.setPower(0);
+            }
+            if(drive.turntable.getTargetPosition() == ttpos && liftLevel() == 2){
+                autoCounterClockwise = false;
             }
         } else if (autoHome && !autoCounterClockwise && !autoClockwise) {//automatically centering on intake
             drive.turntable.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -422,8 +428,11 @@ public class DriveCodeCommonNotBryce extends LinearOpMode {
             drive.turntable.setPower(1);
             autoCounterClockwise = false;
             autoClockwise = false;
-            if(ttInDangerZone){
+            if(liftLevel() == 2 && drive.mainLift.getCurrentPosition() < 900){
                 drive.turntable.setPower(0);
+            }
+            if(drive.turntable.getTargetPosition() == ttpos && liftLevel() == 2){
+                autoHome = false;
             }
         } else {//turntable not moving
             drive.turntable.setPower(0);
