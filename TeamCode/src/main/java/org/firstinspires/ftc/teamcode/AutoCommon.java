@@ -31,7 +31,7 @@ public class AutoCommon extends LinearOpMode {
     int turntableMod;
     boolean armDone = false;
     boolean shootoutDone = false;
-    double[] coneHeights = {0,0.02,0.12,0.24,0.34,0.49};
+    double[] coneHeights = {0,0.02,0.13,0.25,0.35,0.50};
     double[] coneHeightsClear = {0,0.15,0.55,0.72,0.91,1.0};
 
     boolean button_b_was_pressed = false;
@@ -635,41 +635,51 @@ public class AutoCommon extends LinearOpMode {
                     shootOutTaskNum++;
                 break;
             case 5:
-                liftShooterClaw(true,5);
-                timeStampShootout = runtime.time();
-                shootOutTaskNum++;
+                if(TimeSinceStampShootout() >= 0.2) {
+                    liftShooterClaw(true,5);
+                    timeStampShootout = runtime.time();
+                    shootOutTaskNum++;
+                }
                 break;
             case 15:
-                liftShooterClaw(true,4);
-                timeStampShootout = runtime.time();
-                shootOutTaskNum++;
+                if(TimeSinceStampShootout() >= 0.2) {
+                    liftShooterClaw(true,4);
+                    timeStampShootout = runtime.time();
+                    shootOutTaskNum++;
+                }
                 break;
             case 25:
-                liftShooterClaw(true,3);
-                timeStampShootout = runtime.time();
-                shootOutTaskNum++;
+                if(TimeSinceStampShootout() >= 0.2) {
+                    liftShooterClaw(true,3);
+                    timeStampShootout = runtime.time();
+                    shootOutTaskNum++;
+                }
                 break;
             case 35:
-                liftShooterClaw(true,2);
-                timeStampShootout = runtime.time();
-                shootOutTaskNum++;
+                if(TimeSinceStampShootout() >= 0.2) {
+                    liftShooterClaw(true,2);
+                    timeStampShootout = runtime.time();
+                    shootOutTaskNum++;
+                }
                 break;
             case 45:
-                liftShooterClaw(true,1);
-                timeStampShootout = runtime.time();
-                shootOutTaskNum++;
+                if(TimeSinceStampShootout() >= 0.2) {
+                    liftShooterClaw(true,1);
+                    timeStampShootout = runtime.time();
+                    shootOutTaskNum++;
+                }
                 break;
             case 6:
             case 16:
             case 26:
             case 36:
             case 46:
-                if(!lazyShootout && TimeSinceStampShootout() >= 1.75) {
-                    moveShootout(15);
+                if(!lazyShootout && TimeSinceStampShootout() >= 1.8) {
+                    moveShootout(200);
                     timeStampShootout = runtime.time();
                     lazyShootout = true;
                 }
-                if(lazyShootout && TimeSinceStampShootout() >= 0.2) {
+                if(lazyShootout && TimeSinceStampShootout() >= 0.3) {
                     liftShooterClaw(false,0);
                     timeStampShootout = runtime.time();
                     shootOutTaskNum++;
@@ -681,7 +691,11 @@ public class AutoCommon extends LinearOpMode {
             case 27:
             case 37:
             case 47:
-                shootOutTaskNum++;
+                if(TimeSinceStampShootout() >= 0.5) {
+                    moveShootout(0);
+                    timeStampShootout = runtime.time();
+                    shootOutTaskNum++;
+                }
                 break;
             case 8://extra in case we need more
             case 18:
