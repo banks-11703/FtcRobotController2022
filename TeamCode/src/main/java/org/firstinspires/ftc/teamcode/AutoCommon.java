@@ -399,7 +399,7 @@ public class AutoCommon extends LinearOpMode {
                     liftWait = true;
                 }
                 if(liftWait && TimeSinceStampLift() >= .500) {
-                    moveLift(300);
+                    moveLift(350);
                     timeStampLift = runtime.time();
                     armTaskNum++;
                     liftWait = false;
@@ -675,7 +675,7 @@ public class AutoCommon extends LinearOpMode {
             case 36:
             case 46:
                 if(!lazyShootout && TimeSinceStampShootout() >= 1.8) {
-                    moveShootout(200);
+                    moveShootout(300);
                     timeStampShootout = runtime.time();
                     lazyShootout = true;
                 }
