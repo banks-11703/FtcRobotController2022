@@ -335,7 +335,7 @@ public class DriveCodeCommonNotBryce extends LinearOpMode {
         }
 
 
-        if(ttInDangerZone && (autoHome || autoClockwise || autoCounterClockwise)){//Im not optimizing this -Owen (lifts lift above danger zone)
+        if(ttInDangerZone){//Im not optimizing this -Owen (lifts lift above danger zone)
             drive.mainLift.setTargetPosition(925);
         }else if (gamepad2.dpad_down) {
             drive.mainLift.setTargetPosition(liftPreciseLocation - 100);
@@ -383,7 +383,7 @@ public class DriveCodeCommonNotBryce extends LinearOpMode {
     public void TurnTable() {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
-        if(liftLevel() == 2 && !(Math.abs(gamepad2.right_trigger - gamepad2.left_trigger) > 0.05)){//if in danger zone for cone
+        if(liftLevel() == 2 && !(Math.abs(gamepad2.right_trigger - gamepad2.left_trigger) > 0.05) && (autoHome || autoClockwise || autoCounterClockwise)){//if in danger zone for cone
             ttInDangerZone = true;
         }else{//normal manual controls
             ttInDangerZone = false;
@@ -433,6 +433,7 @@ public class DriveCodeCommonNotBryce extends LinearOpMode {
             }
             if(drive.turntable.getCurrentPosition() == ttpos && liftLevel() == 2){
                 autoHome = false;
+                telemetry.addData("workingone", ":D");
             }
         } else {//turntable not moving
             drive.turntable.setPower(0);
