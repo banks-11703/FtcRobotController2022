@@ -405,7 +405,7 @@ public class DriveCodeCommonNotBryce extends LinearOpMode {
             if(liftLevel() == 2 && drive.mainLift.getCurrentPosition() < 900){
                 drive.turntable.setPower(0);
             }
-            if(drive.turntable.getTargetPosition() == ttpos && liftLevel() == 2){
+            if(drive.turntable.getCurrentPosition() == ttpos && liftLevel() == 2){
                 autoClockwise = false;
             }
         } else if (autoCounterClockwise && !autoHome && !autoClockwise && liftLevel > 1) {//snap right
@@ -418,7 +418,7 @@ public class DriveCodeCommonNotBryce extends LinearOpMode {
             if(liftLevel() == 2 && drive.mainLift.getCurrentPosition() < 900){
                 drive.turntable.setPower(0);
             }
-            if(drive.turntable.getTargetPosition() == ttpos && liftLevel() == 2){
+            if(drive.turntable.getCurrentPosition() == ttpos && liftLevel() == 2){
                 autoCounterClockwise = false;
             }
         } else if (autoHome && !autoCounterClockwise && !autoClockwise) {//automatically centering on intake
@@ -431,7 +431,7 @@ public class DriveCodeCommonNotBryce extends LinearOpMode {
             if(liftLevel() == 2 && drive.mainLift.getCurrentPosition() < 900){
                 drive.turntable.setPower(0);
             }
-            if(drive.turntable.getTargetPosition() == ttpos && liftLevel() == 2){
+            if(drive.turntable.getCurrentPosition() == ttpos && liftLevel() == 2){
                 autoHome = false;
             }
         } else {//turntable not moving
