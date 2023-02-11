@@ -366,20 +366,25 @@ public class DriveCodeCommonNotBryce extends LinearOpMode {
 
     public void TurnTable() {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+
+        if(drive.turntable.getCurrentPosition() > -810 && drive.turntable.getCurrentPosition() < -15 && liftLevel() == 2){//if in danger zone for cone
+            ttInDangerZone = true;
+        }else{//normal manual controls
+            ttInDangerZone = false;
+        }
+
         if (Math.abs(gamepad2.right_trigger - gamepad2.left_trigger) > 0.05) {//manual turntable control
             autoHome = false;
             autoCounterClockwise = false;
             autoClockwise = false;
-            if(drive.turntable.getCurrentPosition() > -810 && drive.turntable.getCurrentPosition() < -15 && liftLevel() == 1){//if in danger zone for cone
+            if(ttInDangerZone){//if in danger zone for cone
                 drive.turntable.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                ttInDangerZone = true;
                 if(drive.mainLift.getCurrentPosition() > 900){//if lift is give or take above danger zone
                     drive.turntable.setPower((gamepad2.right_trigger - gamepad2.left_trigger));
                 }
             }else{//normal manual controls
                 drive.turntable.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 drive.turntable.setPower((gamepad2.right_trigger - gamepad2.left_trigger));
-                ttInDangerZone = false;
             }
         } else if (autoClockwise && !autoHome && !autoCounterClockwise && liftLevel > 2) {//snap left
             drive.turntable.setMode(DcMotor.RunMode.RUN_TO_POSITION);
