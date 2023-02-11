@@ -31,7 +31,7 @@ public class AutoCommon extends LinearOpMode {
     int turntableMod;
     boolean armDone = false;
     boolean shootoutDone = false;
-    double[] coneHeights = {0,0.00,0.10,0.22,0.3225,0.47};
+    double[] coneHeights = {0,0.02,0.12,0.24,0.34,0.49};
     double[] coneHeightsClear = {0,0.15,0.55,0.72,0.91,1.0};
 
     boolean button_b_was_pressed = false;
@@ -285,7 +285,6 @@ public class AutoCommon extends LinearOpMode {
         drive.mainLift.setTargetPosition(pos);
         drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-
         if(pos == 0) {
             drive.mainLift.setPower(0.75);
         } else {
@@ -350,6 +349,7 @@ public class AutoCommon extends LinearOpMode {
         drive.latch.setPosition(1);
     }
 
+
     public void doLiftTasks() {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         switch(armTaskNum) {
@@ -360,28 +360,19 @@ public class AutoCommon extends LinearOpMode {
                 break;
             case 1://Turn table to junction
                 if(TimeSinceStampLift() >= 1.200) {
-                    turnTable(turntableMod*900);
+                    turnTable(turntableMod*825);
                     timeStampLift = runtime.time();
                     armTaskNum++;
                 }
                 break;
-            case 2://Go down slightly
-                if(TimeSinceStampLift() >= .600) {
-                    moveLift(1550);
-                    timeStampLift = runtime.time();
-                    armTaskNum++;
-                }
-                break;
+            case 2:
             case 9:
             case 16:
             case 23:
             case 30:
             case 37:
-                if(TimeSinceStampLift() >= .600) {
-                    moveLift(1550);
-                    timeStampLift = runtime.time();
-                    armTaskNum++;
-                }
+                timeStampLift = runtime.time();
+                armTaskNum++;
                 break;
             case 3:
             case 10:
@@ -408,7 +399,7 @@ public class AutoCommon extends LinearOpMode {
                     liftWait = true;
                 }
                 if(liftWait && TimeSinceStampLift() >= .500) {
-                    moveLift(650);
+                    moveLift(300);
                     timeStampLift = runtime.time();
                     armTaskNum++;
                     liftWait = false;
@@ -447,7 +438,7 @@ public class AutoCommon extends LinearOpMode {
             case 29:
             case 36://Turn table to junction
                 if(TimeSinceStampLift() >= 1.300) {
-                    turnTable(turntableMod*900);
+                    turnTable(turntableMod*825);
                     armTaskNum++;
                 }
                 break;
@@ -457,7 +448,7 @@ public class AutoCommon extends LinearOpMode {
                     liftWait = true;
                 }
                 if(liftWait && TimeSinceStampLift() >= .8) {
-                    moveLift(401);
+                    moveLift(0);
 //                    closeClaw();
                     timeStampLift = runtime.time();
                     armTaskNum++;
@@ -470,7 +461,7 @@ public class AutoCommon extends LinearOpMode {
                     liftWait = true;
                 }
                 if(liftWait && TimeSinceStampLift() >= .8) {
-                    moveLift(401);
+                    moveLift(0);
 //                    closeClaw();
                     timeStampLift = runtime.time();
                     armTaskNum++;
@@ -483,7 +474,7 @@ public class AutoCommon extends LinearOpMode {
                     liftWait = true;
                 }
                 if(liftWait && TimeSinceStampLift() >= .8) {
-                    moveLift(401);
+                    moveLift(0);
 //                    closeClaw();
                     timeStampLift = runtime.time();
                     armTaskNum++;
@@ -496,7 +487,7 @@ public class AutoCommon extends LinearOpMode {
                     liftWait = true;
                 }
                 if(liftWait && TimeSinceStampLift() >= .8) {
-                    moveLift(401);
+                    moveLift(0);
 //                    closeClaw();
                     timeStampLift = runtime.time();
                     armTaskNum++;
@@ -505,7 +496,7 @@ public class AutoCommon extends LinearOpMode {
                 break;
             case 33://move lift to bottom
                 if(TimeSinceStampLift() >= .5 && shootOutTaskNum >= 50) {
-                    moveLift(401);
+                    moveLift(0);
 //                    closeClaw();
                     timeStampLift = runtime.time();
                     armTaskNum++;
@@ -571,8 +562,8 @@ public class AutoCommon extends LinearOpMode {
                 shootOutTaskNum++;
                 break;
             case 2:
-                if(TimeSinceStampShootout() >= 1.0 && armTaskNum > 3) {
-                    moveShootout(1800);
+                if(TimeSinceStampShootout() >= 1.0 && armTaskNum > 2) {
+                    moveShootout(1730);
                     timeStampShootout = runtime.time();
                     shootOutTaskNum++;
                 } else if(Math.abs(drive.shooter.getTargetPosition()-drive.shooter.getCurrentPosition()) <= 500) {
@@ -582,8 +573,8 @@ public class AutoCommon extends LinearOpMode {
                 }
                 break;
             case 12:
-                if(TimeSinceStampShootout() >= 1.0 && armTaskNum > 10) {
-                    moveShootout(1800);
+                if(TimeSinceStampShootout() >= 1.0 && armTaskNum > 9) {
+                    moveShootout(1730);
                     timeStampShootout = runtime.time();
                     shootOutTaskNum++;
                 } else if(Math.abs(drive.shooter.getTargetPosition()-drive.shooter.getCurrentPosition()) <= 500) {
@@ -593,8 +584,8 @@ public class AutoCommon extends LinearOpMode {
                 }
                 break;
             case 22:
-                if(TimeSinceStampShootout() >= 1.0 && armTaskNum > 17) {
-                    moveShootout(1800);
+                if(TimeSinceStampShootout() >= 1.0 && armTaskNum > 16) {
+                    moveShootout(1730);
                     timeStampShootout = runtime.time();
                     shootOutTaskNum++;
                 } else if(Math.abs(drive.shooter.getTargetPosition()-drive.shooter.getCurrentPosition()) <= 500) {
@@ -604,8 +595,8 @@ public class AutoCommon extends LinearOpMode {
                 }
                 break;
             case 32:
-                if(TimeSinceStampShootout() >= 1.0 && armTaskNum > 24) {
-                    moveShootout(1800);
+                if(TimeSinceStampShootout() >= 1.0 && armTaskNum > 23) {
+                    moveShootout(1730);
                     timeStampShootout = runtime.time();
                     shootOutTaskNum++;
                 } else if(Math.abs(drive.shooter.getTargetPosition()-drive.shooter.getCurrentPosition()) <= 500) {
@@ -615,8 +606,8 @@ public class AutoCommon extends LinearOpMode {
                 }
                 break;
             case 42:
-                if(TimeSinceStampShootout() >= 1.0 && armTaskNum > 31) {
-                    moveShootout(1800);
+                if(TimeSinceStampShootout() >= 1.0 && armTaskNum > 30) {
+                    moveShootout(1730);
                     timeStampShootout = runtime.time();
                     shootOutTaskNum++;
                 } else if(Math.abs(drive.shooter.getTargetPosition()-drive.shooter.getCurrentPosition()) <= 500) {
@@ -678,8 +669,8 @@ public class AutoCommon extends LinearOpMode {
                     timeStampShootout = runtime.time();
                     lazyShootout = true;
                 }
-                if(lazyShootout && TimeSinceStampShootout() >= 0.5) {
-                    drive.slift.setPosition(0.90);
+                if(lazyShootout && TimeSinceStampShootout() >= 0.2) {
+                    liftShooterClaw(false,0);
                     timeStampShootout = runtime.time();
                     shootOutTaskNum++;
                     lazyShootout = false;
@@ -708,7 +699,7 @@ public class AutoCommon extends LinearOpMode {
                 break;
             case 10:
                 if(!drive.shooter.isBusy() && armTaskNum > 7) {
-                    moveShootout(1900);
+                    moveShootout(1730);
                     shootOutTaskNum++;
                 } else if(Math.abs(drive.shooter.getTargetPosition()-drive.shooter.getCurrentPosition()) <= 500) {
                     drive.shooter.setPower(0.5);
@@ -718,7 +709,7 @@ public class AutoCommon extends LinearOpMode {
                 break;
             case 20:
                 if(!drive.shooter.isBusy() && armTaskNum > 14) {
-                    moveShootout(1900);
+                    moveShootout(1730);
                     shootOutTaskNum++;
                 } else if(Math.abs(drive.shooter.getTargetPosition()-drive.shooter.getCurrentPosition()) <= 500) {
                     drive.shooter.setPower(0.5);
@@ -728,7 +719,7 @@ public class AutoCommon extends LinearOpMode {
                 break;
             case 30:
                 if(!drive.shooter.isBusy() && armTaskNum > 21) {
-                    moveShootout(1900);
+                    moveShootout(1730);
                     shootOutTaskNum++;
                 } else if(Math.abs(drive.shooter.getTargetPosition()-drive.shooter.getCurrentPosition()) <= 500) {
                     drive.shooter.setPower(0.5);
@@ -738,7 +729,7 @@ public class AutoCommon extends LinearOpMode {
                 break;
             case 40:
                 if(!drive.shooter.isBusy() && armTaskNum > 28) {
-                    moveShootout(1900);
+                    moveShootout(1730);
                     shootOutTaskNum++;
                 } else if(Math.abs(drive.shooter.getTargetPosition()-drive.shooter.getCurrentPosition()) <= 500) {
                     drive.shooter.setPower(0.5);

@@ -208,20 +208,35 @@ public class DriveCodeCommonNotBryce extends LinearOpMode {
             button_dpadright1_was_pressed = false;
         }
         if (gamepad2.left_bumper && !button_bumperleft2_was_pressed) {
-            autoLeft = true;
-            autoHome = false;
-            autoRight = false;
             button_bumperleft2_was_pressed = true;
         } else if (!gamepad1.left_bumper && button_bumperleft2_was_pressed) {
             button_bumperleft2_was_pressed = false;
         }
         if (gamepad2.right_bumper && !button_bumperright2_was_pressed) {
-            autoRight = true;
-            autoHome = false;
-            autoLeft = false;
             button_bumperright2_was_pressed = true;
         } else if (!gamepad1.right_bumper && button_bumperright2_was_pressed) {
             button_bumperright2_was_pressed = false;
+        }
+        if (gamepad2.dpad_left && !button_dpadleft2_was_pressed) {
+            button_dpadleft2_was_pressed = true;
+            autoLeft = true;
+            autoHome = false;
+            autoRight = false;
+        } else if (!gamepad2.dpad_left && button_dpadleft2_was_pressed) {
+            button_dpadleft2_was_pressed = false;
+        }
+        if (gamepad2.dpad_right && !button_dpadright2_was_pressed) {
+            button_dpadright2_was_pressed = true;
+            autoRight = true;
+            autoHome = false;
+            autoLeft = false;
+        } else if (!gamepad2.dpad_right && button_dpadright2_was_pressed) {
+            button_dpadright2_was_pressed = false;
+        }
+        if (gamepad1.dpad_left && !button_dpadleft1_was_pressed) {
+            button_dpadleft1_was_pressed = true;
+        } else if (!gamepad1.dpad_left && button_dpadleft1_was_pressed) {
+            button_dpadleft1_was_pressed = false;
         }
         if (gamepad1.dpad_left && !button_dpadleft1_was_pressed) {
             button_dpadleft1_was_pressed = true;
@@ -278,7 +293,6 @@ public class DriveCodeCommonNotBryce extends LinearOpMode {
 
     public void Lift() {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-        telemetry.addData("working2",true);
 
         if (liftLevel() == 1) { // intake
             if (coneinhand) {
@@ -320,16 +334,13 @@ public class DriveCodeCommonNotBryce extends LinearOpMode {
         }
 
         if (gamepad2.dpad_down) {
-            telemetry.addData("working",true);
             drive.mainLift.setTargetPosition(liftPreciseLocation - 100);
         } else {
-            telemetry.addData("working3",true);
             drive.mainLift.setTargetPosition(liftPreciseLocation);
         }
         drive.mainLift.setPower(liftPrecisePower);
         drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
-
 
     public void Claw() {
         if (lClawToggle() == 0) {
