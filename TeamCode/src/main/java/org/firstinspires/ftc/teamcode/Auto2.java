@@ -26,7 +26,7 @@ public class Auto2 extends AutoCommon {
         }
 
         starting();
-
+        closeClaw();
         if (Mode() == 1) {//doing nothing
             doNothing();
         }

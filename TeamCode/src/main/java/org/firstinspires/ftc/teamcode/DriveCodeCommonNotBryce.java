@@ -335,14 +335,12 @@ public class DriveCodeCommonNotBryce extends LinearOpMode {
         }
 
         if(autoHome) {
-            liftLevel = 1;
-            if(drive.mainLift.getCurrentPosition() >= 750 || Math.abs(drive.turntable.getCurrentPosition()) <= 25) {
-                drive.mainLift.setTargetPosition(liftPreciseLocation);
-                drive.mainLift.setPower(1);
+            if(Math.abs(drive.turntable.getCurrentPosition()) <= 25) {
+                liftLevel = 1;
             } else {
-                drive.mainLift.setTargetPosition(liftPreciseLocation);
-                drive.mainLift.setPower(0);
+                liftLevel = 3;
             }
+            drive.mainLift.setTargetPosition(liftPreciseLocation);
         } else {
             if(ttInDangerZone){//Im not optimizing this -Owen (lifts lift above danger zone)
                 drive.mainLift.setTargetPosition(925);
@@ -351,9 +349,9 @@ public class DriveCodeCommonNotBryce extends LinearOpMode {
             } else {
                 drive.mainLift.setTargetPosition(liftPreciseLocation);
             }
-            drive.mainLift.setPower(liftPrecisePower);
-            drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
+        drive.mainLift.setPower(liftPrecisePower);
+        drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
     }
 
@@ -394,7 +392,7 @@ public class DriveCodeCommonNotBryce extends LinearOpMode {
     public void TurnTable() {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
-        if(liftLevel() == 2 && !(Math.abs(gamepad2.right_trigger - gamepad2.left_trigger) > 0.05) && (autoHome || autoClockwise || autoCounterClockwise)){//if in danger zone for cone
+        if(liftLevel() == 2 && !(Math.abs(gamepad2.right_trigger - gamepad2.left_trigger) > 0.05) && (autoClockwise || autoCounterClockwise)){//if in danger zone for cone
             ttInDangerZone = true;
         }else{//normal manual controls
             ttInDangerZone = false;
@@ -442,9 +440,6 @@ public class DriveCodeCommonNotBryce extends LinearOpMode {
             if(liftLevel() == 2 && drive.mainLift.getCurrentPosition() < 900){
                 drive.turntable.setPower(0);
             }
-            if(Math.abs(drive.turntable.getCurrentPosition() - ttpos) < 10 && liftLevel() == 2){
-                autoHome = false;
-            }
             if(drive.mainLift.getCurrentPosition()<=175) {
                 autoHome = false;
             }
@@ -481,7 +476,7 @@ public class DriveCodeCommonNotBryce extends LinearOpMode {
         telemetry.addData("Turntable Position", drive.turntable.getCurrentPosition());
         telemetry.addData("TT Offset", motorOffset(drive.turntable));
         telemetry.addData("s claw timer", sclawTimeSinceStamp());
-        telemetry.addData("slift", drive.slift.getPosition());
+        telemetry.addData("slift",drive.slift.getPosition());
         telemetry.addData("Shooter Ticks", drive.shooter.getCurrentPosition());
         telemetry.update();
     }
@@ -543,22 +538,23 @@ public class DriveCodeCommonNotBryce extends LinearOpMode {
             Latch(true);
             latchState = OPENED;
             drive.shooter.setPower(0);
-        } else if(latchState == OPENED && drive.shooter.getCurrentPosition() <= 10 && readyToAutoClose) {
-            Latch(false);
-            latchTimeStamp3 = runtime.time(TimeUnit.SECONDS);
-            readyToAutoClose = false;
-            drive.shooter.setPower(0);
-        } else if(latchTimeSinceStamp3() >= 0.6 && !readyToAutoClose) {
-            if(!drive.turnlimiter.getState()) {
-                latchState = CLOSED;
-            } else {
-                Latch(true);
-            }
-            drive.shooter.setPower(0);
-        } else if(latchState == OPENED && drive.shooter.getCurrentPosition() >= 200) {
-            readyToAutoClose = true;
-            drive.shooter.setPower(0);
         }
+//        else if(latchState == OPENED && drive.shooter.getCurrentPosition() <= 10 && readyToAutoClose) {
+//            Latch(false);
+//            latchTimeStamp3 = runtime.time(TimeUnit.SECONDS);
+//            readyToAutoClose = false;
+//            drive.shooter.setPower(0);
+//        } else if(latchTimeSinceStamp3() >= 0.6 && !readyToAutoClose) {
+//            if(!drive.turnlimiter.getState()) {
+//                latchState = CLOSED;
+//            } else {
+//                Latch(true);
+//            }
+//            drive.shooter.setPower(0);
+//        } else if(latchState == OPENED && drive.shooter.getCurrentPosition() >= 200) {
+//            readyToAutoClose = true;
+//            drive.shooter.setPower(0);
+//        }
 
         if(!tryingToResetShooterEncoder) {
             if(!drive.turnlimiter.getState()) {
