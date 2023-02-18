@@ -12,6 +12,7 @@ public class DriveCodeNotBryce extends DriveCodeCommonNotBryce {
             RawDriving();
             Toggles();
             Lift();
+            tipCones();
             Claw();
             TurnTable();
             ShootOut();

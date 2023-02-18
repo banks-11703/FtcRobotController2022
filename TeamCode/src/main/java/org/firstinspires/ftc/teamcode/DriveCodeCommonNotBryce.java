@@ -135,9 +135,9 @@ public class DriveCodeCommonNotBryce extends LinearOpMode {
     public void tipCones(){
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         if(gamepad1.b){
-            drive.tipper.setPosition(0.5);
-        }else{
             drive.tipper.setPosition(0);
+        }else{
+            drive.tipper.setPosition(1);
         }
     }
 
@@ -547,6 +547,8 @@ public class DriveCodeCommonNotBryce extends LinearOpMode {
         } else if(button_dpadright1_was_pressed) {
             Latch(true);
             latchState = OPENED;
+            drive.shooter.setPower(0);
+        } else {
             drive.shooter.setPower(0);
         }
 //        else if(latchState == OPENED && drive.shooter.getCurrentPosition() <= 10 && readyToAutoClose) {

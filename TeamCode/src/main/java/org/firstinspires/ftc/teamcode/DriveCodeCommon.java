@@ -471,9 +471,9 @@ public class DriveCodeCommon extends LinearOpMode {
                     }
                 case OPENED:
                     if (gamepad1.left_bumper) {
-                        drive.shooter.setPower(-1);
-                    } else if (gamepad1.right_bumper) {
                         drive.shooter.setPower(1);
+                    } else if (gamepad1.right_bumper) {
+                        drive.shooter.setPower(-1);
                     }
             }
         } else if(button_dpadleft1_was_pressed) {
