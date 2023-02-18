@@ -132,6 +132,15 @@ public class DriveCodeCommonNotBryce extends LinearOpMode {
 
     }
 
+    public void tipCones(){
+        if(gamepad1.b){
+
+        }else{
+
+        }
+    }
+
+
     public void Initialization() {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         // We want to turn off velocity control for teleop
