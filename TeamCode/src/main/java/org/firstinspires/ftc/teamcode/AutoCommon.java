@@ -35,8 +35,8 @@ public class AutoCommon extends LinearOpMode {
 //  old  double[] coneHeights = {0,0,0.1075,0.1774,0.2401,0.3458};
 //  old  double[] coneHeightsClear = {0,0.05,0.3512,0.4659,0.4838,0.5197};
 
-    double[] coneHeights = {0,0,0.039444,0.053888,0.091666,0.097777};
-    double[] coneHeightsClear = {0,0.015,0.104444,0.135555,0.156111,0.179444};
+    double[] coneHeights = {0,0,0.049444,0.063888,0.091666,0.099999};
+    double[] coneHeightsClear = {0,0.015,0.104444,0.135555,0.166111,0.179444};
 
     boolean button_b_was_pressed = false;
     boolean button_a_was_pressed = false;
@@ -673,7 +673,7 @@ public class AutoCommon extends LinearOpMode {
                     timeStampShootout = runtime.time();
                     lazyShootout = true;
                 }
-                if(lazyShootout && TimeSinceStampShootout() >= 0.7) {
+                if(lazyShootout && TimeSinceStampShootout() >= 0.5) {
                     liftShooterClaw(false,0);
                     timeStampShootout = runtime.time();
                     shootOutTaskNum++;
@@ -686,7 +686,7 @@ public class AutoCommon extends LinearOpMode {
             case 37:
             case 47:
                 if(TimeSinceStampShootout() >= 0.5) {
-                    moveShootout(-20);
+                    moveShootout(0);
                     timeStampShootout = runtime.time();
                     shootOutTaskNum++;
                 }
