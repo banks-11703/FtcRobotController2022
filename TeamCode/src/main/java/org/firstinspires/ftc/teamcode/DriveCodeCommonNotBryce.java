@@ -133,10 +133,11 @@ public class DriveCodeCommonNotBryce extends LinearOpMode {
     }
 
     public void tipCones(){
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         if(gamepad1.b){
-
+            drive.tipper.setPosition(0.5);
         }else{
-
+            drive.tipper.setPosition(0);
         }
     }
 

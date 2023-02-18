@@ -76,6 +76,7 @@ public class SampleMecanumDrive extends MecanumDrive {
     public DcMotorEx leftFront, leftRear, rightRear, rightFront;
     private List<DcMotorEx> motors;
     public Servo claw;
+    public Servo tipper;
     public DigitalChannel intakeRedLED;
     public DigitalChannel intakeGreenLED;
     public Servo sclaw;
@@ -151,6 +152,7 @@ public class SampleMecanumDrive extends MecanumDrive {
 
         turntable = hardwareMap.get(DcMotorEx.class,"tt");
         claw = hardwareMap.get(Servo.class,"c");
+        tipper = hardwareMap.get(Servo.class,"tp");
         sclaw = hardwareMap.get(Servo.class,"sc");
         slift = hardwareMap.get(Servo.class,"sl");
         latch = hardwareMap.get(Servo.class,"ls");
