@@ -32,8 +32,11 @@ public class AutoCommon extends LinearOpMode {
     boolean armDone = false;
     boolean shootoutDone = false;
     double coneHeightsMod = 2.225;
-    double[] coneHeights = {0,0.22/coneHeightsMod,0.34/coneHeightsMod,0.47/coneHeightsMod,0.57/coneHeightsMod,0.72/coneHeightsMod};
-    double[] coneHeightsClear = {0,0.15/coneHeightsMod,0.55/coneHeightsMod,0.72/coneHeightsMod,0.91/coneHeightsMod,1.0/coneHeightsMod};
+//  old  double[] coneHeights = {0,0,0.1075,0.1774,0.2401,0.3458};
+//  old  double[] coneHeightsClear = {0,0.05,0.3512,0.4659,0.4838,0.5197};
+
+    double[] coneHeights = {0,0,0.039444,0.053888,0.091666,0.097777};
+    double[] coneHeightsClear = {0,0.015,0.104444,0.135555,0.156111,0.179444};
 
     boolean button_b_was_pressed = false;
     boolean button_a_was_pressed = false;
@@ -127,10 +130,10 @@ public class AutoCommon extends LinearOpMode {
 
     }
 
-    public void initialization(){
+    public void initialization() {
         // Declare your drive class
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-        drive.slift.scaleRange(0.0, 0.33);
+//        drive.slift.scaleRange(0.1, 0.32);
         // Set the pose estimate to where you know the bot will start in autonomous
         // Refer to https://www.learnroadrunner.com/trajectories.html#coordinate-system for a map
         // of the field
@@ -316,7 +319,7 @@ public class AutoCommon extends LinearOpMode {
     public void moveShootout(int pos) {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
-        drive.shooter.setTargetPosition(pos);//1786 is full extension
+        drive.shooter.setTargetPosition(-pos);//1786 is full extension
         drive.shooter.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         drive.shooter.setPower(1);
     }
@@ -641,21 +644,21 @@ public class AutoCommon extends LinearOpMode {
                 break;
             case 25:
                 if(TimeSinceStampShootout() >= 0.2) {
-                    liftShooterClaw(true,3);
+                    liftShooterClaw(true,4);
                     timeStampShootout = runtime.time();
                     shootOutTaskNum++;
                 }
                 break;
             case 35:
                 if(TimeSinceStampShootout() >= 0.2) {
-                    liftShooterClaw(true,2);
+                    liftShooterClaw(true,4);
                     timeStampShootout = runtime.time();
                     shootOutTaskNum++;
                 }
                 break;
             case 45:
                 if(TimeSinceStampShootout() >= 0.2) {
-                    liftShooterClaw(true,1);
+                    liftShooterClaw(true,4);
                     timeStampShootout = runtime.time();
                     shootOutTaskNum++;
                 }
@@ -683,7 +686,7 @@ public class AutoCommon extends LinearOpMode {
             case 37:
             case 47:
                 if(TimeSinceStampShootout() >= 0.5) {
-                    moveShootout(0);
+                    moveShootout(-20);
                     timeStampShootout = runtime.time();
                     shootOutTaskNum++;
                 }

@@ -221,6 +221,7 @@ public class Auto2 extends AutoCommon {
             moveShootout(0);
             openShooterClaw();
             liftShooterClaw(false,0);
+            openClaw();
 
             //Park
 //            drive.setPoseEstimate(PoseStorage.currentPose);

@@ -139,7 +139,7 @@ public class DriveCodeCommonNotBryce extends LinearOpMode {
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         drive.mainLift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         drive.mainLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        drive.slift.scaleRange(0.01, 0.32);
+//        drive.slift.scaleRange(0.01, 0.32);
         // Retrieve our pose from the PoseStorage.currentPose static field
         // this is what we get from autonomous
         drive.setPoseEstimate(PoseStorage.currentPose);
@@ -525,9 +525,9 @@ public class DriveCodeCommonNotBryce extends LinearOpMode {
                     }
                 case OPENED:
                     if (gamepad1.left_bumper) {
-                        drive.shooter.setPower(-1);
-                    } else if (gamepad1.right_bumper) {
                         drive.shooter.setPower(1);
+                    } else if (gamepad1.right_bumper) {
+                        drive.shooter.setPower(-1);
                     }
             }
         } else if(button_dpadleft1_was_pressed) {
