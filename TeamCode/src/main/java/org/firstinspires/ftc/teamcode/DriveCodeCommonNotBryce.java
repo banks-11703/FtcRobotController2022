@@ -198,7 +198,6 @@ public class DriveCodeCommonNotBryce extends LinearOpMode {
             button_dpaddown2_was_pressed = false;
         }
         if (gamepad2.dpad_up && !button_dpadup2_was_pressed) {
-
             button_dpadup2_was_pressed = true;
         } else if (!gamepad2.dpad_up && button_dpadup2_was_pressed) {
             button_dpadup2_was_pressed = false;
@@ -243,11 +242,6 @@ public class DriveCodeCommonNotBryce extends LinearOpMode {
             autoClockwise = false;
         } else if (!gamepad2.dpad_right && button_dpadright2_was_pressed) {
             button_dpadright2_was_pressed = false;
-        }
-        if (gamepad1.dpad_left && !button_dpadleft1_was_pressed) {
-            button_dpadleft1_was_pressed = true;
-        } else if (!gamepad1.dpad_left && button_dpadleft1_was_pressed) {
-            button_dpadleft1_was_pressed = false;
         }
         if (gamepad1.dpad_left && !button_dpadleft1_was_pressed) {
             button_dpadleft1_was_pressed = true;
@@ -354,6 +348,8 @@ public class DriveCodeCommonNotBryce extends LinearOpMode {
         } else {
             if(ttInDangerZone){//Im not optimizing this -Owen (lifts lift above danger zone)
                 drive.mainLift.setTargetPosition(925);
+            }else if (gamepad2.dpad_up) {
+                drive.mainLift.setTargetPosition(liftPreciseLocation + 100);
             }else if (gamepad2.dpad_down) {
                 drive.mainLift.setTargetPosition(liftPreciseLocation - 100);
             } else {
