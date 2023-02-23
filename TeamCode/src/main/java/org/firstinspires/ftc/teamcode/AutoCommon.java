@@ -32,11 +32,14 @@ public class AutoCommon extends LinearOpMode {
     boolean armDone = false;
     boolean shootoutDone = false;
     double coneHeightsMod = 2.225;
-//  old  double[] coneHeights = {0,0,0.1075,0.1774,0.2401,0.3458};
-//  old  double[] coneHeightsClear = {0,0.05,0.3512,0.4659,0.4838,0.5197};
+//  older  double[] coneHeights = {0,0,0.1075,0.1774,0.2401,0.3458};
+//  older  double[] coneHeightsClear = {0,0.05,0.3512,0.4659,0.4838,0.5197};
 
-    double[] coneHeights = {0,0,0.049444,0.063888,0.091666,0.109999};
-    double[] coneHeightsClear = {0,0.015,0.104444,0.135555,0.166111,0.179444};
+//  old  double[] coneHeights = {0,0,0.049444,0.063888,0.091666,0.109999};
+//  old  double[] coneHeightsClear = {0,0.015,0.104444,0.135555,0.166111,0.179444};
+
+    double[] coneHeights = {0,0.033,0.0480,0.0720,0.0870,0.0930};
+    double[] coneHeightsClear = {0.0510,0.069,0.104444,0.1400,0.1620,0.1640};
 
     boolean button_b_was_pressed = false;
     boolean button_a_was_pressed = false;
@@ -120,7 +123,7 @@ public class AutoCommon extends LinearOpMode {
 
     AprilTagDetection tagOfInterest = null;
     Pose2d movement2 = new Pose2d(movement2x * xReflect, movement2y * yMod, Math.toRadians(-90 * yMod));
-    Pose2d scorePos = new Pose2d(scorePosx * xReflect, scorePosy * yMod, Math.toRadians(0 + headingMod));
+    Pose2d scorePos = new Pose2d(scorePosx * xReflect, scorePosy * yMod, Math.toRadians(-3 + headingMod));
     Pose2d intakeStackPos = new Pose2d(intakeStackPosx * xReflect, intakeStackPosy * yMod, Math.toRadians(0 + headingMod));    //Intake cone stack Position
     Pose2d park1 = new Pose2d(park1x * xReflect, allParky * yMod, Math.toRadians(0 + headingMod));
     Pose2d park2 = new Pose2d(park2x * xReflect, allParky * yMod, Math.toRadians(0 + headingMod));
@@ -201,6 +204,7 @@ public class AutoCommon extends LinearOpMode {
             initInputs();
             telemetry.addData("Pose", drive.getPoseEstimate());
             telemetry.addData("Detected: ", autoParkPosition);
+
             //Does Telemetry
             telemetryWhileInitialization();
             telemetry.update();
@@ -209,7 +213,6 @@ public class AutoCommon extends LinearOpMode {
         processPosition(); //Which numbers correlate to each side
 
     }
-
     public void starting(){
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
@@ -254,9 +257,9 @@ public class AutoCommon extends LinearOpMode {
             drive.followTrajectory(Movement1);
         }
         if (Side() == LEFT) {
-            drive.turn(Math.toRadians(turnMod * 90));
+            drive.turn(Math.toRadians(turnMod * 93));
         } else {
-            drive.turn(Math.toRadians(turnMod * 90));
+            drive.turn(Math.toRadians(turnMod * 93));
         }
         if (Side() == RIGHT && Team() == BLUE) {
             Trajectory ScorePreloaded = drive.trajectoryBuilder(drive.getPoseEstimate())
@@ -265,17 +268,17 @@ public class AutoCommon extends LinearOpMode {
             drive.followTrajectory(ScorePreloaded);
         } else if(Side() == LEFT && Team() == RED) {
             Trajectory ScorePreloaded = drive.trajectoryBuilder(drive.getPoseEstimate())
-                    .lineToLinearHeading(new Pose2d(-26,-.5,Math.toRadians(0)))
+                    .lineToLinearHeading(new Pose2d(-26,-.5,Math.toRadians(-3)))
                     .build();
             drive.followTrajectory(ScorePreloaded);
         } else if(Side() == RIGHT && Team() == RED) {
             Trajectory ScorePreloaded = drive.trajectoryBuilder(drive.getPoseEstimate())
-                    .lineToLinearHeading(new Pose2d(26,-13.5,Math.toRadians(180)))
+                    .lineToLinearHeading(new Pose2d(26,-13.5,Math.toRadians(183)))
                     .build();
             drive.followTrajectory(ScorePreloaded);
         } else if(Side() == LEFT && Team() == BLUE) {
             Trajectory ScorePreloaded = drive.trajectoryBuilder(drive.getPoseEstimate())
-                    .lineToLinearHeading(new Pose2d(26,13.5,Math.toRadians(0)))
+                    .lineToLinearHeading(new Pose2d(26,13.5,Math.toRadians(3)))
                     .build();
             drive.followTrajectory(ScorePreloaded);
         }
@@ -529,8 +532,8 @@ public class AutoCommon extends LinearOpMode {
                     timeStampShootout = runtime.time();
                     lazyShootout = true;
                 }
-                if(lazyShootout && TimeSinceStampShootout() >= 0.2) {
-                    moveShootout(1900);
+                if(lazyShootout && TimeSinceStampShootout() >= 0.3) {
+                    moveShootout(2900);
                     timeStampShootout = runtime.time();
                     shootOutTaskNum++;
                     lazyShootout = false;
@@ -578,35 +581,35 @@ public class AutoCommon extends LinearOpMode {
                 break;
             case 2:
                 if(TimeSinceStampShootout() >= 0.8 && armTaskNum > 2) {
-                    moveShootout(1900);
+                    moveShootout(2900);
                     timeStampShootout = runtime.time();
                     shootOutTaskNum++;
                 }
                 break;
             case 12:
                 if(TimeSinceStampShootout() >= 1.0 && armTaskNum > 9) {
-                    moveShootout(1900);
+                    moveShootout(2900);
                     timeStampShootout = runtime.time();
                     shootOutTaskNum++;
                 }
                 break;
             case 22:
                 if(TimeSinceStampShootout() >= 1.0 && armTaskNum > 16) {
-                    moveShootout(1900);
+                    moveShootout(2900);
                     timeStampShootout = runtime.time();
                     shootOutTaskNum++;
                 }
                 break;
             case 32:
                 if(TimeSinceStampShootout() >= 1.0 && armTaskNum > 23) {
-                    moveShootout(1900);
+                    moveShootout(2900);
                     timeStampShootout = runtime.time();
                     shootOutTaskNum++;
                 }
                 break;
             case 42:
                 if(TimeSinceStampShootout() >= 1.0 && armTaskNum > 30) {
-                    moveShootout(1900);
+                    moveShootout(2900);
                     timeStampShootout = runtime.time();
                     shootOutTaskNum++;
                 }
@@ -616,7 +619,7 @@ public class AutoCommon extends LinearOpMode {
             case 23:
             case 33:
             case 43:
-                if(TimeSinceStampShootout() >= 0.0) {
+                if(TimeSinceStampShootout() >= 0.2) {
                     closeShooterClaw();
                     timeStampShootout = runtime.time();
                     shootOutTaskNum++;
@@ -665,12 +668,12 @@ public class AutoCommon extends LinearOpMode {
                 }
                 break;
             case 6:
-                if(!lazyShootout && TimeSinceStampShootout() >= 0.60) {
+                if(!lazyShootout && TimeSinceStampShootout() >= 0.70) {
                     moveShootout(300);
                     timeStampShootout = runtime.time();
                     lazyShootout = true;
                 }
-                if(lazyShootout && TimeSinceStampShootout() >= 0.5) {
+                if(lazyShootout && TimeSinceStampShootout() >= 0.7) {
                     liftShooterClaw(false,0);
                     timeStampShootout = runtime.time();
                     shootOutTaskNum++;
@@ -686,7 +689,7 @@ public class AutoCommon extends LinearOpMode {
                     timeStampShootout = runtime.time();
                     lazyShootout = true;
                 }
-                if(lazyShootout && TimeSinceStampShootout() >= 0.5) {
+                if(lazyShootout && TimeSinceStampShootout() >= 0.7) {
                     liftShooterClaw(false,0);
                     timeStampShootout = runtime.time();
                     shootOutTaskNum++;
@@ -698,7 +701,7 @@ public class AutoCommon extends LinearOpMode {
             case 27:
             case 37:
             case 47:
-                if(TimeSinceStampShootout() >= 0.5) {
+                if(TimeSinceStampShootout() >= 0.3) {
                     moveShootout(0);
                     timeStampShootout = runtime.time();
                     shootOutTaskNum++;
@@ -720,7 +723,7 @@ public class AutoCommon extends LinearOpMode {
                 break;
             case 10:
                 if(armTaskNum >= 7 && TimeSinceStampShootout() >= 1.0) {
-                    moveShootout(1900);
+                    moveShootout(2900);
                     timeStampShootout = runtime.time();
                     shootOutTaskNum++;
                 } else if(Math.abs(drive.shooter.getTargetPosition()-drive.shooter.getCurrentPosition()) <= 500) {
@@ -731,7 +734,7 @@ public class AutoCommon extends LinearOpMode {
                 break;
             case 20:
                 if(armTaskNum > 14 && TimeSinceStampShootout() >= 1.0) {
-                    moveShootout(1900);
+                    moveShootout(2900);
                     timeStampShootout = runtime.time();
                     shootOutTaskNum++;
                 } else if(Math.abs(drive.shooter.getTargetPosition()-drive.shooter.getCurrentPosition()) <= 500) {
@@ -742,7 +745,7 @@ public class AutoCommon extends LinearOpMode {
                 break;
             case 30:
                 if(armTaskNum > 21 && TimeSinceStampShootout() >= 1.0) {
-                    moveShootout(1900);
+                    moveShootout(2900);
                     timeStampShootout = runtime.time();
                     shootOutTaskNum++;
                 } else if(Math.abs(drive.shooter.getTargetPosition()-drive.shooter.getCurrentPosition()) <= 500) {
@@ -753,7 +756,7 @@ public class AutoCommon extends LinearOpMode {
                 break;
             case 40:
                 if(armTaskNum > 28 && TimeSinceStampShootout() >= 1.0) {
-                    moveShootout(1900);
+                    moveShootout(2900);
                     timeStampShootout = runtime.time();
                     shootOutTaskNum++;
                 } else if(Math.abs(drive.shooter.getTargetPosition()-drive.shooter.getCurrentPosition()) <= 500) {
