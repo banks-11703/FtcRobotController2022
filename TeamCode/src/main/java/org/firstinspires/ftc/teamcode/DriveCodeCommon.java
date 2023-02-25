@@ -354,7 +354,6 @@ public class DriveCodeCommon extends LinearOpMode {
         }
     }
 
-
     public void Claw() {
         if (lClawToggle() == 0 && hClawToggle() == 0){
             coneinhand= false;

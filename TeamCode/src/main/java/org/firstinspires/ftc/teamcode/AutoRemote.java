@@ -4,14 +4,14 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 @Config
 
 @Autonomous
-public class Auto2 extends AutoCommon {
+public class AutoRemote extends AutoCommonRemote {
 
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
@@ -19,157 +19,139 @@ public class Auto2 extends AutoCommon {
 
         waitForStart();
         timeStampStart = runtime.time();
-        if(Side() == LEFT) {
-            turntableMod = -1;
+        if(scoreFar) {
+            if (Side() == LEFT) {
+                turntableMod = -1;
+            } else {
+                turntableMod = 1;
+            }
         } else {
-            turntableMod = 1;
+            if (Side() == LEFT) {
+                turntableMod = 1;
+            } else {
+                turntableMod = -1;
+            }
         }
 
         starting();
         closeClaw();
-        if (Mode() == 1) {//doing nothing
-            doNothing();
-        }
-        else if (Mode() == 1) {//cycling
-            moveToScore();
+         if (Mode() == 1) {//just driving
+             drive.setPoseEstimate(PoseStorage.currentPose);
+             telemetry.addData("Start Pos",StartingPos());
+             telemetry.addData("Robot Location",drive.getPoseEstimate());
+             telemetry.update();
+             moveLift(1550);
 
-            Trajectory Score0 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                    .lineToLinearHeading(scorePos)
+             //strafe left
+             Trajectory Drive1 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                    .lineToLinearHeading(new Pose2d(12,-60,Math.toRadians(90)))
                     .build();
-            drive.followTrajectory(Score0);
-            moveLift(1600);
-            sleep(1200);
-
-            if(Side() == LEFT) {
-                turnTable(-735);
-            }else {
-                turnTable(735);
-            }
-            sleep(400);
-
-            moveLift(2400);
-            sleep(300);
-
-            openClaw();
-            sleep(150);
-
-            turnTable(0);
-            moveLift(650);
-
-            Trajectory Intake1 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                    .lineToLinearHeading(intakeStackPos)
+             drive.followTrajectory(Drive1);
+             //turn to junction while driving to the junction
+             turnTable(-825);
+             Trajectory Drive2 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                    .lineToLinearHeading(new Pose2d(12,-28,Math.toRadians(90)))
                     .build();
-            drive.followTrajectory(Intake1);
-
-            moveLift(318);
-            sleep(300);
-
-            closeClaw();
-            sleep(600);
-
-            moveLift(700);
-            sleep(400);
-
-            Trajectory Score1 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                    .lineToLinearHeading(scorePos.plus(new Pose2d(0,1,Math.toRadians(0))))
+             drive.followTrajectory(Drive2);
+             //score1
+             openClaw();
+             sleep(400);
+             turnTable(0);
+             //spin to face cones
+             Trajectory Drive3 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                    .lineToLinearHeading(new Pose2d(9,-13.5,Math.toRadians(180)),SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                            SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                     .build();
-            drive.followTrajectory(Score1);
-
-            moveLift(1600);
-            sleep(700);
-
-            if(Side() == LEFT) {
-                turnTable(-735);
-            }else {
-                turnTable(735);
-            }
-            sleep(400);
-
-            moveLift(2400);
-            sleep(300);
-
-            openClaw();
-            sleep(150);
-
-            turnTable(0);
-            moveLift(650);
-
-            Trajectory Intake2 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                    .lineToLinearHeading(intakeStackPos)
-                    .build();
-            drive.followTrajectory(Intake2);
-
-            moveLift(150);
-            sleep(300);
-
-            closeClaw();
-            sleep(600);
-
-            moveLift(700);
-            sleep(400);
-
-            Trajectory Score2 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                    .lineToLinearHeading(scorePos.plus(new Pose2d(0,2,Math.toRadians(0))))
-                    .build();
-            drive.followTrajectory(Score2);
-
-            moveLift(1600);
-            sleep(700);
-
-            if(Side() == LEFT) {
-                turnTable(-735);
-            }else {
-                turnTable(735);
-            }
-            sleep(400);
-
-            moveLift(2400);
-            sleep(300);
-
-            openClaw();
-            sleep(150);
-
-            turnTable(0);
-            moveLift(0);
-
-            switch (autoParkPosition) {
-                case 1:
-                    Trajectory CyclePark2 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                            .lineToLinearHeading(park2)
-                            .build();
-                    drive.followTrajectory(CyclePark2);
-                    if (isStopRequested()) return;
-                    break;
-                case 2:
-                    if (Side() == 0) {
-                        Trajectory CyclePark3 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                                .lineToLinearHeading(park3)
-                                .build();
-                        drive.followTrajectory(CyclePark3);
-                    } else {
-                        Trajectory CyclePark1 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                                .lineToLinearHeading(park1)
-                                .build();
-                        drive.followTrajectory(CyclePark1);
-                    }
-
-                    if (isStopRequested()) return;
-                    break;
-                default:
-                    if (Side() == 0) {
-                        Trajectory CyclePark1 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                                .lineToLinearHeading(park1)
-                                .build();
-                        drive.followTrajectory(CyclePark1);
-                    } else {
-                        Trajectory CyclePark3 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                                .lineToLinearHeading(park3)
-                                .build();
-                        drive.followTrajectory(CyclePark3);
-                    }
-                    if (isStopRequested()) return;
-                    break;
-            }
+             drive.followTrajectory(Drive3);
+             //intake1
+             Trajectory Drive4 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                     .lineToLinearHeading(new Pose2d(65,-14,Math.toRadians(180)),SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                             SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                     .build();
+             drive.followTrajectory(Drive4);
+             //grab cone and lift
+             moveLift(250);
+             sleep(1400);
+             closeClaw();
+             sleep(200);
+             moveLift(1550);
+             //score2
+             Trajectory Drive5 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                     .lineToLinearHeading(new Pose2d(3,-13.5,Math.toRadians(180)),SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                             SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                     .build();
+             drive.followTrajectory(Drive5);
+             //score cone
+             turnTable(-825);
+             sleep(500);
+             openClaw();
+             sleep(300);
+             turnTable(0);
+             //intake2
+             Trajectory Drive7 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                     .lineToLinearHeading(new Pose2d(65,-16,Math.toRadians(180)),SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                             SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                     .build();
+             drive.followTrajectory(Drive7);
+             //grab cone
+             sleep(750);
+             moveLift(150);
+             sleep(1400);
+             closeClaw();
+             sleep(200);
+             moveLift(1550);
+             //score3
+             Trajectory Drive8 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                     .lineToLinearHeading(new Pose2d(2.75,-14,Math.toRadians(180)),SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                             SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                     .build();
+             drive.followTrajectory(Drive8);
+             //score
+             turnTable(-825);
+             sleep(600);
+             openClaw();
+             sleep(400);
+             turnTable(0);
+             //park
+             switch (autoParkPosition) {
+                 case 1:
+                     Trajectory CyclePark2 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                             .lineToLinearHeading(new Pose2d(36.5,-13.5,Math.toRadians(180)))
+                             .build();
+                     drive.followTrajectory(CyclePark2);
+                     if (isStopRequested()) return;
+                     break;
+                 case 2:
+                     if (Side() == 0) {
+                         Trajectory CyclePark3 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                                 .lineToLinearHeading(new Pose2d(11.5,-13.5,Math.toRadians(180)))
+                                 .build();
+                         drive.followTrajectory(CyclePark3);
+                     } else {
+                         Trajectory CyclePark1 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                                 .lineToLinearHeading(new Pose2d(59.5,-13.5,Math.toRadians(180)))
+                                 .build();
+                         drive.followTrajectory(CyclePark1);
+                     }
+                     if (isStopRequested()) return;
+                     break;
+                 default:
+                     if (Side() == 0) {
+                         Trajectory CyclePark1 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                                 .lineToLinearHeading(new Pose2d(59.5,-13.5,Math.toRadians(180)))
+                                 .build();
+                         drive.followTrajectory(CyclePark1);
+                     } else {
+                         Trajectory CyclePark3 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                                 .lineToLinearHeading(new Pose2d(11.5,-16.5,Math.toRadians(180)),SampleMecanumDrive.getVelocityConstraint(45, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                                 .build();
+                         drive.followTrajectory(CyclePark3);
+                     }
+                     if (isStopRequested()) return;
+                     break;
+             }
+             moveLift(0);
         }
         else if (Mode() == 2) {//Just parking
             moveToScore();
