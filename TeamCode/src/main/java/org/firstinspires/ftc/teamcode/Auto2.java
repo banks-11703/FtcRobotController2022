@@ -26,7 +26,7 @@ public class Auto2 extends AutoCommon {
         }
 
         starting();
-
+        closeClaw();
         if (Mode() == 1) {//doing nothing
             doNothing();
         }
@@ -221,9 +221,10 @@ public class Auto2 extends AutoCommon {
             moveShootout(0);
             openShooterClaw();
             liftShooterClaw(false,0);
+            openClaw();
 
-            //Park
-//            drive.setPoseEstimate(PoseStorage.currentPose);
+//            Park
+            drive.setPoseEstimate(PoseStorage.currentPose);
 //            switch (autoParkPosition) {
 //                case 1:
 //                    if (Side() == RIGHT && Team() == BLUE) {

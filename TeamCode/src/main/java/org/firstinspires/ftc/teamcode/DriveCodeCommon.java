@@ -86,8 +86,9 @@ public class DriveCodeCommon extends LinearOpMode {
     boolean autoClockwise;
     boolean autoCounterClockwise;
     boolean movingLClaw = false;
-    double[] coneHeights = {0.00, 0.10, 0.22, 0.3225, 0.47};
-    double[] coneHeightsClear = {0.05, 0.55, 0.72, 0.91, 1.0};
+    double coneHeightsMod = 2.225;
+    double[] coneHeights = {0.00, 0.10/coneHeightsMod, 0.22/coneHeightsMod, 0.3225/coneHeightsMod, 0.47/coneHeightsMod};
+    double[] coneHeightsClear = {0.00/coneHeightsMod, 0.55/coneHeightsMod, 0.72/coneHeightsMod, 0.91/coneHeightsMod, 1.0/coneHeightsMod};//0.05 after testing
 
     public double liftLevel() {
         return liftLevel % 4;
@@ -449,6 +450,7 @@ public class DriveCodeCommon extends LinearOpMode {
         telemetry.addData("Trying to go home", autoHome);
         telemetry.addData("Lift", drive.mainLift.getCurrentPosition());
         telemetry.addData("LiftLevel", liftLevel());
+        telemetry.addData("slift",drive.slift.getPosition());
         telemetry.addData("Turntable Position", drive.turntable.getCurrentPosition());
         telemetry.addData("TT Offset", motorOffset(drive.turntable));
         telemetry.update();
@@ -485,9 +487,9 @@ public class DriveCodeCommon extends LinearOpMode {
                     }
                 case OPENED:
                     if (gamepad1.left_bumper) {
-                        drive.shooter.setPower(-1);
-                    } else if (gamepad1.right_bumper) {
                         drive.shooter.setPower(1);
+                    } else if (gamepad1.right_bumper) {
+                        drive.shooter.setPower(-1);
                     }
             }
         } else if(button_dpadleft1_was_pressed) {
