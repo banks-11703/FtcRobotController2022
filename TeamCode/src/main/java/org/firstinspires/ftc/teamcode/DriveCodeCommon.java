@@ -63,7 +63,7 @@ public class DriveCodeCommon extends LinearOpMode {
     boolean timestamponce;
     boolean coneinhand;
     boolean ttInDangerZone;
-    int liftLevel = 1;
+    int liftLevel = 400;
     int hclaw = 0;
     int lclaw = 0;
     int latch;
@@ -90,7 +90,7 @@ public class DriveCodeCommon extends LinearOpMode {
     double[] coneHeightsClear = {0.05, 0.55, 0.72, 0.91, 1.0};
 
     public double liftLevel() {
-        return liftLevel % 5;
+        return liftLevel % 4;
     }
 
     public double hClawToggle() {
@@ -219,7 +219,7 @@ public class DriveCodeCommon extends LinearOpMode {
             button_dpadup1_was_pressed = true;
         } else if (!gamepad1.dpad_up && button_dpadup1_was_pressed) {
             button_dpadup1_was_pressed = false;
-        } else if (gamepad1.dpad_up && !button_dpadup1_was_pressed && conelevel < 4){
+        } else if (gamepad1.dpad_up && !button_dpadup1_was_pressed && conelevel < 3){
             lclaw = 1;
         }
         if (gamepad1.dpad_right && !button_dpadright1_was_pressed) {
@@ -254,7 +254,7 @@ public class DriveCodeCommon extends LinearOpMode {
         } else if (!gamepad1.x && button_x_was_pressed) {
             button_x_was_pressed = false;
         }
-        if (gamepad2.a && !button_a2_was_pressed && liftLevel > 1) {
+        if (gamepad2.a && !button_a2_was_pressed) {
 //            if(firstrun){firstrun = false;}
             liftLevel--;
             button_a2_was_pressed = true;
@@ -275,7 +275,7 @@ public class DriveCodeCommon extends LinearOpMode {
         } else if (!gamepad2.y && button_y2_was_pressed) {
             button_y2_was_pressed = false;
         }
-        if (gamepad2.b && !button_b2_was_pressed && liftLevel < 4) {
+        if (gamepad2.b && !button_b2_was_pressed && liftLevel() < 4) {
 //            if(firstrun){firstrun = false;}
             liftLevel++;
             button_b2_was_pressed = true;
@@ -294,7 +294,7 @@ public class DriveCodeCommon extends LinearOpMode {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
 
-        if (liftLevel() == 1) { // intake
+        if (liftLevel() == 0) { // intake
             if (coneinhand) {
                 if (conelevel != 0) {
                     liftPreciseLocation = 525;
@@ -321,23 +321,36 @@ public class DriveCodeCommon extends LinearOpMode {
             }
 
             liftPrecisePower = 1;
-        } else if (liftLevel() == 2) { // low 1050
+        } else if (liftLevel() == 1) { // low 1050
             liftPreciseLocation = 625;
             liftPrecisePower = 1;
-        } else if (liftLevel() == 3) { // mid 1800
+        } else if (liftLevel() == 2) { // mid 1800
             liftPreciseLocation = 1075;
             liftPrecisePower = 1;
-        } else if (liftLevel() == 4) { // high
+        } else if (liftLevel() == 3) { // high
             liftPreciseLocation = 1550;
             liftPrecisePower = 1;
         }
-        if (gamepad2.dpad_down) {
-            drive.mainLift.setTargetPosition(liftPreciseLocation - 100);
+        if(autoHome) {
+            liftLevel = 400;
+            if(drive.mainLift.getCurrentPosition() >= 1200 || Math.abs(drive.turntable.getCurrentPosition()) <= 25) {
+                drive.mainLift.setTargetPosition(liftPreciseLocation);
+                drive.mainLift.setPower(1);
+            } else {
+                drive.mainLift.setTargetPosition(liftPreciseLocation);
+                drive.mainLift.setPower(0);
+            }
         } else {
-            drive.mainLift.setTargetPosition(liftPreciseLocation);
+            if(ttInDangerZone){//Im not optimizing this -Owen (lifts lift above danger zone)
+                drive.mainLift.setTargetPosition(925);
+            }else if (gamepad2.dpad_down) {
+                drive.mainLift.setTargetPosition(liftPreciseLocation - 100);
+            } else {
+                drive.mainLift.setTargetPosition(liftPreciseLocation);
+            }
+            drive.mainLift.setPower(liftPrecisePower);
+            drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
-        drive.mainLift.setPower(liftPrecisePower);
-        drive.mainLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
 
@@ -351,6 +364,11 @@ public class DriveCodeCommon extends LinearOpMode {
 
     public void TurnTable() {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+
+        if(autoHome) {
+            autoClockwise = false;
+            autoCounterClockwise = false;
+        }
 
         if(liftLevel() == 2 && !(Math.abs(gamepad2.right_trigger - gamepad2.left_trigger) > 0.05) && (autoHome || autoClockwise || autoCounterClockwise)){//if in danger zone for cone
             ttInDangerZone = true;
@@ -397,10 +415,7 @@ public class DriveCodeCommon extends LinearOpMode {
             drive.turntable.setPower(1);
             autoCounterClockwise = false;
             autoClockwise = false;
-            if(liftLevel() == 2 && drive.mainLift.getCurrentPosition() < 900){
-                drive.turntable.setPower(0);
-            }
-            if(motorOffset(drive.turntable) < 10 && liftLevel() == 2){
+            if(drive.mainLift.getCurrentPosition()<=175) {
                 autoHome = false;
             }
         } else {//turntable not moving
@@ -411,8 +426,9 @@ public class DriveCodeCommon extends LinearOpMode {
             drive.turntable.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             resettingAutoHome = false;
         }
-
-
+        telemetry.addData("Autoright",autoClockwise);
+        telemetry.addData("Autoleft",autoCounterClockwise);
+        telemetry.addData("turntable target pos",drive.turntable.getTargetPosition());
 
 
 //            drive.turntable.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
