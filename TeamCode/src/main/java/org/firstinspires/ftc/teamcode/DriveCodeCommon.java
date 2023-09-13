@@ -62,7 +62,7 @@ public class DriveCodeCommon extends LinearOpMode {
     boolean firstrun = true;
     boolean timestamponce;
     boolean coneinhand;
-    boolean ttInDangerZone;
+    boolean ttInDangerZone = false;
     int liftLevel = 400;
     int hclaw = 0;
     int lclaw = 0;
@@ -276,7 +276,7 @@ public class DriveCodeCommon extends LinearOpMode {
         } else if (!gamepad2.y && button_y2_was_pressed) {
             button_y2_was_pressed = false;
         }
-        if (gamepad2.b && !button_b2_was_pressed && liftLevel() < 4) {
+        if (gamepad2.b && !button_b2_was_pressed && liftLevel() < 3) {
 //            if(firstrun){firstrun = false;}
             liftLevel++;
             button_b2_was_pressed = true;
@@ -370,11 +370,11 @@ public class DriveCodeCommon extends LinearOpMode {
             autoCounterClockwise = false;
         }
 
-        if(liftLevel() == 2 && !(Math.abs(gamepad2.right_trigger - gamepad2.left_trigger) > 0.05) && (autoHome || autoClockwise || autoCounterClockwise)){//if in danger zone for cone
-            ttInDangerZone = true;
-        }else{//normal manual controls
-            ttInDangerZone = false;
-        }
+//        if(liftLevel() == 2 && !(Math.abs(gamepad2.right_trigger - gamepad2.left_trigger) > 0.05) && (autoHome || autoClockwise || autoCounterClockwise)){//if in danger zone for cone
+//            ttInDangerZone = true;
+//        }else{//normal manual controls
+//            ttInDangerZone = false;
+//        }
 
         if (Math.abs(gamepad2.right_trigger - gamepad2.left_trigger) > 0.05) {//manual turntable control
             autoHome = false;
@@ -382,7 +382,7 @@ public class DriveCodeCommon extends LinearOpMode {
             autoClockwise = false;
             drive.turntable.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             drive.turntable.setPower((gamepad2.right_trigger - gamepad2.left_trigger));
-        } else if (autoClockwise && !autoHome && !autoCounterClockwise && liftLevel > 1) {//snap left
+        } else if (autoClockwise && !autoHome && !autoCounterClockwise && liftLevel() > 0) {//snap left
             drive.turntable.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             ttpos = -825;
             drive.turntable.setTargetPosition(ttpos);
@@ -392,10 +392,10 @@ public class DriveCodeCommon extends LinearOpMode {
             if(liftLevel() == 2 && drive.mainLift.getCurrentPosition() < 900){
                 drive.turntable.setPower(0);
             }
-            if(Math.abs(drive.turntable.getCurrentPosition() - ttpos) < 10 && liftLevel() == 2){
+            if(Math.abs(drive.turntable.getCurrentPosition() - ttpos) < 10 && liftLevel() == 1){
                 autoClockwise = false;
             }
-        } else if (autoCounterClockwise && !autoHome && !autoClockwise && liftLevel > 1) {//snap right
+        } else if (autoCounterClockwise && !autoHome && !autoClockwise && liftLevel() > 0) {//snap right
             drive.turntable.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             ttpos = 825;
             drive.turntable.setTargetPosition(ttpos);
@@ -405,7 +405,7 @@ public class DriveCodeCommon extends LinearOpMode {
             if(liftLevel() == 2 && drive.mainLift.getCurrentPosition() < 900){
                 drive.turntable.setPower(0);
             }
-            if(Math.abs(drive.turntable.getCurrentPosition() - ttpos) < 10 && liftLevel() == 2){
+            if(Math.abs(drive.turntable.getCurrentPosition() - ttpos) < 10 && liftLevel() == 1){
                 autoCounterClockwise = false;
             }
         } else if (autoHome && !autoCounterClockwise && !autoClockwise) {//automatically centering on intake
@@ -415,7 +415,7 @@ public class DriveCodeCommon extends LinearOpMode {
             drive.turntable.setPower(1);
             autoCounterClockwise = false;
             autoClockwise = false;
-            if(drive.mainLift.getCurrentPosition()<=175) {
+            if(drive.mainLift.getCurrentPosition()<=35) {
                 autoHome = false;
             }
         } else {//turntable not moving
@@ -426,9 +426,6 @@ public class DriveCodeCommon extends LinearOpMode {
             drive.turntable.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             resettingAutoHome = false;
         }
-        telemetry.addData("Autoright",autoClockwise);
-        telemetry.addData("Autoleft",autoCounterClockwise);
-        telemetry.addData("turntable target pos",drive.turntable.getTargetPosition());
 
 
 //            drive.turntable.setMode(DcMotor.RunMode.RUN_USING_ENCODER);

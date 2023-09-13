@@ -6,7 +6,6 @@ public class DriveCode extends DriveCodeCommon {
     public void runOpMode() {
         Initialization();
         if (isStopRequested()) return;
-        autoHome = true;
         while (opModeIsActive() && !isStopRequested()) {
             RawDriving();
             Toggles();

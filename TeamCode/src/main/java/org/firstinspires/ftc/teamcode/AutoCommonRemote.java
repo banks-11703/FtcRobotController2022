@@ -815,13 +815,13 @@ public class AutoCommonRemote extends LinearOpMode {
                                 telemetry.addData("Mode", "Nothing");
                                 break;
                             case (1):
-                                telemetry.addData("Mode", "Drive Only");
+                                telemetry.addData("Mode", "Highs Only");
                                 break;
                             case (2):
-                                telemetry.addData("Mode", "Park Only");
+                                telemetry.addData("Mode", "1 high then medium");
                                 break;
                             case (3):
-                                telemetry.addData("Mode", "Shootout Cycle");
+                                telemetry.addData("Mode", "Mediums only");
                                 break;
                         }
                         break;
@@ -832,13 +832,13 @@ public class AutoCommonRemote extends LinearOpMode {
                                 telemetry.addData("Mode", "Nothing");
                                 break;
                             case (1):
-                                telemetry.addData("Mode", "Drive Only");
+                                telemetry.addData("Mode", "Highs Only");
                                 break;
                             case (2):
-                                telemetry.addData("Mode", "Park Only");
+                                telemetry.addData("Mode", "1 high then medium");
                                 break;
                             case (3):
-                                telemetry.addData("Mode", "Shootout Cycle");
+                                telemetry.addData("Mode", "Mediums only");
                                 break;
                         }
                         break;
@@ -854,13 +854,13 @@ public class AutoCommonRemote extends LinearOpMode {
                                 telemetry.addData("Mode", "Nothing");
                                 break;
                             case (1):
-                                telemetry.addData("Mode", "Drive Only");
+                                telemetry.addData("Mode", "Highs Only");
                                 break;
                             case (2):
-                                telemetry.addData("Mode", "Park Only");
+                                telemetry.addData("Mode", "1 high then medium");
                                 break;
                             case (3):
-                                telemetry.addData("Mode", "Shootout Cycle");
+                                telemetry.addData("Mode", "Mediums only");
                                 break;
                         }
                         break;
@@ -871,13 +871,13 @@ public class AutoCommonRemote extends LinearOpMode {
                                 telemetry.addData("Mode", "Nothing");
                                 break;
                             case (1):
-                                telemetry.addData("Mode", "Drive Only");
+                                telemetry.addData("Mode", "Highs Only");
                                 break;
                             case (2):
-                                telemetry.addData("Mode", "Park Only");
+                                telemetry.addData("Mode", "1 high then medium");
                                 break;
                             case (3):
-                                telemetry.addData("Mode", "Shootout Cycle");
+                                telemetry.addData("Mode", "Mediums only");
                                 break;
                         }
                         break;
